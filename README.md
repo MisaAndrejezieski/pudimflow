@@ -187,12 +187,6 @@ GitHub: @MisaAndrejezieski
 📄 Licença
 Este projeto é de uso interno da Lactalis (Unidade de Pudins).
 
-🙏 Agradecimentos
-Equipe do turno da noite pelo apoio e feedback
-
-Líderes dos turnos manhã/tarde pela colaboração
-
-Gestão da Lactalis pelo suporte ao projeto
 
 📞 Suporte
 Em caso de dúvidas ou problemas: (42)991378801
