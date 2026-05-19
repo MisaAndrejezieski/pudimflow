@@ -48,3 +48,40 @@ O **PudimFlow** é um sistema web desenvolvido especificamente para o **Turno da
 ---
 
 ## 📁 Estrutura do Projeto
+pudimflow/
+│
+├── frontend/
+│ ├── index.html (Dashboard)
+│ ├── producao.html (Produção)
+│ ├── qualidade.html (Qualidade)
+│ ├── seguranca.html (Segurança)
+│ ├── sim.html (SIM)
+│ ├── relatorios.html (Relatórios)
+│ ├── style.css (Estilos com Dark Mode)
+│ └── script.js (Funções compartilhadas)
+│
+├── backend/
+│ ├── server.js (API Node.js)
+│ ├── prisma/
+│ │ └── schema.prisma (Modelo do banco)
+│ └── .env (Variáveis de ambiente)
+│
+└── README.md (Documentação)
+
+---
+
+## 🔧 Instalação Local
+
+### Pré-requisitos
+
+- Node.js 18+ instalado
+- Conta no [Neon.tech](https://neon.tech) (banco de dados gratuito)
+- Git instalado
+
+### Passo a Passo
+
+#### 1. Clone o repositório
+
+```bash
+git clone https://github.com/MisaAndrejezieski/pudimflow.git
+cd pudimflow
