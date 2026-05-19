@@ -13,7 +13,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 0.7rem;
-            min-width: 800px;
+            min-width: 900px;
         }
         .planilha-programacao th,
         .planilha-programacao td {
@@ -41,6 +41,7 @@
             text-align: left;
             font-weight: bold;
             background: var(--bg-secondary);
+            font-size: 0.65rem;
         }
         .total-row {
             background: var(--secondary);
@@ -51,10 +52,14 @@
             background: var(--secondary);
             color: white;
         }
-        .maquina-titulo {
-            background: var(--info);
+        .total-geral-row {
+            background: var(--primary);
             color: white;
             font-weight: bold;
+        }
+        .total-geral-row td {
+            background: var(--primary);
+            color: white;
         }
     </style>
 </head>
@@ -79,7 +84,7 @@
             <h2>📊 Programação Semanal - Linha Trepko (Pudins)</h2>
             <table class="planilha-programacao" id="tabelaTrepko">
                 <thead>
-                    <tr id="headerTrepko">
+                    <tr>
                         <th>Produto / Código</th>
                         <th>Segunda</th>
                         <th>Terça</th>
@@ -91,9 +96,20 @@
                         <th>Total Semana</th>
                     </tr>
                 </thead>
-                <tbody id="corpoTrepko">
-                    <!-- Linhas serão preenchidas via JavaScript -->
-                </tbody>
+                <tbody id="corpoTrepko"></tbody>
+                <tfoot>
+                    <tr class="total-row" id="totalTrepkoRow">
+                        <td><strong>TOTAL LINHA TREPKO</strong></td>
+                        <td id="totalDiaTrepko_0">-</td>
+                        <td id="totalDiaTrepko_1">-</td>
+                        <td id="totalDiaTrepko_2">-</td>
+                        <td id="totalDiaTrepko_3">-</td>
+                        <td id="totalDiaTrepko_4">-</td>
+                        <td id="totalDiaTrepko_5">-</td>
+                        <td id="totalDiaTrepko_6">-</td>
+                        <td id="totalSemanaTrepko">0</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
 
@@ -101,7 +117,7 @@
             <h2>📊 Programação Semanal - Linha Serac (Pudins)</h2>
             <table class="planilha-programacao" id="tabelaSerac">
                 <thead>
-                    <tr id="headerSerac">
+                    <tr>
                         <th>Produto / Código</th>
                         <th>Segunda</th>
                         <th>Terça</th>
@@ -113,9 +129,31 @@
                         <th>Total Semana</th>
                     </tr>
                 </thead>
-                <tbody id="corpoSerac">
-                    <!-- Linhas serão preenchidas via JavaScript -->
-                </tbody>
+                <tbody id="corpoSerac"></tbody>
+                <tfoot>
+                    <tr class="total-row" id="totalSeracRow">
+                        <td><strong>TOTAL LINHA SERAC</strong></td>
+                        <td id="totalDiaSerac_0">-</td>
+                        <td id="totalDiaSerac_1">-</td>
+                        <td id="totalDiaSerac_2">-</td>
+                        <td id="totalDiaSerac_3">-</td>
+                        <td id="totalDiaSerac_4">-</td>
+                        <td id="totalDiaSerac_5">-</td>
+                        <td id="totalDiaSerac_6">-</td>
+                        <td id="totalSemanaSerac">0</td>
+                    </tr>
+                    <tr class="total-geral-row" id="totalGeralRow">
+                        <td><strong>TOTAL GERAL (TREPKO + SERAC)</strong></td>
+                        <td id="totalGeralDia_0">-</td>
+                        <td id="totalGeralDia_1">-</td>
+                        <td id="totalGeralDia_2">-</td>
+                        <td id="totalGeralDia_3">-</td>
+                        <td id="totalGeralDia_4">-</td>
+                        <td id="totalGeralDia_5">-</td>
+                        <td id="totalGeralDia_6">-</td>
+                        <td id="totalGeralSemana">0</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
 
@@ -137,10 +175,27 @@
 
     <script>
         const API_URL = 'http://localhost:3000/api';
-
         const dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
 
-        // Dados da planilha Trepko (conforme sua imagem)
+        // Dados REAIS da planilha (valores padrão)
+        const dadosReaisTrepko = {
+            "610100542": ["6.000 - 3.333", "", "", "", "", "", ""],
+            "610102542": ["", "", "", "4.000 - 2.222", "", "", ""],
+            "610103542": ["", "", "", "", "", "", ""],
+            "610101551": ["", "", "", "", "", "", ""],
+            "610102551": ["", "", "", "", "", "", ""],
+            "610100551": ["", "", "", "", "", "", ""],
+            "610101542": ["3.000 - 1.667", "", "", "", "", "", ""],
+            "610101544": ["", "", "", "", "6.000 - 3.000", "", ""],
+            "610104544": ["", "9.000 - 4.500", "9.000 - 4.500", "6.000 - 3.000", "3.000 - 1.500", "3.000 - 1.500", ""],
+            "610100550": ["", "", "", "", "", "", "6.000 - 3.000"]
+        };
+
+        const dadosReaisSerac = {
+            "610100544": ["1.000 - 500", "1.000 - 500", "1.000 - 500", "1.000 - 500", "1.000 - 500", "", ""],
+            "610102496": ["", "", "", "", "", "", ""]
+        };
+
         const produtosTrepko = [
             { codigo: "610100542", nome: "SOB BRIGADEIRA CHOCO BATAVO 180g" },
             { codigo: "610102542", nome: "SOB MANJAR COCO BATAVO CX10 180G CB" },
@@ -159,163 +214,172 @@
             { codigo: "610102496", nome: "PUDIM LEITE COND ITAMBE 100G" }
         ];
 
-        function gerarLinha(produto, linhaId, valoresSalvos = {}) {
-            let html = `<tr id="${linhaId}">`;
-            html += `<td class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small></td>`;
-            
-            for (let i = 0; i < dias.length; i++) {
-                const valor = valoresSalvos[dias[i]] || '';
-                html += `<td><input type="text" class="meta-input-${linhaId}" data-dia="${dias[i]}" value="${valor}" placeholder="0 - 0"></td>`;
-            }
-            
-            // Total da semana (calculado automaticamente)
-            html += `<td class="total-semana-${linhaId}">0</td>`;
-            html += `</tr>`;
-            return html;
-        }
-
-        function calcularTotaisLinha(linhaId) {
+        function calcularTotaisLinha(row) {
             let total = 0;
             for (let i = 0; i < dias.length; i++) {
-                const input = document.querySelector(`#${linhaId} input[data-dia="${dias[i]}"]`);
+                const input = row.querySelector(`input[data-dia="${dias[i]}"]`);
                 if (input && input.value) {
                     const meta = parseFloat(input.value.split('-')[0].trim()) || 0;
                     total += meta;
                 }
             }
-            const totalCell = document.querySelector(`#${linhaId} .total-semana-${linhaId}`);
+            const totalCell = row.querySelector('.total-semana');
             if (totalCell) totalCell.textContent = total.toLocaleString();
             return total;
         }
 
-        function calcularTotaisTabela(tabelaId, corpoId) {
-            let totalGeral = 0;
-            const rows = document.querySelectorAll(`#${corpoId} tr`);
+        function calcularTotalDia(tabelaId, diaIndex) {
+            let total = 0;
+            const rows = document.querySelectorAll(`#${tabelaId} tbody tr`);
             rows.forEach(row => {
-                const linhaId = row.id;
-                if (linhaId) {
-                    const total = calcularTotaisLinha(linhaId);
-                    totalGeral += total;
+                const input = row.querySelector(`input[data-dia="${dias[diaIndex]}"]`);
+                if (input && input.value) {
+                    const meta = parseFloat(input.value.split('-')[0].trim()) || 0;
+                    total += meta;
                 }
             });
-            return totalGeral;
+            return total;
         }
 
-        function carregarTabelaTrepko(dadosSalvos = {}) {
+        function atualizarTodosTotais() {
+            // Totais Trepko
+            for (let i = 0; i < dias.length; i++) {
+                const total = calcularTotalDia('tabelaTrepko', i);
+                const cell = document.getElementById(`totalDiaTrepko_${i}`);
+                if (cell) cell.textContent = total.toLocaleString();
+            }
+            let totalSemanaTrepko = 0;
+            for (let i = 0; i < dias.length; i++) {
+                totalSemanaTrepko += calcularTotalDia('tabelaTrepko', i);
+            }
+            document.getElementById('totalSemanaTrepko').textContent = totalSemanaTrepko.toLocaleString();
+
+            // Totais Serac
+            for (let i = 0; i < dias.length; i++) {
+                const total = calcularTotalDia('tabelaSerac', i);
+                const cell = document.getElementById(`totalDiaSerac_${i}`);
+                if (cell) cell.textContent = total.toLocaleString();
+            }
+            let totalSemanaSerac = 0;
+            for (let i = 0; i < dias.length; i++) {
+                totalSemanaSerac += calcularTotalDia('tabelaSerac', i);
+            }
+            document.getElementById('totalSemanaSerac').textContent = totalSemanaSerac.toLocaleString();
+
+            // Totais Gerais
+            for (let i = 0; i < dias.length; i++) {
+                const totalTrepko = calcularTotalDia('tabelaTrepko', i);
+                const totalSerac = calcularTotalDia('tabelaSerac', i);
+                const totalGeral = totalTrepko + totalSerac;
+                const cell = document.getElementById(`totalGeralDia_${i}`);
+                if (cell) cell.textContent = totalGeral.toLocaleString();
+            }
+            const totalGeralSemana = totalSemanaTrepko + totalSemanaSerac;
+            document.getElementById('totalGeralSemana').textContent = totalGeralSemana.toLocaleString();
+        }
+
+        function adicionarEventosInput() {
+            const inputs = document.querySelectorAll('input[data-dia]');
+            inputs.forEach(input => {
+                input.removeEventListener('input', atualizarTodosTotais);
+                input.addEventListener('input', atualizarTodosTotais);
+            });
+        }
+
+        function carregarTabelaTrepko(dados = dadosReaisTrepko) {
             const tbody = document.getElementById('corpoTrepko');
             tbody.innerHTML = '';
-            produtosTrepko.forEach((produto, idx) => {
-                const linhaId = `trepko_${idx}`;
-                const valores = dadosSalvos[produto.codigo] || {};
-                tbody.innerHTML += gerarLinha(produto, linhaId, valores);
+            produtosTrepko.forEach(produto => {
+                const valores = dados[produto.codigo] || ["", "", "", "", "", "", ""];
+                const row = tbody.insertRow();
+                row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small></div>`;
+                for (let i = 0; i < dias.length; i++) {
+                    const cell = row.insertCell(i + 1);
+                    cell.innerHTML = `<input type="text" data-dia="${dias[i]}" value="${valores[i] || ''}" placeholder="0 - 0">`;
+                }
+                const totalCell = row.insertCell(dias.length + 1);
+                totalCell.className = 'total-semana';
+                totalCell.textContent = '0';
             });
-            
-            // Linha de total
-            tbody.innerHTML += `<tr class="total-row" id="totalTrepkoRow">
-                <td><strong>TOTAL LINHA TREPKO PUDIM</strong></td>
-                ${dias.map(() => `<td id="totalDiaTrepko">-</td>`).join('')}
-                <td id="totalSemanaTrepko">0</td>
-            </tr>`;
-            
-            // Calcular totais
-            calcularTotaisTabela('tabelaTrepko', 'corpoTrepko');
+            adicionarEventosInput();
+            atualizarTodosTotais();
         }
 
-        function carregarTabelaSerac(dadosSalvos = {}) {
+        function carregarTabelaSerac(dados = dadosReaisSerac) {
             const tbody = document.getElementById('corpoSerac');
             tbody.innerHTML = '';
-            produtosSerac.forEach((produto, idx) => {
-                const linhaId = `serac_${idx}`;
-                const valores = dadosSalvos[produto.codigo] || {};
-                tbody.innerHTML += gerarLinha(produto, linhaId, valores);
+            produtosSerac.forEach(produto => {
+                const valores = dados[produto.codigo] || ["", "", "", "", "", "", ""];
+                const row = tbody.insertRow();
+                row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small></div>`;
+                for (let i = 0; i < dias.length; i++) {
+                    const cell = row.insertCell(i + 1);
+                    cell.innerHTML = `<input type="text" data-dia="${dias[i]}" value="${valores[i] || ''}" placeholder="0 - 0">`;
+                }
+                const totalCell = row.insertCell(dias.length + 1);
+                totalCell.className = 'total-semana';
+                totalCell.textContent = '0';
             });
-            
-            tbody.innerHTML += `<tr class="total-row" id="totalSeracRow">
-                <td><strong>TOTAL LINHA SERAC PUDIM</strong></td>
-                ${dias.map(() => `<td id="totalDiaSerac">-</td>`).join('')}
-                <td id="totalSemanaSerac">0</td>
-            </tr>`;
-            
-            calcularTotaisTabela('tabelaSerac', 'corpoSerac');
+            adicionarEventosInput();
+            atualizarTodosTotais();
         }
 
         async function salvarProgramacao() {
-            const dados = {
-                trepko: {},
-                serac: {}
-            };
-            
-            // Coletar dados Trepko
-            for (let i = 0; i < produtosTrepko.length; i++) {
-                const linhaId = `trepko_${i}`;
-                const valores = {};
-                for (let j = 0; j < dias.length; j++) {
-                    const input = document.querySelector(`#${linhaId} input[data-dia="${dias[j]}"]`);
-                    if (input && input.value) {
-                        valores[dias[j]] = input.value;
-                    }
+            const dadosTrepko = {};
+            const rowsTrepko = document.querySelectorAll('#corpoTrepko tr');
+            rowsTrepko.forEach((row, idx) => {
+                const codigo = produtosTrepko[idx].codigo;
+                dadosTrepko[codigo] = [];
+                for (let i = 0; i < dias.length; i++) {
+                    const input = row.querySelector(`input[data-dia="${dias[i]}"]`);
+                    dadosTrepko[codigo].push(input ? input.value : '');
                 }
-                dados.trepko[produtosTrepko[i].codigo] = valores;
-            }
-            
-            // Coletar dados Serac
-            for (let i = 0; i < produtosSerac.length; i++) {
-                const linhaId = `serac_${i}`;
-                const valores = {};
-                for (let j = 0; j < dias.length; j++) {
-                    const input = document.querySelector(`#${linhaId} input[data-dia="${dias[j]}"]`);
-                    if (input && input.value) {
-                        valores[dias[j]] = input.value;
-                    }
+            });
+
+            const dadosSerac = {};
+            const rowsSerac = document.querySelectorAll('#corpoSerac tr');
+            rowsSerac.forEach((row, idx) => {
+                const codigo = produtosSerac[idx].codigo;
+                dadosSerac[codigo] = [];
+                for (let i = 0; i < dias.length; i++) {
+                    const input = row.querySelector(`input[data-dia="${dias[i]}"]`);
+                    dadosSerac[codigo].push(input ? input.value : '');
                 }
-                dados.serac[produtosSerac[i].codigo] = valores;
-            }
-            
-            localStorage.setItem('programacao_semanal', JSON.stringify(dados));
-            
+            });
+
+            localStorage.setItem('programacao_trepko', JSON.stringify(dadosTrepko));
+            localStorage.setItem('programacao_serac', JSON.stringify(dadosSerac));
+
             const msgDiv = document.getElementById('mensagem');
             msgDiv.style.display = 'block';
             msgDiv.className = 'alert alert-success';
-            msgDiv.innerHTML = '✅ Programação salva no navegador! (Backend será implementado depois)';
+            msgDiv.innerHTML = '✅ Programação salva no navegador!';
             setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
         }
 
         function carregarProgramacao() {
-            const saved = localStorage.getItem('programacao_semanal');
-            if (saved) {
-                const dados = JSON.parse(saved);
-                carregarTabelaTrepko(dados.trepko || {});
-                carregarTabelaSerac(dados.serac || {});
-            } else {
-                carregarTabelaTrepko({});
-                carregarTabelaSerac({});
-            }
+            const savedTrepko = localStorage.getItem('programacao_trepko');
+            const savedSerac = localStorage.getItem('programacao_serac');
+            carregarTabelaTrepko(savedTrepko ? JSON.parse(savedTrepko) : dadosReaisTrepko);
+            carregarTabelaSerac(savedSerac ? JSON.parse(savedSerac) : dadosReaisSerac);
         }
 
         function aplicarProgramacaoHoje() {
             const hoje = new Date();
             const diaSemana = dias[hoje.getDay() === 0 ? 6 : hoje.getDay() - 1];
+            const diaIndex = dias.indexOf(diaSemana);
             
-            // Buscar produção do dia na programação salva
-            const saved = localStorage.getItem('programacao_semanal');
-            if (!saved) {
-                alert('Nenhuma programação salva. Configure a programação primeiro.');
-                return;
-            }
-            
-            const dados = JSON.parse(saved);
-            
-            // Para simplificar, vamos pegar a primeira linha da Trepko que tiver valor para o dia de hoje
             let metaHoje = 0;
             let produtoHoje = '';
             
-            for (const [codigo, valores] of Object.entries(dados.trepko)) {
-                if (valores[diaSemana]) {
-                    const meta = parseFloat(valores[diaSemana].split('-')[0].trim());
+            const rowsTrepko = document.querySelectorAll('#corpoTrepko tr');
+            for (let i = 0; i < rowsTrepko.length; i++) {
+                const input = rowsTrepko[i].querySelector(`input[data-dia="${diaSemana}"]`);
+                if (input && input.value) {
+                    const meta = parseFloat(input.value.split('-')[0].trim());
                     if (meta > 0) {
                         metaHoje = meta;
-                        const produto = produtosTrepko.find(p => p.codigo === codigo);
-                        produtoHoje = produto ? produto.nome : codigo;
+                        produtoHoje = produtosTrepko[i].nome;
                         break;
                     }
                 }
@@ -326,7 +390,6 @@
                 return;
             }
             
-            // Salvar no backend
             fetch('/api/producao', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
