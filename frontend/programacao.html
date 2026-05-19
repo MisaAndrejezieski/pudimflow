@@ -177,22 +177,22 @@
         const API_URL = 'http://localhost:3000/api';
         const dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
 
-        // Dados REAIS da planilha (valores padrão)
+        // Dados REAIS da planilha (apenas meta = primeiro número)
         const dadosReaisTrepko = {
-            "610100542": ["6.000 - 3.333", "", "", "", "", "", ""],
-            "610102542": ["", "", "", "4.000 - 2.222", "", "", ""],
+            "610100542": ["6000", "", "", "", "", "", ""],
+            "610102542": ["", "", "", "4000", "", "", ""],
             "610103542": ["", "", "", "", "", "", ""],
             "610101551": ["", "", "", "", "", "", ""],
             "610102551": ["", "", "", "", "", "", ""],
             "610100551": ["", "", "", "", "", "", ""],
-            "610101542": ["3.000 - 1.667", "", "", "", "", "", ""],
-            "610101544": ["", "", "", "", "6.000 - 3.000", "", ""],
-            "610104544": ["", "9.000 - 4.500", "9.000 - 4.500", "6.000 - 3.000", "3.000 - 1.500", "3.000 - 1.500", ""],
-            "610100550": ["", "", "", "", "", "", "6.000 - 3.000"]
+            "610101542": ["3000", "", "", "", "", "", ""],
+            "610101544": ["", "", "", "", "6000", "", ""],
+            "610104544": ["", "9000", "9000", "6000", "3000", "3000", ""],
+            "610100550": ["", "", "", "", "", "", "6000"]
         };
 
         const dadosReaisSerac = {
-            "610100544": ["1.000 - 500", "1.000 - 500", "1.000 - 500", "1.000 - 500", "1.000 - 500", "", ""],
+            "610100544": ["1000", "1000", "1000", "1000", "1000", "", ""],
             "610102496": ["", "", "", "", "", "", ""]
         };
 
@@ -214,13 +214,27 @@
             { codigo: "610102496", nome: "PUDIM LEITE COND ITAMBE 100G" }
         ];
 
+        function extrairMeta(valor) {
+            if (!valor) return 0;
+            // Se tiver formato "6000 - 3000", pega só o primeiro número
+            if (valor.includes('-')) {
+                return parseFloat(valor.split('-')[0].trim()) || 0;
+            }
+            return parseFloat(valor) || 0;
+        }
+
+        function formatarMeta(valor) {
+            if (!valor) return '';
+            if (typeof valor === 'number') return valor.toString();
+            return valor;
+        }
+
         function calcularTotaisLinha(row) {
             let total = 0;
             for (let i = 0; i < dias.length; i++) {
                 const input = row.querySelector(`input[data-dia="${dias[i]}"]`);
                 if (input && input.value) {
-                    const meta = parseFloat(input.value.split('-')[0].trim()) || 0;
-                    total += meta;
+                    total += extrairMeta(input.value);
                 }
             }
             const totalCell = row.querySelector('.total-semana');
@@ -234,8 +248,7 @@
             rows.forEach(row => {
                 const input = row.querySelector(`input[data-dia="${dias[diaIndex]}"]`);
                 if (input && input.value) {
-                    const meta = parseFloat(input.value.split('-')[0].trim()) || 0;
-                    total += meta;
+                    total += extrairMeta(input.value);
                 }
             });
             return total;
@@ -295,7 +308,7 @@
                 row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small></div>`;
                 for (let i = 0; i < dias.length; i++) {
                     const cell = row.insertCell(i + 1);
-                    cell.innerHTML = `<input type="text" data-dia="${dias[i]}" value="${valores[i] || ''}" placeholder="0 - 0">`;
+                    cell.innerHTML = `<input type="text" data-dia="${dias[i]}" value="${valores[i] || ''}" placeholder="Meta">`;
                 }
                 const totalCell = row.insertCell(dias.length + 1);
                 totalCell.className = 'total-semana';
@@ -314,7 +327,7 @@
                 row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small></div>`;
                 for (let i = 0; i < dias.length; i++) {
                     const cell = row.insertCell(i + 1);
-                    cell.innerHTML = `<input type="text" data-dia="${dias[i]}" value="${valores[i] || ''}" placeholder="0 - 0">`;
+                    cell.innerHTML = `<input type="text" data-dia="${dias[i]}" value="${valores[i] || ''}" placeholder="Meta">`;
                 }
                 const totalCell = row.insertCell(dias.length + 1);
                 totalCell.className = 'total-semana';
@@ -367,7 +380,6 @@
         function aplicarProgramacaoHoje() {
             const hoje = new Date();
             const diaSemana = dias[hoje.getDay() === 0 ? 6 : hoje.getDay() - 1];
-            const diaIndex = dias.indexOf(diaSemana);
             
             let metaHoje = 0;
             let produtoHoje = '';
@@ -376,7 +388,7 @@
             for (let i = 0; i < rowsTrepko.length; i++) {
                 const input = rowsTrepko[i].querySelector(`input[data-dia="${diaSemana}"]`);
                 if (input && input.value) {
-                    const meta = parseFloat(input.value.split('-')[0].trim());
+                    const meta = extrairMeta(input.value);
                     if (meta > 0) {
                         metaHoje = meta;
                         produtoHoje = produtosTrepko[i].nome;
