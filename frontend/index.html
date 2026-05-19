@@ -43,7 +43,8 @@
         <div class="card">
             <h2>📅 Programação de Hoje</h2>
             <p><strong>Produto:</strong> <span id="produtoHoje">-</span></p>
-            <p><strong>Meta kg:</strong> <span id="metaKgHoje">0</span></p>
+            <p><strong>Meta Brascop kg:</strong> <span id="metaKgBrascop">0</span></p>
+            <p><strong>Meta Serac kg:</strong> <span id="metaKgSerac">0</span></p>
             <p><strong>Meta Brascop estantes:</strong> <span id="metaEstantesBrascop">0</span></p>
             <p><strong>Meta Serac estantes:</strong> <span id="metaEstantesSerac">0</span></p>
             <p><strong>Data de validade:</strong> <span id="dataValidade">-</span></p>
@@ -124,14 +125,15 @@
     <div class="dark-mode-toggle" onclick="document.body.classList.toggle('dark-mode')">🌓</div>
 
     <script>
+        // Programação semanal com metas separadas para Brascop e Serac
         const programacaoSemanal = {
-            "Segunda-feira": { produto: "Pudim Leite Batavo", metaKg: 9000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
-            "Terça-feira": { produto: "Pudim Leite Batavo", metaKg: 9000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
-            "Quarta-feira": { produto: "Pudim Leite Batavo", metaKg: 9000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
-            "Quinta-feira": { produto: "Pudim Leite Itambé", metaKg: 6000, pesoMassa: 90, pesoCalda: 10, validadeDias: 45 },
-            "Sexta-feira": { produto: "Pudim Leite Itambé", metaKg: 6000, pesoMassa: 90, pesoCalda: 10, validadeDias: 45 },
-            "Sábado": { produto: "Brigadeiro Chandelle", metaKg: 6000, pesoMassa: 90, pesoCalda: 0, validadeDias: 48 },
-            "Domingo": { produto: "Manjar Coco Batavo", metaKg: 4000, pesoMassa: 75, pesoCalda: 15, validadeDias: 45 }
+            "Segunda-feira": { produto: "Pudim Leite Batavo", metaKgBrascop: 9000, metaKgSerac: 1000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
+            "Terça-feira": { produto: "Pudim Leite Batavo", metaKgBrascop: 9000, metaKgSerac: 1000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
+            "Quarta-feira": { produto: "Pudim Leite Batavo", metaKgBrascop: 9000, metaKgSerac: 1000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
+            "Quinta-feira": { produto: "Pudim Leite Itambé", metaKgBrascop: 6000, metaKgSerac: 1000, pesoMassa: 90, pesoCalda: 10, validadeDias: 45 },
+            "Sexta-feira": { produto: "Pudim Leite Itambé", metaKgBrascop: 6000, metaKgSerac: 1000, pesoMassa: 90, pesoCalda: 10, validadeDias: 45 },
+            "Sábado": { produto: "Brigadeiro Chandelle", metaKgBrascop: 6000, metaKgSerac: 1000, pesoMassa: 90, pesoCalda: 0, validadeDias: 48 },
+            "Domingo": { produto: "Manjar Coco Batavo", metaKgBrascop: 4000, metaKgSerac: 1000, pesoMassa: 75, pesoCalda: 15, validadeDias: 45 }
         };
 
         const capacidadeBrascop = 89.6;
@@ -146,14 +148,19 @@
             const dia = getDiaSemana();
             const prog = programacaoSemanal[dia];
             if (!prog) return;
+            
             document.getElementById("produtoHoje").innerText = prog.produto;
-            document.getElementById("metaKgHoje").innerText = prog.metaKg;
-            const metaEstBrascop = Math.ceil(prog.metaKg / capacidadeBrascop);
-            const metaEstSerac = Math.floor(prog.metaKg / capacidadeSerac);
+            document.getElementById("metaKgBrascop").innerText = prog.metaKgBrascop;
+            document.getElementById("metaKgSerac").innerText = prog.metaKgSerac;
+            
+            const metaEstBrascop = Math.ceil(prog.metaKgBrascop / capacidadeBrascop);
+            const metaEstSerac = Math.ceil(prog.metaKgSerac / capacidadeSerac);
+            
             document.getElementById("metaEstantesBrascop").innerText = metaEstBrascop;
             document.getElementById("metaEstantesSerac").innerText = metaEstSerac;
             document.getElementById("brascopMeta").innerText = metaEstBrascop;
             document.getElementById("seracMeta").innerText = metaEstSerac;
+            
             const hoje = new Date();
             const dataValidade = new Date();
             dataValidade.setDate(hoje.getDate() + prog.validadeDias);
