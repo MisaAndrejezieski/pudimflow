@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>PudimFlow - Qualidade</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🍮 PudimFlow - Qualidade</h1>
+        <div class="turno">Turno da Noite - Misa</div>
+    </div>
+
+    <nav class="nav">
+        <a href="index.html">📊 Dashboard</a>
+        <a href="producao.html">🏭 Produção</a>
+        <a href="qualidade.html" class="active">✅ Qualidade</a>
+        <a href="seguranca.html">🛡️ Segurança</a>
+        <a href="sim.html">💡 SIM</a>
+        <a href="relatorios.html">📈 Relatórios</a>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h2>✅ BPF - Boas Práticas de Fabricação</h2>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="bpfLimpeza">
+                <label>Limpeza da área verificada</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="bpfEPI">
+                <label>EPI's OK</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="bpfTemperatura">
+                <label>Temperatura dos fornos OK</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="bpfData">
+                <label>Data de validade OK</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="bpfPeso">
+                <label>Peso dos produtos OK</label>
+            </div>
+            
+            <div class="form-group" style="margin-top: 1rem;">
+                <label>Observações adicionais</label>
+                <textarea id="bpfObservacao" rows="3" placeholder="Registrar qualquer não conformidade ou observação relevante..."></textarea>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📊 Falhas e Reclamações</h2>
+            
+            <div class="form-group">
+                <label>Falhas registradas no turno</label>
+                <textarea id="falhas" rows="3" placeholder="Ex: Queda de máquina, falta de material, problema na embalagem..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Reclamações do consumidor</label>
+                <textarea id="reclamacoes" rows="3" placeholder="Registrar reclamações recebidas no período..."></textarea>
+            </div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button id="btnSalvar" style="background: var(--success);">💾 SALVAR QUALIDADE</button>
+                <button id="btnCarregar">📂 CARREGAR DADOS DE HOJE</button>
+                <button id="btnLimpar">🗑️ LIMPAR</button>
+            </div>
+            
+            <div id="mensagem" style="margin-top: 1rem; display: none;"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>PudimFlow - Sistema de Gestão de Produção | Turno da Noite</p>
+    </div>
+
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <span class="light-icon">🌙</span>
+        <span class="dark-icon">☀️</span>
+    </div>
+
+    <script>
+        // Elementos
+        const bpfLimpeza = document.getElementById('bpfLimpeza');
+        const bpfEPI = document.getElementById('bpfEPI');
+        const bpfTemperatura = document.getElementById('bpfTemperatura');
+        const bpfData = document.getElementById('bpfData');
+        const bpfPeso = document.getElementById('bpfPeso');
+        const bpfObservacao = document.getElementById('bpfObservacao');
+        const falhas = document.getElementById('falhas');
+        const reclamacoes = document.getElementById('reclamacoes');
+
+        // Verificar se todos os BPF estão marcados
+        function todosBPFOK() {
+            return bpfLimpeza.checked && bpfEPI.checked && bpfTemperatura.checked && bpfData.checked && bpfPeso.checked;
+        }
+
+        // Salvar qualidade
+        document.getElementById('btnSalvar').addEventListener('click', async () => {
+            const dados = {
+                bpfOk: todosBPFOK(),
+                bpfObservacao: bpfObservacao.value || '',
+                falhas: falhas.value || '',
+                reclamacoes: reclamacoes.value || ''
+            };
+            
+            // Primeiro, buscar produção existente hoje para atualizar
+            const btn = document.getElementById('btnSalvar');
+            const msgDiv = document.getElementById('mensagem');
+            
+            btn.disabled = true;
+            btn.innerHTML = '💾 SALVANDO...';
+            msgDiv.style.display = 'block';
+            msgDiv.className = 'alert alert-info';
+            msgDiv.innerHTML = 'Salvando dados de qualidade...';
+            
+            try {
+                // Buscar produção de hoje
+                const responseGet = await fetch('/api/producao/hoje');
+                const resultGet = await responseGet.json();
+                
+                let producaoExistente = {};
+                if (resultGet.success && resultGet.data && resultGet.data.id) {
+                    producaoExistente = resultGet.data;
+                }
+                
+                // Dados completos para salvar
+                const dadosCompletos = {
+                    brascopEstantes: producaoExistente.brascopEstantes || 0,
+                    brascopKg: producaoExistente.brascopKg || 0,
+                    brascopParadas: producaoExistente.brascopParadas || '',
+                    brascopPerdas: producaoExistente.brascopPerdas || 0,
+                    seracEstantes: producaoExistente.seracEstantes || 0,
+                    seracKg: producaoExistente.seracKg || 0,
+                    seracParadas: producaoExistente.seracParadas || '',
+                    seracPerdas: producaoExistente.seracPerdas || 0,
+                    ...dados
+                };
+                
+                const response = await fetch('/api/producao', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dadosCompletos)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    msgDiv.className = 'alert alert-success';
+                    msgDiv.innerHTML = '✅ Dados de qualidade salvos com sucesso!';
+                    setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                msgDiv.className = 'alert alert-danger';
+                msgDiv.innerHTML = '❌ Erro ao salvar: ' + error.message;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '💾 SALVAR QUALIDADE';
+            }
+        });
+        
+        // Carregar dados de hoje
+        document.getElementById('btnCarregar').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/producao/hoje');
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.id) {
+                    const data = result.data;
+                    
+                    bpfLimpeza.checked = data.bpfOk || false;
+                    bpfEPI.checked = data.bpfOk || false;
+                    bpfTemperatura.checked = data.bpfOk || false;
+                    bpfData.checked = data.bpfOk || false;
+                    bpfPeso.checked = data.bpfOk || false;
+                    bpfObservacao.value = data.bpfObservacao || '';
+                    falhas.value = data.falhas || '';
+                    reclamacoes.value = data.reclamacoes || '';
+                    
+                    const msgDiv = document.getElementById('mensagem');
+                    msgDiv.style.display = 'block';
+                    msgDiv.className = 'alert alert-success';
+                    msgDiv.innerHTML = '✅ Dados carregados com sucesso!';
+                    setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+                } else {
+                    // Reset para valores padrão
+                    bpfLimpeza.checked = false;
+                    bpfEPI.checked = false;
+                    bpfTemperatura.checked = false;
+                    bpfData.checked = false;
+                    bpfPeso.checked = false;
+                    bpfObservacao.value = '';
+                    falhas.value = '';
+                    reclamacoes.value = '';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar:', error);
+            }
+        });
+        
+        // Limpar formulário
+        document.getElementById('btnLimpar').addEventListener('click', () => {
+            bpfLimpeza.checked = false;
+            bpfEPI.checked = false;
+            bpfTemperatura.checked = false;
+            bpfData.checked = false;
+            bpfPeso.checked = false;
+            bpfObservacao.value = '';
+            falhas.value = '';
+            reclamacoes.value = '';
+        });
+        
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+        
+        // Carregar dados ao iniciar
+        document.getElementById('btnCarregar').click();
+    </script>
+</body>
+</html>
