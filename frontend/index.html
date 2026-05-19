@@ -6,7 +6,6 @@
     <title>PudimFlow - Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Remove as setinhas dos inputs number */
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none;
@@ -36,24 +35,21 @@
     </nav>
 
     <div class="container">
-        <!-- ALERTA 00:00 -->
         <div class="card" id="alertaMeiaNoite" style="background: linear-gradient(135deg, #f56565, #c0392b); color: white; text-align: center;">
             <h2 id="tempoRestante">⏰ Calculando...</h2>
-            <p>⚠️ Planeje as etiquetas antes da meia-noite!</p>
+            <p>⚠️ Planeje as etiquetas antes da meia-noite</p>
         </div>
 
-        <!-- PRODUTO E META DO DIA -->
         <div class="card">
             <h2>📅 Programação de Hoje</h2>
             <p><strong>Produto:</strong> <span id="produtoHoje">-</span></p>
-            <p><strong>Meta (kg):</strong> <span id="metaKgHoje">0</span></p>
-            <p><strong>Meta Brascop (estantes):</strong> <span id="metaEstantesBrascop">0</span></p>
-            <p><strong>Meta Serac (estantes):</strong> <span id="metaEstantesSerac">0</span></p>
+            <p><strong>Meta kg:</strong> <span id="metaKgHoje">0</span></p>
+            <p><strong>Meta Brascop estantes:</strong> <span id="metaEstantesBrascop">0</span></p>
+            <p><strong>Meta Serac estantes:</strong> <span id="metaEstantesSerac">0</span></p>
             <p><strong>Data de validade:</strong> <span id="dataValidade">-</span></p>
             <p><strong>Peso massa:</strong> <span id="pesoMassa">-</span> g | <strong>Peso calda:</strong> <span id="pesoCalda">-</span> g</p>
         </div>
 
-        <!-- CHECKLIST PERSONALIZADO -->
         <div class="card">
             <h2>📋 Meu Checklist</h2>
             <div id="checklistPersonalizado"></div>
@@ -63,37 +59,34 @@
             </div>
         </div>
 
-        <!-- BRASCOP ENVASE -->
         <div class="card">
-            <h2>🏭 Brascop - Envase (estantes)</h2>
+            <h2>🏭 Brascop - Envase</h2>
             <p><small>1 estante = 896 copos = 89,6 kg</small></p>
             <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                <div><label>3º turno (ontem):</label> <input type="number" id="brascop3_ontem" class="faltante-input" value="0"></div>
-                <div><label>1º turno (antes):</label> <input type="number" id="brascop1_antes" class="faltante-input" value="0"></div>
-                <div><label>2º turno (você):</label> <input type="number" id="brascop2_voce" class="faltante-input" value="0"></div>
-                <div><label>3º turno (finalização):</label> <input type="number" id="brascop3_final" class="faltante-input" value="0"></div>
+                <div><label>3º turno ontem:</label> <input type="number" id="brascop3_ontem" class="faltante-input" value="0"></div>
+                <div><label>1º turno antes:</label> <input type="number" id="brascop1_antes" class="faltante-input" value="0"></div>
+                <div><label>2º turno você:</label> <input type="number" id="brascop2_voce" class="faltante-input" value="0"></div>
+                <div><label>3º turno finalização:</label> <input type="number" id="brascop3_final" class="faltante-input" value="0"></div>
             </div>
             <p><strong>Total produzido:</strong> <span id="brascopTotal">0</span> estantes</p>
             <p><strong>Meta:</strong> <span id="brascopMeta">0</span> estantes</p>
             <p><strong>⚠️ Falta:</strong> <span id="brascopFalta">0</span> estantes</p>
         </div>
 
-        <!-- SERAC ENVASE -->
         <div class="card">
-            <h2>🏭 Serac - Envase (estantes)</h2>
+            <h2>🏭 Serac - Envase</h2>
             <p><small>1 estante = 2040 copos = 204 kg</small></p>
             <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                <div><label>3º turno (ontem):</label> <input type="number" id="serac3_ontem" class="faltante-input" value="0"></div>
-                <div><label>1º turno (antes):</label> <input type="number" id="serac1_antes" class="faltante-input" value="0"></div>
-                <div><label>2º turno (você):</label> <input type="number" id="serac2_voce" class="faltante-input" value="0"></div>
-                <div><label>3º turno (finalização):</label> <input type="number" id="serac3_final" class="faltante-input" value="0"></div>
+                <div><label>3º turno ontem:</label> <input type="number" id="serac3_ontem" class="faltante-input" value="0"></div>
+                <div><label>1º turno antes:</label> <input type="number" id="serac1_antes" class="faltante-input" value="0"></div>
+                <div><label>2º turno você:</label> <input type="number" id="serac2_voce" class="faltante-input" value="0"></div>
+                <div><label>3º turno finalização:</label> <input type="number" id="serac3_final" class="faltante-input" value="0"></div>
             </div>
             <p><strong>Total produzido:</strong> <span id="seracTotal">0</span> estantes</p>
             <p><strong>Meta:</strong> <span id="seracMeta">0</span> estantes</p>
             <p><strong>⚠️ Falta:</strong> <span id="seracFalta">0</span> estantes</p>
         </div>
 
-        <!-- RESSELAGEM BRASCOP -->
         <div class="card">
             <h2>🔁 Resselagem Brascop</h2>
             <label>Estantes faltando para resselar:</label>
@@ -101,25 +94,24 @@
             <button id="calcBrascop" style="margin-top: 8px;">Calcular etiquetas</button>
             <div id="brascopEtiquetas" class="etiqueta-resultado">Calcule para ver as etiquetas</div>
             <div class="personalizar-palete">
-                <label>Último palete (caixas):</label>
+                <label>Último palete caixas:</label>
                 <input type="number" id="brascopPersonalizar" placeholder="automático">
             </div>
         </div>
 
-        <!-- RESSELAGEM SERAC -->
         <div class="card">
             <h2>🔁 Resselagem Serac</h2>
             <label>Tipo:</label>
             <select id="seracTipo">
-                <option value="padrao">Padrão (242 caixas x 20 copos)</option>
-                <option value="itambe">Itambé (352 caixas x 15 copos)</option>
+                <option value="padrao">Padrão 242 caixas x 20 copos</option>
+                <option value="itambe">Itambé 352 caixas x 15 copos</option>
             </select>
-            <label>Estantes faltando:</label>
+            <label>Estantes faltando para resselar:</label>
             <input type="number" id="seracRess" value="0" style="width: 120px;">
             <button id="calcSerac" style="margin-top: 8px;">Calcular etiquetas</button>
             <div id="seracEtiquetas" class="etiqueta-resultado">Calcule para ver as etiquetas</div>
             <div class="personalizar-palete">
-                <label>Último palete (caixas):</label>
+                <label>Último palete caixas:</label>
                 <input type="number" id="seracPersonalizar" placeholder="automático">
             </div>
         </div>
@@ -132,7 +124,6 @@
     <div class="dark-mode-toggle" onclick="document.body.classList.toggle('dark-mode')">🌓</div>
 
     <script>
-        // PROGRAMAÇÃO SEMANAL REAL (baseada na sua planilha)
         const programacaoSemanal = {
             "Segunda-feira": { produto: "Pudim Leite Batavo", metaKg: 9000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
             "Terça-feira": { produto: "Pudim Leite Batavo", metaKg: 9000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
@@ -158,7 +149,7 @@
             document.getElementById("produtoHoje").innerText = prog.produto;
             document.getElementById("metaKgHoje").innerText = prog.metaKg;
             const metaEstBrascop = Math.ceil(prog.metaKg / capacidadeBrascop);
-            const metaEstSerac = Math.ceil(prog.metaKg / capacidadeSerac);
+            const metaEstSerac = Math.floor(prog.metaKg / capacidadeSerac);
             document.getElementById("metaEstantesBrascop").innerText = metaEstBrascop;
             document.getElementById("metaEstantesSerac").innerText = metaEstSerac;
             document.getElementById("brascopMeta").innerText = metaEstBrascop;
@@ -236,7 +227,6 @@
             document.getElementById("tempoRestante").innerHTML = `⏰ ${horas}h ${minutos}min para meia-noite`;
         }
 
-        // CHECKLIST PERSONALIZADO
         let tarefas = JSON.parse(localStorage.getItem("tarefas") || "[]");
         function renderTarefas() {
             const div = document.getElementById("checklistPersonalizado");
@@ -266,7 +256,6 @@
             }
         };
 
-        // EVENTOS
         document.getElementById("brascop3_ontem").oninput = atualizarFaltante;
         document.getElementById("brascop1_antes").oninput = atualizarFaltante;
         document.getElementById("brascop2_voce").oninput = atualizarFaltante;
