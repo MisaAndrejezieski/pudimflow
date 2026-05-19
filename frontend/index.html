@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>PudimFlow - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🍮 PudimFlow</h1>
+        <div class="turno" id="turnoInfo">Turno da Noite - Misa</div>
+    </div>
+
+    <nav class="nav">
+        <a href="index.html" class="active">📊 Dashboard</a>
+        <a href="producao.html">🏭 Produção</a>
+        <a href="qualidade.html">✅ Qualidade</a>
+        <a href="seguranca.html">🛡️ Segurança</a>
+        <a href="sim.html">💡 SIM</a>
+        <a href="relatorios.html">📈 Relatórios</a>
+    </nav>
+
+    <div class="container">
+        <!-- Cards de resumo -->
+        <div class="dashboard-cards">
+            <div class="dashboard-card">
+                <div class="numero" id="totalEstantes">0</div>
+                <div class="label">Estantes produzidas</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="numero" id="totalKg">0</div>
+                <div class="label">Quilogramas</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="numero" id="totalPerdas">0</div>
+                <div class="label">Perdas (copos)</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="numero" id="eficiencia">0%</div>
+                <div class="label">Eficiência</div>
+            </div>
+        </div>
+
+        <!-- Checklist do Líder -->
+        <div class="card">
+            <h2>📋 Checklist do Líder</h2>
+            <div class="checklist-item">
+                <input type="checkbox" id="checkDSS">
+                <label for="checkDSS">DSS - Diálogo de Segurança realizado</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="checkBPF">
+                <label for="checkBPF">BPF - Boas Práticas verificado</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="checkProducao">
+                <label for="checkProducao">Produção registrada</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="checkEquipe">
+                <label for="checkEquipe">Equipe completa e treinada</label>
+            </div>
+        </div>
+
+        <!-- Produção Resumida -->
+        <div class="card">
+            <h2>🏭 Produção do Turno</h2>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <div><strong>Brascop:</strong> <span id="resumoBrascopEstantes">0</span> est | <span id="resumoBrascopKg">0</span> kg</div>
+                <div><strong>Serac:</strong> <span id="resumoSeracEstantes">0</span> est | <span id="resumoSeracKg">0</span> kg</div>
+            </div>
+            <div style="background: var(--bg-primary); border-radius: 8px; height: 20px; margin-bottom: 0.5rem;">
+                <div id="progressoBar" style="background: var(--success); width: 0%; height: 20px; border-radius: 8px; transition: width 0.3s;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Progresso da meta diária</span>
+                <span id="progressoPercentual">0%</span>
+            </div>
+        </div>
+
+        <!-- Pendências -->
+        <div class="card">
+            <h2>⚠️ Pendências</h2>
+            <div id="pendenciasLista">
+                <p style="color: var(--text-secondary);">Nenhuma pendência registrada</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>PudimFlow - Sistema de Gestão de Produção | Turno da Noite</p>
+        <p>Última atualização: <span id="ultimaAtualizacao">-</span></p>
+    </div>
+
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <span class="light-icon">🌙</span>
+        <span class="dark-icon">☀️</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Função para carregar dados no dashboard
+        async function carregarDashboard() {
+            try {
+                const response = await fetch('/api/producao/hoje');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const data = result.data;
+                    
+                    // Atualizar cards
+                    document.getElementById('totalEstantes').textContent = data.totalEstantes || 0;
+                    document.getElementById('totalKg').textContent = (data.totalKg || 0).toLocaleString();
+                    document.getElementById('totalPerdas').textContent = data.totalPerdas || 0;
+                    
+                    // Eficiência (exemplo: meta diária 10.000 kg)
+                    const metaDiaria = 10000;
+                    const eficiencia = ((data.totalKg || 0) / metaDiaria * 100).toFixed(1);
+                    document.getElementById('eficiencia').textContent = `${eficiencia}%`;
+                    
+                    // Resumo por linha
+                    document.getElementById('resumoBrascopEstantes').textContent = data.brascopEstantes || 0;
+                    document.getElementById('resumoBrascopKg').textContent = data.brascopKg || 0;
+                    document.getElementById('resumoSeracEstantes').textContent = data.seracEstantes || 0;
+                    document.getElementById('resumoSeracKg').textContent = data.seracKg || 0;
+                    
+                    // Barra de progresso
+                    const progresso = Math.min(eficiencia, 100);
+                    document.getElementById('progressoBar').style.width = `${progresso}%`;
+                    document.getElementById('progressoPercentual').textContent = `${progresso}%`;
+                    
+                    // Checkboxes (se já foram salvos no banco)
+                    document.getElementById('checkDSS').checked = data.dssRealizado || false;
+                    document.getElementById('checkBPF').checked = data.bpfOk || false;
+                    
+                    // Pendências
+                    const pendencias = [];
+                    if (data.etiquetaVermelha) pendencias.push(`🔴 Etiqueta vermelha: ${data.etiquetaVermelha}`);
+                    if (data.quaseAcidente) pendencias.push(`⚠️ Quase acidente: ${data.quaseAcidente}`);
+                    if (data.verAgirAntes && !data.verAgirDepois) pendencias.push(`👁️ Ver e Agir pendente`);
+                    
+                    const pendenciasDiv = document.getElementById('pendenciasLista');
+                    if (pendencias.length > 0) {
+                        pendenciasDiv.innerHTML = pendencias.map(p => `<p>${p}</p>`).join('');
+                    } else {
+                        pendenciasDiv.innerHTML = '<p style="color: var(--text-secondary);">✅ Nenhuma pendência registrada</p>';
+                    }
+                }
+                
+                document.getElementById('ultimaAtualizacao').textContent = new Date().toLocaleString();
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+            }
+        }
+        
+        // Salvar checklist
+        document.getElementById('checkDSS').addEventListener('change', salvarChecklist);
+        document.getElementById('checkBPF').addEventListener('change', salvarChecklist);
+        
+        async function salvarChecklist() {
+            // Esta função será implementada junto com o salvamento completo
+            console.log('Checklist atualizado');
+        }
+        
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+        
+        // Carregar dados ao iniciar
+        carregarDashboard();
+        setInterval(carregarDashboard, 30000); // Atualizar a cada 30 segundos
+    </script>
+</body>
+</html>
