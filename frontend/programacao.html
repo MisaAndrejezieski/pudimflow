@@ -6,6 +6,13 @@
     <title>PudimFlow - Programação Semanal</title>
     <link rel="stylesheet" href="style.css">
     <style>
+        /* Garantia do destaque verde */
+        .planilha-programacao input.input-preenchido {
+            background: #48bb78 !important;
+            color: white !important;
+            border-color: #38a169 !important;
+            font-weight: bold !important;
+        }
         .planilha-container {
             overflow-x: auto;
         }
@@ -177,7 +184,6 @@
         const API_URL = 'http://localhost:3000/api';
         const dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
 
-        // Dados REAIS da planilha (apenas meta = primeiro número)
         const dadosReaisTrepko = {
             "610100542": ["6000", "", "", "", "", "", ""],
             "610102542": ["", "", "", "4000", "", "", ""],
@@ -216,17 +222,18 @@
 
         function extrairMeta(valor) {
             if (!valor) return 0;
-            // Se tiver formato "6000 - 3000", pega só o primeiro número
-            if (valor.includes('-')) {
-                return parseFloat(valor.split('-')[0].trim()) || 0;
-            }
             return parseFloat(valor) || 0;
         }
 
-        function formatarMeta(valor) {
-            if (!valor) return '';
-            if (typeof valor === 'number') return valor.toString();
-            return valor;
+        function atualizarDestaqueInputs() {
+            const inputs = document.querySelectorAll('.planilha-programacao input[data-dia]');
+            inputs.forEach(input => {
+                if (input.value && input.value.trim() !== '' && parseFloat(input.value) > 0) {
+                    input.classList.add('input-preenchido');
+                } else {
+                    input.classList.remove('input-preenchido');
+                }
+            });
         }
 
         function calcularTotaisLinha(row) {
@@ -255,47 +262,41 @@
         }
 
         function atualizarTodosTotais() {
-            // Totais Trepko
-            for (let i = 0; i < dias.length; i++) {
-                const total = calcularTotalDia('tabelaTrepko', i);
-                const cell = document.getElementById(`totalDiaTrepko_${i}`);
-                if (cell) cell.textContent = total.toLocaleString();
-            }
-            let totalSemanaTrepko = 0;
-            for (let i = 0; i < dias.length; i++) {
-                totalSemanaTrepko += calcularTotalDia('tabelaTrepko', i);
-            }
-            document.getElementById('totalSemanaTrepko').textContent = totalSemanaTrepko.toLocaleString();
-
-            // Totais Serac
-            for (let i = 0; i < dias.length; i++) {
-                const total = calcularTotalDia('tabelaSerac', i);
-                const cell = document.getElementById(`totalDiaSerac_${i}`);
-                if (cell) cell.textContent = total.toLocaleString();
-            }
-            let totalSemanaSerac = 0;
-            for (let i = 0; i < dias.length; i++) {
-                totalSemanaSerac += calcularTotalDia('tabelaSerac', i);
-            }
-            document.getElementById('totalSemanaSerac').textContent = totalSemanaSerac.toLocaleString();
-
-            // Totais Gerais
             for (let i = 0; i < dias.length; i++) {
                 const totalTrepko = calcularTotalDia('tabelaTrepko', i);
+                const cellTrepko = document.getElementById(`totalDiaTrepko_${i}`);
+                if (cellTrepko) cellTrepko.textContent = totalTrepko.toLocaleString();
+                
                 const totalSerac = calcularTotalDia('tabelaSerac', i);
+                const cellSerac = document.getElementById(`totalDiaSerac_${i}`);
+                if (cellSerac) cellSerac.textContent = totalSerac.toLocaleString();
+                
                 const totalGeral = totalTrepko + totalSerac;
-                const cell = document.getElementById(`totalGeralDia_${i}`);
-                if (cell) cell.textContent = totalGeral.toLocaleString();
+                const cellGeral = document.getElementById(`totalGeralDia_${i}`);
+                if (cellGeral) cellGeral.textContent = totalGeral.toLocaleString();
             }
-            const totalGeralSemana = totalSemanaTrepko + totalSemanaSerac;
-            document.getElementById('totalGeralSemana').textContent = totalGeralSemana.toLocaleString();
+            
+            let totalSemanaTrepko = 0;
+            let totalSemanaSerac = 0;
+            for (let i = 0; i < dias.length; i++) {
+                totalSemanaTrepko += calcularTotalDia('tabelaTrepko', i);
+                totalSemanaSerac += calcularTotalDia('tabelaSerac', i);
+            }
+            document.getElementById('totalSemanaTrepko').textContent = totalSemanaTrepko.toLocaleString();
+            document.getElementById('totalSemanaSerac').textContent = totalSemanaSerac.toLocaleString();
+            document.getElementById('totalGeralSemana').textContent = (totalSemanaTrepko + totalSemanaSerac).toLocaleString();
         }
 
-        function adicionarEventosInput() {
-            const inputs = document.querySelectorAll('input[data-dia]');
+        function adicionarEventos() {
+            const inputs = document.querySelectorAll('.planilha-programacao input[data-dia]');
             inputs.forEach(input => {
-                input.removeEventListener('input', atualizarTodosTotais);
-                input.addEventListener('input', atualizarTodosTotais);
+                input.removeEventListener('input', function() {});
+                input.addEventListener('input', () => {
+                    const row = input.closest('tr');
+                    if (row) calcularTotaisLinha(row);
+                    atualizarTodosTotais();
+                    atualizarDestaqueInputs();
+                });
             });
         }
 
@@ -314,8 +315,9 @@
                 totalCell.className = 'total-semana';
                 totalCell.textContent = '0';
             });
-            adicionarEventosInput();
+            adicionarEventos();
             atualizarTodosTotais();
+            atualizarDestaqueInputs();
         }
 
         function carregarTabelaSerac(dados = dadosReaisSerac) {
@@ -333,11 +335,12 @@
                 totalCell.className = 'total-semana';
                 totalCell.textContent = '0';
             });
-            adicionarEventosInput();
+            adicionarEventos();
             atualizarTodosTotais();
+            atualizarDestaqueInputs();
         }
 
-        async function salvarProgramacao() {
+        function salvarProgramacao() {
             const dadosTrepko = {};
             const rowsTrepko = document.querySelectorAll('#corpoTrepko tr');
             rowsTrepko.forEach((row, idx) => {
