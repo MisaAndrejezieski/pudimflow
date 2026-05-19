@@ -47,6 +47,7 @@
             <p><strong>Meta Serac kg:</strong> <span id="metaKgSerac">0</span></p>
             <p><strong>Meta Brascop estantes:</strong> <span id="metaEstantesBrascop">0</span></p>
             <p><strong>Meta Serac estantes:</strong> <span id="metaEstantesSerac">0</span></p>
+            <p><strong>Data de fabricação:</strong> <span id="dataFabricacao">-</span></p>
             <p><strong>Data de validade:</strong> <span id="dataValidade">-</span></p>
             <p><strong>Peso massa:</strong> <span id="pesoMassa">-</span> g | <strong>Peso calda:</strong> <span id="pesoCalda">-</span> g</p>
         </div>
@@ -125,7 +126,6 @@
     <div class="dark-mode-toggle" onclick="document.body.classList.toggle('dark-mode')">🌓</div>
 
     <script>
-        // Programação semanal com metas separadas para Brascop e Serac
         const programacaoSemanal = {
             "Segunda-feira": { produto: "Pudim Leite Batavo", metaKgBrascop: 9000, metaKgSerac: 1000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
             "Terça-feira": { produto: "Pudim Leite Batavo", metaKgBrascop: 9000, metaKgSerac: 1000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
@@ -162,9 +162,12 @@
             document.getElementById("seracMeta").innerText = metaEstSerac;
             
             const hoje = new Date();
+            document.getElementById("dataFabricacao").innerText = hoje.toLocaleDateString("pt-BR");
+            
             const dataValidade = new Date();
             dataValidade.setDate(hoje.getDate() + prog.validadeDias);
             document.getElementById("dataValidade").innerText = dataValidade.toLocaleDateString("pt-BR");
+            
             document.getElementById("pesoMassa").innerText = prog.pesoMassa;
             document.getElementById("pesoCalda").innerText = prog.pesoCalda;
         }
