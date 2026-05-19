@@ -185,7 +185,7 @@ Misa Andrejezieski
 GitHub: @MisaAndrejezieski
 
 📄 Licença
-Este projeto é de uso interno da Lactalis (Unidade de Pudins).
+Este projeto é de uso pessoal.
 
 
 📞 Suporte
