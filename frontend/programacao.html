@@ -6,50 +6,62 @@
     <title>PudimFlow - Programação Semanal</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .tabela-programacao {
+        .planilha-container {
+            overflow-x: auto;
+        }
+        .planilha-programacao {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
+            min-width: 800px;
         }
-        .tabela-programacao th,
-        .tabela-programacao td {
+        .planilha-programacao th,
+        .planilha-programacao td {
             border: 1px solid var(--border);
-            padding: 8px;
-            vertical-align: top;
+            padding: 6px 4px;
+            text-align: center;
+            vertical-align: middle;
         }
-        .tabela-programacao th {
+        .planilha-programacao th {
             background: var(--primary);
             color: white;
-            text-align: center;
+            font-weight: bold;
         }
-        .tabela-programacao input,
-        .tabela-programacao select {
-            width: 100%;
-            padding: 6px;
+        .planilha-programacao input {
+            width: 85px;
+            padding: 4px;
+            text-align: center;
             background: var(--bg-primary);
             border: 1px solid var(--border);
             border-radius: 4px;
             color: var(--text-primary);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
-        .tabela-programacao input[type="number"] {
-            text-align: center;
-        }
-        .produto-row {
+        .produto-cell {
+            text-align: left;
+            font-weight: bold;
             background: var(--bg-secondary);
         }
-        .titulo-coluna {
-            font-weight: bold;
-            text-align: center;
+        .total-row {
             background: var(--secondary);
             color: white;
+            font-weight: bold;
+        }
+        .total-row td {
+            background: var(--secondary);
+            color: white;
+        }
+        .maquina-titulo {
+            background: var(--info);
+            color: white;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🍮 PudimFlow - Programação Semanal</h1>
-        <div class="turno">Turno da Noite - Misa</div>
+        <div class="turno">MERCEARIA - Semana 21 (15/05/2026)</div>
     </div>
 
     <nav class="nav">
@@ -62,34 +74,57 @@
         <a href="relatorios.html">🔚 Fechamento</a>
     </nav>
 
-    <div class="container">
+    <div class="container planilha-container">
         <div class="card">
-            <h2>📅 Programação Semanal - MERCEARIA</h2>
-            <p style="margin-bottom: 1rem; font-size: 0.8rem;">Preencha a programação conforme planilha da Semana 21 (15/05/2026)</p>
+            <h2>📊 Programação Semanal - Linha Trepko (Pudins)</h2>
+            <table class="planilha-programacao" id="tabelaTrepko">
+                <thead>
+                    <tr id="headerTrepko">
+                        <th>Produto / Código</th>
+                        <th>Segunda</th>
+                        <th>Terça</th>
+                        <th>Quarta</th>
+                        <th>Quinta</th>
+                        <th>Sexta</th>
+                        <th>Sábado</th>
+                        <th>Domingo</th>
+                        <th>Total Semana</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTrepko">
+                    <!-- Linhas serão preenchidas via JavaScript -->
+                </tbody>
+            </table>
+        </div>
 
-            <div style="overflow-x: auto;">
-                <table class="tabela-programacao" id="tabelaProgramacao">
-                    <thead>
-                        <tr>
-                            <th style="width: 100px;">Dia</th>
-                            <th>Produto Brascop</th>
-                            <th>Meta Brascop (kg)</th>
-                            <th>Produto Serac</th>
-                            <th>Meta Serac (kg)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="corpoTabela">
-                        <!-- Dias serão preenchidos via JavaScript -->
-                    </tbody>
-                </table>
-            </div>
+        <div class="card" style="margin-top: 1.5rem;">
+            <h2>📊 Programação Semanal - Linha Serac (Pudins)</h2>
+            <table class="planilha-programacao" id="tabelaSerac">
+                <thead>
+                    <tr id="headerSerac">
+                        <th>Produto / Código</th>
+                        <th>Segunda</th>
+                        <th>Terça</th>
+                        <th>Quarta</th>
+                        <th>Quinta</th>
+                        <th>Sexta</th>
+                        <th>Sábado</th>
+                        <th>Domingo</th>
+                        <th>Total Semana</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoSerac">
+                    <!-- Linhas serão preenchidas via JavaScript -->
+                </tbody>
+            </table>
+        </div>
 
-            <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+        <div class="card" style="margin-top: 1.5rem;">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                 <button id="btnSalvar" style="background: var(--success);">💾 SALVAR PROGRAMAÇÃO</button>
                 <button id="btnCarregar">📂 CARREGAR PROGRAMAÇÃO</button>
                 <button id="btnAplicarHoje">📆 APLICAR PROGRAMAÇÃO DE HOJE</button>
             </div>
-
             <div id="mensagem" style="margin-top: 1rem; display: none;"></div>
         </div>
     </div>
@@ -103,209 +138,214 @@
     <script>
         const API_URL = 'http://localhost:3000/api';
 
-        const diasSemana = [
-            "Segunda-feira", "Terça-feira", "Quarta-feira", 
-            "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"
+        const dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
+
+        // Dados da planilha Trepko (conforme sua imagem)
+        const produtosTrepko = [
+            { codigo: "610100542", nome: "SOB BRIGADEIRA CHOCO BATAVO 180g" },
+            { codigo: "610102542", nome: "SOB MANJAR COCO BATAVO CX10 180G CB" },
+            { codigo: "610103542", nome: "SOB ROMEU E JULIETA ITAMBE CX10 180G" },
+            { codigo: "610101551", nome: "SOB BEIJINHO CHANDELLE CX20 90G CBI" },
+            { codigo: "610102551", nome: "SOB BRIG MORANGO CHANDELLE CX20 90G" },
+            { codigo: "610100551", nome: "SOB BRIGADEIRA CHANDELLE 180G" },
+            { codigo: "610101542", nome: "SOB BRIGADEIRA ITAMBE 180G" },
+            { codigo: "610101544", nome: "SOB PUDIM LEITE ITAMBE 200G" },
+            { codigo: "610104544", nome: "SOB PUDIM LEITE BATAVO 200G" },
+            { codigo: "610100550", nome: "SOB PUDIM LEITE CHANDELLE 200G" }
         ];
 
-        const produtos = [
-            "Pudim Leite Batavo",
-            "Pudim Leite Itambé",
-            "Pudim Leite Chandelle",
-            "Brigadeiro Batavo",
-            "Brigadeiro Itambé",
-            "Brigadeiro Chandelle",
-            "Beijinho Chandelle",
-            "Manjar Coco Batavo",
-            "Romeu e Julieta Itambé"
+        const produtosSerac = [
+            { codigo: "610100544", nome: "SOB PUDIM LEITE BATAVO 200G" },
+            { codigo: "610102496", nome: "PUDIM LEITE COND ITAMBE 100G" }
         ];
 
-        function gerarSelectProduto(nomeCampo, valorAtual) {
-            let html = `<select id="${nomeCampo}" class="produto-select">`;
-            html += `<option value="">Selecione...</option>`;
-            produtos.forEach(p => {
-                const selected = (p === valorAtual) ? 'selected' : '';
-                html += `<option value="${p}" ${selected}>${p}</option>`;
-            });
-            html += `</select>`;
+        function gerarLinha(produto, linhaId, valoresSalvos = {}) {
+            let html = `<tr id="${linhaId}">`;
+            html += `<td class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small></td>`;
+            
+            for (let i = 0; i < dias.length; i++) {
+                const valor = valoresSalvos[dias[i]] || '';
+                html += `<td><input type="text" class="meta-input-${linhaId}" data-dia="${dias[i]}" value="${valor}" placeholder="0 - 0"></td>`;
+            }
+            
+            // Total da semana (calculado automaticamente)
+            html += `<td class="total-semana-${linhaId}">0</td>`;
+            html += `</tr>`;
             return html;
         }
 
-        function carregarFormulario(programacaoSalva = []) {
-            const tbody = document.getElementById('corpoTabela');
-            tbody.innerHTML = '';
+        function calcularTotaisLinha(linhaId) {
+            let total = 0;
+            for (let i = 0; i < dias.length; i++) {
+                const input = document.querySelector(`#${linhaId} input[data-dia="${dias[i]}"]`);
+                if (input && input.value) {
+                    const meta = parseFloat(input.value.split('-')[0].trim()) || 0;
+                    total += meta;
+                }
+            }
+            const totalCell = document.querySelector(`#${linhaId} .total-semana-${linhaId}`);
+            if (totalCell) totalCell.textContent = total.toLocaleString();
+            return total;
+        }
 
-            diasSemana.forEach((dia, idx) => {
-                const salvo = programacaoSalva.find(p => p.dia === dia) || {};
-                const row = tbody.insertRow();
-
-                // Dia
-                const cellDia = row.insertCell(0);
-                cellDia.innerHTML = `<strong>${dia}</strong>`;
-                cellDia.style.backgroundColor = 'var(--bg-secondary)';
-                cellDia.style.textAlign = 'center';
-
-                // Produto Brascop
-                const cellProdBrascop = row.insertCell(1);
-                cellProdBrascop.innerHTML = gerarSelectProduto(`produto_brascop_${idx}`, salvo.produtoBrascop || '');
-
-                // Meta Brascop
-                const cellMetaBrascop = row.insertCell(2);
-                cellMetaBrascop.innerHTML = `<input type="number" id="meta_brascop_${idx}" class="meta-input" value="${salvo.metaBrascop || 0}" step="500" style="text-align: center;">`;
-
-                // Produto Serac
-                const cellProdSerac = row.insertCell(3);
-                cellProdSerac.innerHTML = gerarSelectProduto(`produto_serac_${idx}`, salvo.produtoSerac || '');
-
-                // Meta Serac
-                const cellMetaSerac = row.insertCell(4);
-                cellMetaSerac.innerHTML = `<input type="number" id="meta_serac_${idx}" class="meta-input" value="${salvo.metaSerac || 0}" step="100" style="text-align: center;">`;
+        function calcularTotaisTabela(tabelaId, corpoId) {
+            let totalGeral = 0;
+            const rows = document.querySelectorAll(`#${corpoId} tr`);
+            rows.forEach(row => {
+                const linhaId = row.id;
+                if (linhaId) {
+                    const total = calcularTotaisLinha(linhaId);
+                    totalGeral += total;
+                }
             });
+            return totalGeral;
+        }
+
+        function carregarTabelaTrepko(dadosSalvos = {}) {
+            const tbody = document.getElementById('corpoTrepko');
+            tbody.innerHTML = '';
+            produtosTrepko.forEach((produto, idx) => {
+                const linhaId = `trepko_${idx}`;
+                const valores = dadosSalvos[produto.codigo] || {};
+                tbody.innerHTML += gerarLinha(produto, linhaId, valores);
+            });
+            
+            // Linha de total
+            tbody.innerHTML += `<tr class="total-row" id="totalTrepkoRow">
+                <td><strong>TOTAL LINHA TREPKO PUDIM</strong></td>
+                ${dias.map(() => `<td id="totalDiaTrepko">-</td>`).join('')}
+                <td id="totalSemanaTrepko">0</td>
+            </tr>`;
+            
+            // Calcular totais
+            calcularTotaisTabela('tabelaTrepko', 'corpoTrepko');
+        }
+
+        function carregarTabelaSerac(dadosSalvos = {}) {
+            const tbody = document.getElementById('corpoSerac');
+            tbody.innerHTML = '';
+            produtosSerac.forEach((produto, idx) => {
+                const linhaId = `serac_${idx}`;
+                const valores = dadosSalvos[produto.codigo] || {};
+                tbody.innerHTML += gerarLinha(produto, linhaId, valores);
+            });
+            
+            tbody.innerHTML += `<tr class="total-row" id="totalSeracRow">
+                <td><strong>TOTAL LINHA SERAC PUDIM</strong></td>
+                ${dias.map(() => `<td id="totalDiaSerac">-</td>`).join('')}
+                <td id="totalSemanaSerac">0</td>
+            </tr>`;
+            
+            calcularTotaisTabela('tabelaSerac', 'corpoSerac');
         }
 
         async function salvarProgramacao() {
-            const programacao = [];
-
-            for (let i = 0; i < diasSemana.length; i++) {
-                const produtoBrascop = document.getElementById(`produto_brascop_${i}`)?.value || '';
-                const metaBrascop = parseFloat(document.getElementById(`meta_brascop_${i}`)?.value) || 0;
-                const produtoSerac = document.getElementById(`produto_serac_${i}`)?.value || '';
-                const metaSerac = parseFloat(document.getElementById(`meta_serac_${i}`)?.value) || 0;
-
-                if (produtoBrascop || produtoSerac || metaBrascop || metaSerac) {
-                    programacao.push({
-                        dia: diasSemana[i],
-                        produtoBrascop,
-                        metaBrascop,
-                        produtoSerac,
-                        metaSerac,
-                        diaSemana: i + 1
-                    });
+            const dados = {
+                trepko: {},
+                serac: {}
+            };
+            
+            // Coletar dados Trepko
+            for (let i = 0; i < produtosTrepko.length; i++) {
+                const linhaId = `trepko_${i}`;
+                const valores = {};
+                for (let j = 0; j < dias.length; j++) {
+                    const input = document.querySelector(`#${linhaId} input[data-dia="${dias[j]}"]`);
+                    if (input && input.value) {
+                        valores[dias[j]] = input.value;
+                    }
                 }
+                dados.trepko[produtosTrepko[i].codigo] = valores;
             }
-
-            if (programacao.length === 0) {
-                alert("Preencha pelo menos um dia da programação");
-                return;
+            
+            // Coletar dados Serac
+            for (let i = 0; i < produtosSerac.length; i++) {
+                const linhaId = `serac_${i}`;
+                const valores = {};
+                for (let j = 0; j < dias.length; j++) {
+                    const input = document.querySelector(`#${linhaId} input[data-dia="${dias[j]}"]`);
+                    if (input && input.value) {
+                        valores[dias[j]] = input.value;
+                    }
+                }
+                dados.serac[produtosSerac[i].codigo] = valores;
             }
-
+            
+            localStorage.setItem('programacao_semanal', JSON.stringify(dados));
+            
             const msgDiv = document.getElementById('mensagem');
             msgDiv.style.display = 'block';
-            msgDiv.className = 'alert alert-info';
-            msgDiv.innerHTML = 'Salvando programação...';
+            msgDiv.className = 'alert alert-success';
+            msgDiv.innerHTML = '✅ Programação salva no navegador! (Backend será implementado depois)';
+            setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+        }
 
-            try {
-                const response = await fetch(`${API_URL}/programacao`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ programacao })
-                });
-                const result = await response.json();
-
-                if (result.success) {
-                    msgDiv.className = 'alert alert-success';
-                    msgDiv.innerHTML = '✅ Programação salva com sucesso!';
-                    setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
-                } else {
-                    throw new Error(result.error);
-                }
-            } catch (error) {
-                msgDiv.className = 'alert alert-danger';
-                msgDiv.innerHTML = '❌ Erro ao salvar: ' + error.message;
+        function carregarProgramacao() {
+            const saved = localStorage.getItem('programacao_semanal');
+            if (saved) {
+                const dados = JSON.parse(saved);
+                carregarTabelaTrepko(dados.trepko || {});
+                carregarTabelaSerac(dados.serac || {});
+            } else {
+                carregarTabelaTrepko({});
+                carregarTabelaSerac({});
             }
         }
 
-        async function carregarProgramacao() {
-            try {
-                const response = await fetch(`${API_URL}/programacao`);
-                const result = await response.json();
-
-                if (result.success && result.data && result.data.length > 0) {
-                    carregarFormulario(result.data);
-                } else {
-                    carregarFormulario([]);
-                }
-            } catch (error) {
-                console.error('Erro ao carregar programação:', error);
-                carregarFormulario([]);
-            }
-        }
-
-        async function aplicarProgramacaoHoje() {
+        function aplicarProgramacaoHoje() {
             const hoje = new Date();
-            const dias = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
-            const diaHoje = dias[hoje.getDay()];
-
-            // Buscar programação salva para hoje
-            const response = await fetch(`${API_URL}/programacao`);
-            const result = await response.json();
-
-            let programacaoHoje = null;
-            if (result.success && result.data) {
-                programacaoHoje = result.data.find(p => p.dia === diaHoje);
-            }
-
-            if (!programacaoHoje || (!programacaoHoje.produtoBrascop && !programacaoHoje.produtoSerac)) {
-                alert(`Não há programação definida para ${diaHoje}. Configure primeiro.`);
+            const diaSemana = dias[hoje.getDay() === 0 ? 6 : hoje.getDay() - 1];
+            
+            // Buscar produção do dia na programação salva
+            const saved = localStorage.getItem('programacao_semanal');
+            if (!saved) {
+                alert('Nenhuma programação salva. Configure a programação primeiro.');
                 return;
             }
-
-            const msgDiv = document.getElementById('mensagem');
-            msgDiv.style.display = 'block';
-            msgDiv.className = 'alert alert-info';
-            msgDiv.innerHTML = `Aplicando programação de ${diaHoje}...`;
-
-            try {
-                const responseGet = await fetch('/api/producao/hoje');
-                const resultGet = await responseGet.json();
-                let producaoExistente = resultGet.success && resultGet.data ? resultGet.data : {};
-
-                const dadosCompletos = {
-                    brascopEstantes: producaoExistente.brascopEstantes || 0,
-                    brascopKg: producaoExistente.brascopKg || 0,
-                    brascopParadas: producaoExistente.brascopParadas || '',
-                    brascopPerdas: producaoExistente.brascopPerdas || 0,
-                    seracEstantes: producaoExistente.seracEstantes || 0,
-                    seracKg: producaoExistente.seracKg || 0,
-                    seracParadas: producaoExistente.seracParadas || '',
-                    seracPerdas: producaoExistente.seracPerdas || 0,
-                    bpfOk: producaoExistente.bpfOk || false,
-                    bpfObservacao: producaoExistente.bpfObservacao || '',
-                    falhas: producaoExistente.falhas || '',
-                    reclamacoes: producaoExistente.reclamacoes || '',
-                    dssRealizado: producaoExistente.dssRealizado || false,
-                    dssTema: producaoExistente.dssTema || '',
-                    quaseAcidente: producaoExistente.quaseAcidente || '',
-                    etiquetaAzul: producaoExistente.etiquetaAzul || '',
-                    etiquetaVermelha: producaoExistente.etiquetaVermelha || '',
-                    etiquetaFechada: producaoExistente.etiquetaFechada || '',
-                    programacaoBrascop: programacaoHoje.produtoBrascop,
-                    programacaoSerac: programacaoHoje.produtoSerac,
-                    metaBrascop: programacaoHoje.metaBrascop,
-                    metaSerac: programacaoHoje.metaSerac,
-                    meta: programacaoHoje.metaBrascop + programacaoHoje.metaSerac
-                };
-
-                const response = await fetch('/api/producao', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dadosCompletos)
-                });
-                const result = await response.json();
-
-                if (result.success) {
-                    msgDiv.className = 'alert alert-success';
-                    msgDiv.innerHTML = `✅ Programação de ${diaHoje} aplicada!<br>
-                        Brascop: ${programacaoHoje.produtoBrascop} (${programacaoHoje.metaBrascop} kg)<br>
-                        Serac: ${programacaoHoje.produtoSerac} (${programacaoHoje.metaSerac} kg)`;
-                    setTimeout(() => { msgDiv.style.display = 'none'; }, 5000);
-                } else {
-                    throw new Error(result.error);
+            
+            const dados = JSON.parse(saved);
+            
+            // Para simplificar, vamos pegar a primeira linha da Trepko que tiver valor para o dia de hoje
+            let metaHoje = 0;
+            let produtoHoje = '';
+            
+            for (const [codigo, valores] of Object.entries(dados.trepko)) {
+                if (valores[diaSemana]) {
+                    const meta = parseFloat(valores[diaSemana].split('-')[0].trim());
+                    if (meta > 0) {
+                        metaHoje = meta;
+                        const produto = produtosTrepko.find(p => p.codigo === codigo);
+                        produtoHoje = produto ? produto.nome : codigo;
+                        break;
+                    }
                 }
-            } catch (error) {
-                msgDiv.className = 'alert alert-danger';
-                msgDiv.innerHTML = '❌ Erro ao aplicar programação: ' + error.message;
             }
+            
+            if (metaHoje === 0) {
+                alert(`Não há programação definida para ${diaSemana}`);
+                return;
+            }
+            
+            // Salvar no backend
+            fetch('/api/producao', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    programacao: produtoHoje,
+                    meta: metaHoje,
+                    metaBrascop: metaHoje,
+                    metaSerac: 1000
+                })
+            }).then(() => {
+                const msgDiv = document.getElementById('mensagem');
+                msgDiv.style.display = 'block';
+                msgDiv.className = 'alert alert-success';
+                msgDiv.innerHTML = `✅ Programação de ${diaSemana} aplicada!<br>Produto: ${produtoHoje}<br>Meta: ${metaHoje} kg`;
+                setTimeout(() => { msgDiv.style.display = 'none'; }, 5000);
+            }).catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao aplicar programação');
+            });
         }
 
         document.getElementById('btnSalvar').addEventListener('click', salvarProgramacao);
