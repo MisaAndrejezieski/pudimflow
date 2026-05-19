@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>PudimFlow - Programação Semanal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🍮 PudimFlow - Programação Semanal</h1>
+        <div class="turno">Planejamento de Produção</div>
+    </div>
+
+    <nav class="nav">
+        <a href="index.html">📊 Dashboard</a>
+        <a href="producao.html">🏭 Produção</a>
+        <a href="qualidade.html">✅ Qualidade</a>
+        <a href="seguranca.html">🛡️ Segurança</a>
+        <a href="sim.html">💡 SIM</a>
+        <a href="programacao.html" class="active">📅 Programação</a>
+        <a href="relatorios.html">📈 Relatórios</a>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h2>📅 Programação Semanal de Produção</h2>
+            <p style="margin-bottom: 1rem;">Defina qual pudim será produzido em cada dia da semana e a meta diária.</p>
+            
+            <div id="programacaoContainer">
+                <!-- Dias serão preenchidos via JavaScript -->
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button id="btnSalvar" style="background: var(--success);">💾 SALVAR PROGRAMAÇÃO</button>
+                <button id="btnCarregar">📂 CARREGAR PROGRAMAÇÃO</button>
+                <button id="btnAplicarHoje">📆 APLICAR PROGRAMAÇÃO DE HOJE</button>
+            </div>
+            
+            <div id="mensagem" style="margin-top: 1rem; display: none;"></div>
+        </div>
+
+        <!-- Resumo da programação atual -->
+        <div class="card">
+            <h2>📊 Resumo da Semana</h2>
+            <div id="resumoProgramacao" style="overflow-x: auto;">
+                <p style="color: var(--text-secondary);">Carregando...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>PudimFlow - Sistema de Gestão de Produção | Turno da Noite</p>
+    </div>
+
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <span class="light-icon">🌙</span>
+        <span class="dark-icon">☀️</span>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        
+        const diasSemana = [
+            'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 
+            'Sexta-feira', 'Sábado', 'Domingo'
+        ];
+        
+        const produtos = [
+            'Pudim Leite Batavo',
+            'Pudim Leite Itambé',
+            'Pudim Leite Chandelle',
+            'Brigadeiro Batavo',
+            'Brigadeiro Itambé',
+            'Brigadeiro Chandelle',
+            'Beijinho Chandelle',
+            'Manjar Coco Batavo',
+            'Romeu e Julieta Itambé'
+        ];
+        
+        let programacaoAtual = [];
+        
+        function carregarFormulario() {
+            const container = document.getElementById('programacaoContainer');
+            container.innerHTML = '';
+            
+            diasSemana.forEach((dia, index) => {
+                const diaDiv = document.createElement('div');
+                diaDiv.className = 'card';
+                diaDiv.style.marginBottom = '1rem';
+                diaDiv.innerHTML = `
+                    <h3>${dia}</h3>
+                    <div class="form-group">
+                        <label>Produto</label>
+                        <select id="produto_${index}" class="produto-select">
+                            <option value="">Selecione...</option>
+                            ${produtos.map(p => `<option value="${p}">${p}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Meta de produção (kg)</label>
+                        <input type="number" id="meta_${index}" class="meta-input" value="10000" step="500">
+                    </div>
+                    <div class="form-group">
+                        <label>Observações</label>
+                        <input type="text" id="obs_${index}" class="obs-input" placeholder="Ex: Troca de turno, manutenção programada...">
+                    </div>
+                `;
+                container.appendChild(diaDiv);
+            });
+        }
+        
+        async function salvarProgramacao() {
+            const programacao = [];
+            for (let i = 0; i < diasSemana.length; i++) {
+                const produto = document.getElementById(`produto_${i}`).value;
+                if (produto) {
+                    programacao.push({
+                        dia: diasSemana[i],
+                        produto: produto,
+                        meta: parseFloat(document.getElementById(`meta_${i}`).value) || 0,
+                        observacao: document.getElementById(`obs_${i}`).value || '',
+                        diaSemana: i + 1
+                    });
+                }
+            }
+            
+            if (programacao.length === 0) {
+                alert('Selecione pelo menos um produto para programar');
+                return;
+            }
+            
+            const msgDiv = document.getElementById('mensagem');
+            msgDiv.style.display = 'block';
+            msgDiv.className = 'alert alert-info';
+            msgDiv.innerHTML = 'Salvando programação...';
+            
+            try {
+                const response = await fetch(`${API_URL}/programacao`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ programacao })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    msgDiv.className = 'alert alert-success';
+                    msgDiv.innerHTML = '✅ Programação salva com sucesso!';
+                    setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+                    carregarProgramacaoSalva();
+                    carregarResumo();
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                msgDiv.className = 'alert alert-danger';
+                msgDiv.innerHTML = '❌ Erro ao salvar: ' + error.message;
+            }
+        }
+        
+        async function carregarProgramacaoSalva() {
+            try {
+                const response = await fetch(`${API_URL}/programacao`);
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    programacaoAtual = result.data;
+                    for (const item of result.data) {
+                        const index = diasSemana.indexOf(item.dia);
+                        if (index !== -1) {
+                            const produtoSelect = document.getElementById(`produto_${index}`);
+                            const metaInput = document.getElementById(`meta_${index}`);
+                            const obsInput = document.getElementById(`obs_${index}`);
+                            if (produtoSelect) produtoSelect.value = item.produto || '';
+                            if (metaInput) metaInput.value = item.meta || 10000;
+                            if (obsInput) obsInput.value = item.observacao || '';
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar programação:', error);
+            }
+        }
+        
+        function carregarResumo() {
+            const resumoDiv = document.getElementById('resumoProgramacao');
+            if (programacaoAtual.length === 0) {
+                resumoDiv.innerHTML = '<p style="color: var(--text-secondary);">Nenhuma programação definida para esta semana.</p>';
+                return;
+            }
+            
+            const hoje = new Date();
+            const diaHoje = diasSemana[hoje.getDay() === 0 ? 6 : hoje.getDay() - 1];
+            
+            let html = '<table style="width: 100%;">';
+            html += '<thead><tr><th>Dia</th><th>Produto</th><th>Meta (kg)</th><th>Status</th><th>Observação</th></tr></thead><tbody>';
+            
+            for (const item of programacaoAtual) {
+                const isHoje = item.dia === diaHoje;
+                const status = isHoje ? '🔵 Hoje' : '⚪';
+                html += `
+                    <tr style="${isHoje ? 'background: var(--primary); color: white;' : ''}">
+                        <td><strong>${item.dia}</strong></td>
+                        <td>${item.produto}</td>
+                        <td>${item.meta.toLocaleString()} kg</td>
+                        <td>${status}</td>
+                        <td>${item.observacao || '-'}</td>
+                    </tr>
+                `;
+            }
+            html += '</tbody></table>';
+            resumoDiv.innerHTML = html;
+        }
+        
+        async function aplicarProgramacaoHoje() {
+            const hoje = new Date();
+            const diaHoje = diasSemana[hoje.getDay() === 0 ? 6 : hoje.getDay() - 1];
+            
+            const programacaoHoje = programacaoAtual.find(p => p.dia === diaHoje);
+            
+            if (!programacaoHoje) {
+                alert(`Não há programação definida para ${diaHoje}. Configure a programação primeiro.`);
+                return;
+            }
+            
+            const msgDiv = document.getElementById('mensagem');
+            msgDiv.style.display = 'block';
+            msgDiv.className = 'alert alert-info';
+            msgDiv.innerHTML = `Aplicando programação de ${diaHoje}: ${programacaoHoje.produto} (${programacaoHoje.meta} kg)...`;
+            
+            try {
+                // Busca produção de hoje para preservar outros dados
+                const responseGet = await fetch('/api/producao/hoje');
+                const resultGet = await responseGet.json();
+                
+                let producaoExistente = {};
+                if (resultGet.success && resultGet.data && resultGet.data.id) {
+                    producaoExistente = resultGet.data;
+                }
+                
+                // Atualiza apenas a programação
+                const dadosCompletos = {
+                    brascopEstantes: producaoExistente.brascopEstantes || 0,
+                    brascopKg: producaoExistente.brascopKg || 0,
+                    brascopParadas: producaoExistente.brascopParadas || '',
+                    brascopPerdas: producaoExistente.brascopPerdas || 0,
+                    seracEstantes: producaoExistente.seracEstantes || 0,
+                    seracKg: producaoExistente.seracKg || 0,
+                    seracParadas: producaoExistente.seracParadas || '',
+                    seracPerdas: producaoExistente.seracPerdas || 0,
+                    bpfOk: producaoExistente.bpfOk || false,
+                    bpfObservacao: producaoExistente.bpfObservacao || '',
+                    falhas: producaoExistente.falhas || '',
+                    reclamacoes: producaoExistente.reclamacoes || '',
+                    dssRealizado: producaoExistente.dssRealizado || false,
+                    dssTema: producaoExistente.dssTema || '',
+                    quaseAcidente: producaoExistente.quaseAcidente || '',
+                    etiquetaAzul: producaoExistente.etiquetaAzul || '',
+                    etiquetaVermelha: producaoExistente.etiquetaVermelha || '',
+                    etiquetaFechada: producaoExistente.etiquetaFechada || '',
+                    programacao: programacaoHoje.produto,
+                    meta: programacaoHoje.meta
+                };
+                
+                const response = await fetch('/api/producao', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dadosCompletos)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    msgDiv.className = 'alert alert-success';
+                    msgDiv.innerHTML = `✅ Programação de ${diaHoje} aplicada! Produto: ${programacaoHoje.produto}, Meta: ${programacaoHoje.meta} kg`;
+                    setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                msgDiv.className = 'alert alert-danger';
+                msgDiv.innerHTML = '❌ Erro ao aplicar programação: ' + error.message;
+            }
+        }
+        
+        document.getElementById('btnSalvar').addEventListener('click', salvarProgramacao);
+        document.getElementById('btnCarregar').addEventListener('click', carregarProgramacaoSalva);
+        document.getElementById('btnAplicarHoje').addEventListener('click', aplicarProgramacaoHoje);
+        
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+        
+        // Inicializar
+        carregarFormulario();
+        carregarProgramacaoSalva();
+        setInterval(() => {
+            carregarProgramacaoSalva();
+            carregarResumo();
+        }, 5000);
+    </script>
+</body>
+</html>
