@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>PudimFlow - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🍮 PudimFlow</h1>
+        <div class="turno" id="turnoInfo">Turno da Noite - Misa</div>
+    </div>
+
+    <nav class="nav">
+        <a href="index.html" class="active">📊 Dashboard</a>
+        <a href="producao.html">🏭 Produção</a>
+        <a href="qualidade.html">✅ Qualidade</a>
+        <a href="seguranca.html">🛡️ Segurança</a>
+        <a href="sim.html">💡 SIM</a>
+        <a href="programacao.html">📅 Programação</a>
+        <a href="relatorios.html">📈 Relatórios</a>
+    </nav>
+
+    <div class="container">
+        <!-- Cards de resumo -->
+        <div class="dashboard-cards">
+            <div class="dashboard-card">
+                <div class="numero" id="totalEstantes">0</div>
+                <div class="label">Estantes produzidas</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="numero" id="totalKg">0</div>
+                <div class="label">Quilogramas</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="numero" id="totalPerdas">0</div>
+                <div class="label">Perdas (copos)</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="numero" id="eficiencia">0%</div>
+                <div class="label">Eficiência</div>
+            </div>
+        </div>
+
+        <!-- Checklist Técnico do Turno -->
+        <div class="card">
+            <h2>📋 Checklist Técnico do Turno</h2>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="checkProduto">
+                <label><strong>Produto definido:</strong> <span id="produtoAtual">-</span></label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="checkData">
+                <label>Data de validade conferida</label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="checkPesoBase">
+                <label>Peso da base (massa) dentro do padrão: <span id="pesoBaseInfo">-</span></label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="checkPesoCalda">
+                <label>Peso da calda dentro do padrão: <span id="pesoCaldaInfo">-</span></label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="checkCopos">
+                <label>Copos disponíveis: <span id="coposNecessarios">0</span> / <span id="coposDisponiveis">0</span></label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="checkTampas">
+                <label>Tampas disponíveis: <span id="tampasNecessarias">0</span> / <span id="tampasDisponiveis">0</span></label>
+            </div>
+            
+            <div class="form-group" style="margin-top: 1rem;">
+                <label>Estoque atual (copos disponíveis):</label>
+                <input type="number" id="estoqueCopos" value="50000" step="1000">
+            </div>
+            <div class="form-group">
+                <label>Estoque atual (tampas disponíveis):</label>
+                <input type="number" id="estoqueTampas" value="50000" step="1000">
+            </div>
+        </div>
+
+        <!-- Produção Resumida -->
+        <div class="card">
+            <h2>🏭 Produção do Turno</h2>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <div><strong>Brascop:</strong> <span id="resumoBrascopEstantes">0</span> est | <span id="resumoBrascopKg">0</span> kg</div>
+                <div><strong>Serac:</strong> <span id="resumoSeracEstantes">0</span> est | <span id="resumoSeracKg">0</span> kg</div>
+            </div>
+            <div style="background: var(--bg-primary); border-radius: 8px; height: 20px; margin-bottom: 0.5rem;">
+                <div id="progressoBar" style="background: var(--success); width: 0%; height: 20px; border-radius: 8px; transition: width 0.3s;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Progresso da meta diária</span>
+                <span id="progressoPercentual">0%</span>
+            </div>
+        </div>
+
+        <!-- Pendências de Segurança -->
+        <div class="card">
+            <h2>🛡️ Pendências de Segurança</h2>
+            <div id="pendenciasSeguranca">
+                <p style="color: var(--text-secondary);">Carregando...</p>
+            </div>
+        </div>
+
+        <!-- Pendências de Qualidade -->
+        <div class="card">
+            <h2>✅ Pendências de Qualidade</h2>
+            <div id="pendenciasQualidade">
+                <p style="color: var(--text-secondary);">Carregando...</p>
+            </div>
+        </div>
+
+        <!-- Pendências de Manutenção (Etiquetas Vermelhas) -->
+        <div class="card">
+            <h2>⚠️ Pendências de Manutenção (Etiquetas Vermelhas)</h2>
+            <div id="pendenciasManutencao">
+                <p style="color: var(--text-secondary);">Carregando...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>PudimFlow - Sistema de Gestão de Produção | Turno da Noite</p>
+        <p>Última atualização: <span id="ultimaAtualizacao">-</span></p>
+    </div>
+
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <span class="light-icon">🌙</span>
+        <span class="dark-icon">☀️</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Configuração de pesos por produto
+        const configProdutos = {
+            'Pudim Leite Batavo': { baseKg: 0.180, caldaKg: 0.020, padrao: 'Batavo: mais calda' },
+            'Pudim Leite Itambé': { baseKg: 0.190, caldaKg: 0.010, padrao: 'Itambé: menos calda' },
+            'Pudim Leite Chandelle': { baseKg: 0.185, caldaKg: 0.015, padrao: 'Chandelle: padrão' },
+            'Brigadeiro Batavo': { baseKg: 0.175, caldaKg: 0.025, padrao: 'Batavo: mais calda' },
+            'Brigadeiro Itambé': { baseKg: 0.185, caldaKg: 0.015, padrao: 'Itambé: padrão' },
+            'Brigadeiro Chandelle': { baseKg: 0.180, caldaKg: 0.020, padrao: 'Chandelle: equilibrado' },
+            'Beijinho Chandelle': { baseKg: 0.170, caldaKg: 0.030, padrao: 'Chandelle: mais calda' },
+            'Manjar Coco Batavo': { baseKg: 0.190, caldaKg: 0.010, padrao: 'Batavo: menos calda' },
+            'Romeu e Julieta Itambé': { baseKg: 0.185, caldaKg: 0.015, padrao: 'Itambé: padrão' }
+        };
+
+        let produtoAtualNome = 'Pudim Leite Batavo';
+        let metaKgHoje = 10000;
+
+        async function carregarDashboard() {
+            try {
+                const response = await fetch('/api/producao/hoje');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const data = result.data;
+                    
+                    document.getElementById('totalEstantes').textContent = data.totalEstantes || 0;
+                    document.getElementById('totalKg').textContent = (data.totalKg || 0).toLocaleString();
+                    document.getElementById('totalPerdas').textContent = data.totalPerdas || 0;
+                    
+                    const eficiencia = ((data.totalKg || 0) / metaKgHoje * 100).toFixed(1);
+                    document.getElementById('eficiencia').textContent = `${eficiencia}%`;
+                    
+                    document.getElementById('resumoBrascopEstantes').textContent = data.brascopEstantes || 0;
+                    document.getElementById('resumoBrascopKg').textContent = data.brascopKg || 0;
+                    document.getElementById('resumoSeracEstantes').textContent = data.seracEstantes || 0;
+                    document.getElementById('resumoSeracKg').textContent = data.seracKg || 0;
+                    
+                    const progresso = Math.min(eficiencia, 100);
+                    document.getElementById('progressoBar').style.width = `${progresso}%`;
+                    document.getElementById('progressoPercentual').textContent = `${progresso}%`;
+                    
+                    // Pendências de Segurança
+                    const segurancaDiv = document.getElementById('pendenciasSeguranca');
+                    const segPendencias = [];
+                    if (!data.dssRealizado) segPendencias.push('⚠️ DSS não realizado hoje');
+                    if (data.quaseAcidente) segPendencias.push(`⚠️ Quase acidente registrado: ${data.quaseAcidente}`);
+                    if (segPendencias.length === 0) {
+                        segurancaDiv.innerHTML = '<p style="color: var(--text-secondary);">✅ Nenhuma pendência de segurança.</p>';
+                    } else {
+                        segurancaDiv.innerHTML = segPendencias.map(p => `<p>${p}</p>`).join('');
+                    }
+                    
+                    // Pendências de Qualidade
+                    const qualidadeDiv = document.getElementById('pendenciasQualidade');
+                    const qualPendencias = [];
+                    if (!data.bpfOk) qualPendencias.push('⚠️ BPF não verificado');
+                    if (data.falhas && data.falhas.trim() !== '') qualPendencias.push(`⚠️ Falhas registradas: ${data.falhas}`);
+                    if (data.reclamacoes && data.reclamacoes.trim() !== '') qualPendencias.push(`📢 Reclamações: ${data.reclamacoes}`);
+                    if (qualPendencias.length === 0) {
+                        qualidadeDiv.innerHTML = '<p style="color: var(--text-secondary);">✅ Nenhuma pendência de qualidade.</p>';
+                    } else {
+                        qualidadeDiv.innerHTML = qualPendencias.map(p => `<p>${p}</p>`).join('');
+                    }
+                    
+                    // Pendências de Manutenção (apenas etiquetas vermelhas)
+                    const manutencaoDiv = document.getElementById('pendenciasManutencao');
+                    if (data.etiquetaVermelha && data.etiquetaVermelha.trim() !== '') {
+                        manutencaoDiv.innerHTML = `<p>🔴 ${data.etiquetaVermelha}</p>`;
+                    } else {
+                        manutencaoDiv.innerHTML = '<p style="color: var(--text-secondary);">✅ Nenhuma etiqueta vermelha em aberto.</p>';
+                    }
+                    
+                    // Programação (se existir)
+                    if (data.programacao) {
+                        produtoAtualNome = data.programacao;
+                        metaKgHoje = data.meta || 10000;
+                    }
+                }
+                
+                // Atualiza checklist técnico
+                const estoqueCopos = parseInt(document.getElementById('estoqueCopos').value) || 0;
+                const estoqueTampas = parseInt(document.getElementById('estoqueTampas').value) || 0;
+                
+                const pesoPorUnidade = 0.100;
+                const coposNecessarios = Math.ceil(metaKgHoje / pesoPorUnidade);
+                
+                document.getElementById('produtoAtual').textContent = produtoAtualNome;
+                document.getElementById('coposNecessarios').textContent = coposNecessarios.toLocaleString();
+                document.getElementById('coposDisponiveis').textContent = estoqueCopos.toLocaleString();
+                document.getElementById('tampasNecessarias').textContent = coposNecessarios.toLocaleString();
+                document.getElementById('tampasDisponiveis').textContent = estoqueTampas.toLocaleString();
+                
+                const config = configProdutos[produtoAtualNome] || configProdutos['Pudim Leite Batavo'];
+                document.getElementById('pesoBaseInfo').textContent = `${config.baseKg} kg (${config.padrao})`;
+                document.getElementById('pesoCaldaInfo').textContent = `${config.caldaKg} kg`;
+                
+                document.getElementById('checkCopos').checked = estoqueCopos >= coposNecessarios;
+                document.getElementById('checkTampas').checked = estoqueTampas >= coposNecessarios;
+                
+                document.getElementById('ultimaAtualizacao').textContent = new Date().toLocaleString();
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+            }
+        }
+
+        function salvarChecklist() {
+            const dados = {
+                produtoOk: document.getElementById('checkProduto').checked,
+                dataOk: document.getElementById('checkData').checked,
+                pesoBaseOk: document.getElementById('checkPesoBase').checked,
+                pesoCaldaOk: document.getElementById('checkPesoCalda').checked,
+                coposOk: document.getElementById('checkCopos').checked,
+                tampasOk: document.getElementById('checkTampas').checked
+            };
+            console.log('Checklist salvo:', dados);
+        }
+
+        document.getElementById('checkProduto').addEventListener('change', salvarChecklist);
+        document.getElementById('checkData').addEventListener('change', salvarChecklist);
+        document.getElementById('checkPesoBase').addEventListener('change', salvarChecklist);
+        document.getElementById('checkPesoCalda').addEventListener('change', salvarChecklist);
+        document.getElementById('checkCopos').addEventListener('change', salvarChecklist);
+        document.getElementById('checkTampas').addEventListener('change', salvarChecklist);
+        document.getElementById('estoqueCopos').addEventListener('input', () => carregarDashboard());
+        document.getElementById('estoqueTampas').addEventListener('input', () => carregarDashboard());
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        carregarDashboard();
+        setInterval(carregarDashboard, 30000);
+    </script>
+</body>
+</html>
