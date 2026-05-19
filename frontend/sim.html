@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>PudimFlow - SIM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🍮 PudimFlow - SIM</h1>
+        <div class="turno">Sistema de Ideias e Melhorias</div>
+    </div>
+
+    <nav class="nav">
+        <a href="index.html">📊 Dashboard</a>
+        <a href="producao.html">🏭 Produção</a>
+        <a href="qualidade.html">✅ Qualidade</a>
+        <a href="seguranca.html">🛡️ Segurança</a>
+        <a href="sim.html" class="active">💡 SIM</a>
+        <a href="relatorios.html">📈 Relatórios</a>
+    </nav>
+
+    <div class="container">
+        <!-- ETIQUETA AZUL (resolvido pela equipe) -->
+        <div class="card">
+            <h2>🔵 Etiqueta Azul</h2>
+            <p style="margin-bottom: 1rem; font-size: 0.875rem;">Problemas resolvidos pela própria equipe (limpeza, organização, pequenas manutenções)</p>
+            
+            <div class="form-group">
+                <label>Nova etiqueta azul aberta hoje?</label>
+                <textarea id="etiquetaAzul" rows="3" placeholder="Ex: João organizou as ferramentas da esteira&#10;Maria fez limpeza do pré-forno&#10;Carlos fez pequena solda no carrinho"></textarea>
+            </div>
+        </div>
+
+        <!-- ETIQUETA VERMELHA (manutenção necessária) -->
+        <div class="card">
+            <h2>🔴 Etiqueta Vermelha</h2>
+            <p style="margin-bottom: 1rem; font-size: 0.875rem;">Problemas que precisam de manutenção (mecânica, elétrica, civil)</p>
+            
+            <div class="form-group">
+                <label>Nova etiqueta vermelha aberta hoje?</label>
+                <textarea id="etiquetaVermelha" rows="3" placeholder="Ex: Forno 7 com aquecimento irregular&#10;Esteira com ruído estranho&#10;Vazamento na tubulação"></textarea>
+            </div>
+        </div>
+
+        <!-- ETIQUETA FECHADA -->
+        <div class="card">
+            <h2>🔵🔴 Etiquetas Fechadas Hoje</h2>
+            <p style="margin-bottom: 1rem; font-size: 0.875rem;">Registrar etiquetas que foram resolvidas neste turno</p>
+            
+            <div class="form-group">
+                <label>Etiquetas concluídas hoje</label>
+                <textarea id="etiquetaFechada" rows="3" placeholder="Ex: Vazamento na tubulação - resolvido&#10;Troca de lâmpada - concluído"></textarea>
+            </div>
+        </div>
+
+        <!-- VER E AGIR -->
+        <div class="card">
+            <h2>👁️ Ver e Agir</h2>
+            <p style="margin-bottom: 1rem; font-size: 0.875rem;">Ir ao local, ver o problema, agir, documentar</p>
+            
+            <div class="form-group">
+                <label>ANTES (como era / qual o problema)</label>
+                <textarea id="verAgirAntes" rows="3" placeholder="Descreva a situação antes da ação..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>DEPOIS (como deve ser / o que foi feito)</label>
+                <textarea id="verAgirDepois" rows="3" placeholder="Descreva a solução aplicada e o estado atual..."></textarea>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="verAgirConcluido">
+                <label>Ver e Agir concluído</label>
+            </div>
+        </div>
+
+        <!-- RESUMO DO SIM -->
+        <div class="card">
+            <h2>📊 Resumo do SIM no Turno</h2>
+            <div style="background: var(--bg-primary); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <p><strong>Etiquetas Abertas:</strong> <span id="resumoAbertas">0</span> (🔵 <span id="resumoAzul">0</span> + 🔴 <span id="resumoVermelha">0</span>)</p>
+                <p><strong>Etiquetas Fechadas:</strong> <span id="resumoFechadas">0</span></p>
+                <p><strong>Ver e Agir:</strong> <span id="resumoVerAgir">Pendente</span></p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button id="btnSalvar" style="background: var(--success);">💾 SALVAR SIM</button>
+                <button id="btnCarregar">📂 CARREGAR DADOS DE HOJE</button>
+                <button id="btnLimpar">🗑️ LIMPAR</button>
+            </div>
+            
+            <div id="mensagem" style="margin-top: 1rem; display: none;"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>PudimFlow - Sistema de Gestão de Produção | Turno da Noite</p>
+    </div>
+
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <span class="light-icon">🌙</span>
+        <span class="dark-icon">☀️</span>
+    </div>
+
+    <script>
+        // Elementos
+        const etiquetaAzul = document.getElementById('etiquetaAzul');
+        const etiquetaVermelha = document.getElementById('etiquetaVermelha');
+        const etiquetaFechada = document.getElementById('etiquetaFechada');
+        const verAgirAntes = document.getElementById('verAgirAntes');
+        const verAgirDepois = document.getElementById('verAgirDepois');
+        const verAgirConcluido = document.getElementById('verAgirConcluido');
+
+        // Atualizar resumo
+        function atualizarResumo() {
+            const azul = etiquetaAzul.value.trim() ? 1 : 0;
+            const vermelha = etiquetaVermelha.value.trim() ? 1 : 0;
+            const fechadas = etiquetaFechada.value.trim() ? etiquetaFechada.value.trim().split('\n').length : 0;
+            
+            document.getElementById('resumoAzul').textContent = azul;
+            document.getElementById('resumoVermelha').textContent = vermelha;
+            document.getElementById('resumoAbertas').textContent = azul + vermelha;
+            document.getElementById('resumoFechadas').textContent = fechadas;
+            
+            const verAgirStatus = verAgirConcluido.checked ? '✅ Concluído' : '⏳ Pendente';
+            document.getElementById('resumoVerAgir').textContent = verAgirStatus;
+        }
+
+        // Adicionar eventos
+        etiquetaAzul.addEventListener('input', atualizarResumo);
+        etiquetaVermelha.addEventListener('input', atualizarResumo);
+        etiquetaFechada.addEventListener('input', atualizarResumo);
+        verAgirConcluido.addEventListener('change', atualizarResumo);
+
+        // Salvar SIM
+        document.getElementById('btnSalvar').addEventListener('click', async () => {
+            // Construir Ver e Agir completo
+            let verAgirCompleto = '';
+            if (verAgirAntes.value || verAgirDepois.value) {
+                verAgirCompleto = `ANTES: ${verAgirAntes.value}\nDEPOIS: ${verAgirDepois.value}`;
+            }
+            
+            const dados = {
+                etiquetaAzul: etiquetaAzul.value || '',
+                etiquetaVermelha: etiquetaVermelha.value || '',
+                etiquetaFechada: etiquetaFechada.value || '',
+                verAgirAntes: verAgirCompleto || '',
+                verAgirDepois: verAgirConcluido.checked ? 'Concluído' : 'Pendente'
+            };
+            
+            const btn = document.getElementById('btnSalvar');
+            const msgDiv = document.getElementById('mensagem');
+            
+            btn.disabled = true;
+            btn.innerHTML = '💾 SALVANDO...';
+            msgDiv.style.display = 'block';
+            msgDiv.className = 'alert alert-info';
+            msgDiv.innerHTML = 'Salvando dados do SIM...';
+            
+            try {
+                const responseGet = await fetch('/api/producao/hoje');
+                const resultGet = await responseGet.json();
+                
+                let producaoExistente = {};
+                if (resultGet.success && resultGet.data && resultGet.data.id) {
+                    producaoExistente = resultGet.data;
+                }
+                
+                const dadosCompletos = {
+                    brascopEstantes: producaoExistente.brascopEstantes || 0,
+                    brascopKg: producaoExistente.brascopKg || 0,
+                    brascopParadas: producaoExistente.brascopParadas || '',
+                    brascopPerdas: producaoExistente.brascopPerdas || 0,
+                    seracEstantes: producaoExistente.seracEstantes || 0,
+                    seracKg: producaoExistente.seracKg || 0,
+                    seracParadas: producaoExistente.seracParadas || '',
+                    seracPerdas: producaoExistente.seracPerdas || 0,
+                    bpfOk: producaoExistente.bpfOk || false,
+                    bpfObservacao: producaoExistente.bpfObservacao || '',
+                    falhas: producaoExistente.falhas || '',
+                    reclamacoes: producaoExistente.reclamacoes || '',
+                    dssRealizado: producaoExistente.dssRealizado || false,
+                    dssTema: producaoExistente.dssTema || '',
+                    quaseAcidente: producaoExistente.quaseAcidente || '',
+                    ...dados
+                };
+                
+                const response = await fetch('/api/producao', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dadosCompletos)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    msgDiv.className = 'alert alert-success';
+                    msgDiv.innerHTML = '✅ Dados do SIM salvos com sucesso!';
+                    setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                msgDiv.className = 'alert alert-danger';
+                msgDiv.innerHTML = '❌ Erro ao salvar: ' + error.message;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '💾 SALVAR SIM';
+            }
+        });
+        
+        // Carregar dados de hoje
+        document.getElementById('btnCarregar').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/producao/hoje');
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.id) {
+                    const data = result.data;
+                    
+                    etiquetaAzul.value = data.etiquetaAzul || '';
+                    etiquetaVermelha.value = data.etiquetaVermelha || '';
+                    etiquetaFechada.value = data.etiquetaFechada || '';
+                    
+                    const verAgirCompleto = data.verAgirAntes || '';
+                    if (verAgirCompleto.includes('ANTES:')) {
+                        const partes = verAgirCompleto.split('\nDEPOIS:');
+                        verAgirAntes.value = partes[0].replace('ANTES:', '').trim();
+                        verAgirDepois.value = partes[1] || '';
+                    } else {
+                        verAgirAntes.value = verAgirCompleto;
+                        verAgirDepois.value = '';
+                    }
+                    verAgirConcluido.checked = data.verAgirDepois === 'Concluído';
+                    
+                    atualizarResumo();
+                    
+                    const msgDiv = document.getElementById('mensagem');
+                    msgDiv.style.display = 'block';
+                    msgDiv.className = 'alert alert-success';
+                    msgDiv.innerHTML = '✅ Dados carregados com sucesso!';
+                    setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+                } else {
+                    // Reset
+                    etiquetaAzul.value = '';
+                    etiquetaVermelha.value = '';
+                    etiquetaFechada.value = '';
+                    verAgirAntes.value = '';
+                    verAgirDepois.value = '';
+                    verAgirConcluido.checked = false;
+                    atualizarResumo();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar:', error);
+            }
+        });
+        
+        // Limpar formulário
+        document.getElementById('btnLimpar').addEventListener('click', () => {
+            etiquetaAzul.value = '';
+            etiquetaVermelha.value = '';
+            etiquetaFechada.value = '';
+            verAgirAntes.value = '';
+            verAgirDepois.value = '';
+            verAgirConcluido.checked = false;
+            atualizarResumo();
+        });
+        
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+        
+        // Inicializar
+        atualizarResumo();
+        document.getElementById('btnCarregar').click();
+    </script>
+</body>
+</html>
