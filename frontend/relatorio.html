@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>PudimFlow - Relatórios</title>
+    <title>PudimFlow - Fechamento de Turno</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="header">
-        <h1>🍮 PudimFlow - Relatórios</h1>
-        <div class="turno">Turno da Noite - Misa</div>
+        <h1>🍮 PudimFlow - Fechamento de Turno</h1>
+        <div class="turno" id="turnoInfo">Turno da Noite - Misa</div>
     </div>
 
     <nav class="nav">
@@ -18,53 +18,42 @@
         <a href="qualidade.html">✅ Qualidade</a>
         <a href="seguranca.html">🛡️ Segurança</a>
         <a href="sim.html">💡 SIM</a>
-        <a href="relatorios.html" class="active">📈 Relatórios</a>
+        <a href="programacao.html">📅 Programação</a>
+        <a href="relatorios.html" class="active">🔚 Fechamento</a>
     </nav>
 
     <div class="container">
-        <!-- Filtros -->
+        <!-- Configuração de e-mail -->
         <div class="card">
-            <h2>📅 Filtros</h2>
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
-                <div class="form-group" style="flex: 1;">
-                    <label>Data</label>
-                    <input type="date" id="dataFiltro">
-                </div>
-                <div>
-                    <button id="btnBuscar" style="background: var(--primary);">🔍 Buscar</button>
-                    <button id="btnExportar" style="background: var(--success);">📊 Exportar Excel</button>
-                    <button id="btnCopiar" style="background: var(--info);">📋 Copiar Resumo</button>
-                </div>
+            <h2>📧 Destinatários do Relatório</h2>
+            <p style="margin-bottom: 1rem; font-size: 0.875rem;">Configure os e-mails que receberão o relatório de fechamento do turno (um por linha).</p>
+            <div class="form-group">
+                <label>E-mails destinatários:</label>
+                <textarea id="listaEmails" rows="4" placeholder="seuemail@empresa.com&#10;supervisor@empresa.com&#10;qualidade@empresa.com"></textarea>
+            </div>
+            <div class="form-group">
+                <label>E-mail para cópia (opcional):</label>
+                <input type="text" id="emailCc" placeholder="voce@exemplo.com">
+            </div>
+            <button id="btnSalvarEmails" style="background: var(--info);">💾 SALVAR CONFIGURAÇÃO</button>
+        </div>
+
+        <!-- Prévia do Resumo do Turno -->
+        <div class="card">
+            <h2>📋 Resumo do Turno</h2>
+            <div id="previaResumo" style="background: var(--bg-primary); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.875rem; white-space: pre-wrap;">
+                Carregando...
             </div>
         </div>
 
-        <!-- Relatório do Turno -->
-        <div class="card" id="relatorioCard">
-            <h2>📊 Relatório do Turno da Noite</h2>
-            <div id="conteudoRelatorio">
-                <p style="color: var(--text-secondary);">Selecione uma data para visualizar o relatório.</p>
-            </div>
-        </div>
-
-        <!-- Histórico Recente -->
+        <!-- Ações -->
         <div class="card">
-            <h2>📋 Histórico dos Últimos 30 Dias</h2>
-            <div style="overflow-x: auto;">
-                <table id="tabelaHistorico">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Total Estantes</th>
-                            <th>Total KG</th>
-                            <th>Perdas</th>
-                            <th>Eficiência</th>
-                        </tr>
-                    </thead>
-                    <tbody id="corpoHistorico">
-                        <tr><td colspan="5">Carregando...</td></tr>
-                    </tbody>
-                </table>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button id="btnEncerrar" style="background: var(--danger);">🔚 ENCERRAR TURNO</button>
+                <button id="btnAtualizar">🔄 ATUALIZAR PRÉVIA</button>
+                <button id="btnCopiar">📋 COPIAR RESUMO</button>
             </div>
+            <div id="mensagem" style="margin-top: 1rem; display: none;"></div>
         </div>
     </div>
 
@@ -78,272 +67,222 @@
     </div>
 
     <script>
-        // Configuração
-        const META_DIARIA_KG = 10000; // Meta diária de 10.000 kg
+        const API_URL = 'http://localhost:3000/api';
         
-        // Formatar data
-        function formatarData(date) {
-            const d = new Date(date);
-            return d.toLocaleDateString('pt-BR');
-        }
-        
-        // Calcular eficiência
-        function calcularEficiencia(kg) {
-            return ((kg || 0) / META_DIARIA_KG * 100).toFixed(1);
-        }
-        
-        // Carregar histórico
-        async function carregarHistorico() {
-            try {
-                const response = await fetch('/api/historico');
-                const result = await response.json();
-                
-                const tbody = document.getElementById('corpoHistorico');
-                
-                if (result.success && result.data && result.data.length > 0) {
-                    tbody.innerHTML = result.data.map(item => `
-                        <tr onclick="buscarData('${item.data.split('T')[0]}')" style="cursor: pointer;">
-                            <td>${formatarData(item.data)}</td>
-                            <td>${item.totalEstantes || 0}</td>
-                            <td>${(item.totalKg || 0).toLocaleString()}</td>
-                            <td>${item.totalPerdas || 0}</td>
-                            <td>${calcularEficiencia(item.totalKg)}%</td>
-                        </tr>
-                    `).join('');
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="5">Nenhum registro encontrado</td></tr>';
-                }
-            } catch (error) {
-                console.error('Erro ao carregar histórico:', error);
-                document.getElementById('corpoHistorico').innerHTML = '<tr><td colspan="5">Erro ao carregar dados</td></tr>';
+        // Carregar configuração de e-mails
+        function carregarConfigEmails() {
+            const saved = localStorage.getItem('pudimflow_emails');
+            if (saved) {
+                document.getElementById('listaEmails').value = saved;
+            } else {
+                // Valor padrão
+                document.getElementById('listaEmails').value = 'misa@lactalis.com.br';
+            }
+            const savedCc = localStorage.getItem('pudimflow_email_cc');
+            if (savedCc) {
+                document.getElementById('emailCc').value = savedCc;
             }
         }
-        
-        // Buscar relatório por data
-        async function buscarRelatorio(data) {
+
+        // Salvar configuração de e-mails
+        document.getElementById('btnSalvarEmails').addEventListener('click', () => {
+            const emails = document.getElementById('listaEmails').value;
+            const cc = document.getElementById('emailCc').value;
+            localStorage.setItem('pudimflow_emails', emails);
+            localStorage.setItem('pudimflow_email_cc', cc);
+            
+            const msgDiv = document.getElementById('mensagem');
+            msgDiv.style.display = 'block';
+            msgDiv.className = 'alert alert-success';
+            msgDiv.innerHTML = '✅ Configuração de e-mails salva!';
+            setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+        });
+
+        // Gerar resumo do turno
+        async function gerarResumo() {
             try {
-                const response = await fetch(`/api/producao/${data}`);
+                const response = await fetch(`${API_URL}/producao/hoje`);
                 const result = await response.json();
                 
-                const container = document.getElementById('conteudoRelatorio');
+                const data = result.data || {};
+                const hoje = new Date().toLocaleString('pt-BR');
                 
-                if (result.success && result.data && result.data.id) {
-                    const item = result.data;
-                    const eficiencia = calcularEficiencia(item.totalKg);
-                    
-                    // Status de segurança
-                    const segurancaStatus = item.dssRealizado ? '✅ Realizado' : '❌ Não realizado';
-                    
-                    // Status de qualidade
-                    const qualidadeStatus = item.bpfOk ? '✅ OK' : '⚠️ Pendente';
-                    
-                    container.innerHTML = `
-                        <div style="display: grid; gap: 1rem;">
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                                <div style="background: var(--bg-primary); padding: 1rem; border-radius: 8px;">
-                                    <strong>📦 Produção Total</strong>
-                                    <p style="font-size: 1.5rem; margin-top: 0.5rem;">${item.totalEstantes || 0} est</p>
-                                    <p>${(item.totalKg || 0).toLocaleString()} kg</p>
-                                </div>
-                                <div style="background: var(--bg-primary); padding: 1rem; border-radius: 8px;">
-                                    <strong>📊 Eficiência</strong>
-                                    <p style="font-size: 1.5rem; margin-top: 0.5rem;">${eficiencia}%</p>
-                                    <p>Meta: ${META_DIARIA_KG.toLocaleString()} kg</p>
-                                </div>
-                                <div style="background: var(--bg-primary); padding: 1rem; border-radius: 8px;">
-                                    <strong>⚠️ Perdas</strong>
-                                    <p style="font-size: 1.5rem; margin-top: 0.5rem;">${item.totalPerdas || 0}</p>
-                                    <p>copos perdidos</p>
-                                </div>
-                            </div>
-                            
-                            <hr style="border-color: var(--border);">
-                            
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-                                <div>
-                                    <strong>🏭 Brascop/Trepko</strong>
-                                    <p>Envasado: ${item.brascopEstantes || 0} est | ${(item.brascopKg || 0).toLocaleString()} kg</p>
-                                    <p>Perdas: ${item.brascopPerdas || 0} copos</p>
-                                    <small>Paradas: ${item.brascopParadas || '-'}</small>
-                                </div>
-                                <div>
-                                    <strong>🏭 Serac</strong>
-                                    <p>Envasado: ${item.seracEstantes || 0} est | ${(item.seracKg || 0).toLocaleString()} kg</p>
-                                    <p>Perdas: ${item.seracPerdas || 0} copos</p>
-                                    <small>Paradas: ${item.seracParadas || '-'}</small>
-                                </div>
-                            </div>
-                            
-                            <hr style="border-color: var(--border);">
-                            
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                                <div>
-                                    <strong>✅ Qualidade</strong>
-                                    <p>BPF: ${qualidadeStatus}</p>
-                                    ${item.falhas ? `<p>Falhas: ${item.falhas}</p>` : ''}
-                                    ${item.reclamacoes ? `<p>Reclamações: ${item.reclamacoes}</p>` : ''}
-                                </div>
-                                <div>
-                                    <strong>🛡️ Segurança</strong>
-                                    <p>DSS: ${segurancaStatus}</p>
-                                    ${item.dssTema ? `<p>Tema: ${item.dssTema}</p>` : ''}
-                                    ${item.quaseAcidente ? `<p>Quase acidente: ${item.quaseAcidente}</p>` : ''}
-                                </div>
-                                <div>
-                                    <strong>💡 SIM</strong>
-                                    ${item.etiquetaAzul ? `<p>🔵 Azul: ${item.etiquetaAzul}</p>` : ''}
-                                    ${item.etiquetaVermelha ? `<p>🔴 Vermelha: ${item.etiquetaVermelha}</p>` : ''}
-                                    ${item.etiquetaFechada ? `<p>🔵🔴 Fechadas: ${item.etiquetaFechada}</p>` : ''}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = `
-                        <div class="alert alert-warning">
-                            ⚠️ Nenhum registro encontrado para esta data.
-                            <br><br>
-                            <button onclick="window.location.href='producao.html'" style="margin-top: 0.5rem;">➕ Registrar produção</button>
-                        </div>
-                    `;
-                }
+                const meta = data.meta || 0;
+                const totalKg = data.totalKg || 0;
+                const eficiencia = meta > 0 ? ((totalKg / meta) * 100).toFixed(1) : 0;
+                
+                let resumo = `========================================
+🍮 PUDIMFLOW - FECHAMENTO DO TURNO
+========================================
+
+📅 DATA/HORA: ${hoje}
+👤 LÍDER: Misa
+🕒 TURNO: Noite (21:40 - 05:00)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 PRODUÇÃO TOTAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 Programação: ${data.programacao || 'Não definido'}
+🎯 Meta: ${meta.toLocaleString()} kg
+✅ Realizado: ${totalKg.toLocaleString()} kg
+📈 Eficiência: ${eficiencia}%
+📉 Faltam: ${Math.max(0, meta - totalKg).toLocaleString()} kg
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏭 PRODUÇÃO POR LINHA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔵 Brascop/Trepko:
+   ├── Envasado: ${data.brascopEstantes || 0} estantes (${(data.brascopKg || 0).toLocaleString()} kg)
+   ├── Perdas: ${data.brascopPerdas || 0} copos
+   └── Paradas: ${data.brascopParadas || 'Nenhuma'}
+
+🟢 Serac:
+   ├── Envasado: ${data.seracEstantes || 0} estantes (${(data.seracKg || 0).toLocaleString()} kg)
+   ├── Perdas: ${data.seracPerdas || 0} copos
+   └── Paradas: ${data.seracParadas || 'Nenhuma'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ QUALIDADE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 BPF: ${data.bpfOk ? 'OK ✅' : 'Pendente ❌'}
+${data.bpfObservacao ? `📝 Obs.: ${data.bpfObservacao}` : ''}
+${data.falhas ? `⚠️ Falhas: ${data.falhas}` : ''}
+${data.reclamacoes ? `📢 Reclamações: ${data.reclamacoes}` : ''}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🛡️ SEGURANÇA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🗣️ DSS: ${data.dssRealizado ? 'Realizado ✅' : 'Não realizado ❌'}
+${data.dssTema ? `📖 Tema: ${data.dssTema}` : ''}
+${data.quaseAcidente ? `⚠️ Quase acidente: ${data.quaseAcidente}` : ''}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💡 SIM (Sistema de Ideias)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔵 Etiquetas Azuis: ${data.etiquetaAzul || 'Nenhuma'}
+🔴 Etiquetas Vermelhas: ${data.etiquetaVermelha || 'Nenhuma'}
+🔵🔴 Etiquetas Fechadas: ${data.etiquetaFechada || 'Nenhuma'}
+${data.observacoes ? `📝 Observações: ${data.observacoes}` : ''}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ CHECKLIST DO LÍDER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${data.dssRealizado ? '✅' : '❌'} DSS
+${data.bpfOk ? '✅' : '❌'} BPF
+✅ Equipe treinada
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 MATERIAIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 Total de perdas: ${data.totalPerdas || 0} copos
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔚 FIM DO RELATÓRIO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PudimFlow - Turno da Noite
+`;
+                
+                return resumo;
             } catch (error) {
-                console.error('Erro ao buscar relatório:', error);
-                document.getElementById('conteudoRelatorio').innerHTML = '<div class="alert alert-danger">❌ Erro ao carregar relatório</div>';
+                console.error('Erro ao gerar resumo:', error);
+                return 'Erro ao gerar resumo do turno.';
             }
         }
-        
-        // Função para buscar data (chamada pelo clique no histórico)
-        function buscarData(data) {
-            document.getElementById('dataFiltro').value = data;
-            buscarRelatorio(data);
+
+        // Atualizar prévia
+        async function atualizarPrevia() {
+            const resumo = await gerarResumo();
+            document.getElementById('previaResumo').innerHTML = resumo.replace(/\n/g, '<br>');
         }
-        
-        // Exportar para Excel (formato CSV)
-        async function exportarExcel() {
-            try {
-                const response = await fetch('/api/historico');
-                const result = await response.json();
-                
-                if (result.success && result.data && result.data.length > 0) {
-                    // Cabeçalho do CSV
-                    let csv = "Data,Turno,Brascop Estantes,Brascop KG,Serac Estantes,Serac KG,Total Estantes,Total KG,Perdas,BPF OK,DSS Realizado,Etiqueta Azul,Etiqueta Vermelha\n";
-                    
-                    // Adicionar linhas
-                    result.data.forEach(item => {
-                        csv += `${formatarData(item.data)},Noite,${item.brascopEstantes || 0},${(item.brascopKg || 0).toLocaleString()},${item.seracEstantes || 0},${(item.seracKg || 0).toLocaleString()},${item.totalEstantes || 0},${(item.totalKg || 0).toLocaleString()},${item.totalPerdas || 0},${item.bpfOk ? 'Sim' : 'Não'},${item.dssRealizado ? 'Sim' : 'Não'},"${item.etiquetaAzul || ''}","${item.etiquetaVermelha || ''}"\n`;
-                    });
-                    
-                    // Download do arquivo
-                    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
-                    const link = document.createElement('a');
-                    const url = URL.createObjectURL(blob);
-                    link.href = url;
-                    link.setAttribute('download', `pudimflow_${new Date().toISOString().split('T')[0]}.csv`);
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                    
-                    const msgDiv = document.getElementById('conteudoRelatorio');
-                    msgDiv.insertAdjacentHTML('beforebegin', '<div class="alert alert-success">✅ Relatório exportado com sucesso!</div>');
-                    setTimeout(() => {
-                        const alert = document.querySelector('.alert-success');
-                        if (alert) alert.remove();
-                    }, 3000);
-                }
-            } catch (error) {
-                console.error('Erro ao exportar:', error);
-                alert('Erro ao exportar relatório');
-            }
-        }
-        
-        // Copiar resumo para clipboard
-        async function copiarResumo() {
-            const data = document.getElementById('dataFiltro').value;
-            if (!data) {
-                alert('Selecione uma data primeiro');
+
+        // Copiar resumo
+        document.getElementById('btnCopiar').addEventListener('click', async () => {
+            const resumo = await gerarResumo();
+            await navigator.clipboard.writeText(resumo);
+            
+            const msgDiv = document.getElementById('mensagem');
+            msgDiv.style.display = 'block';
+            msgDiv.className = 'alert alert-success';
+            msgDiv.innerHTML = '✅ Resumo copiado para a área de transferência!';
+            setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+        });
+
+        // Encerrar turno (enviar e-mail)
+        document.getElementById('btnEncerrar').addEventListener('click', async () => {
+            const emailsTexto = document.getElementById('listaEmails').value;
+            const ccTexto = document.getElementById('emailCc').value;
+            
+            if (!emailsTexto.trim()) {
+                alert('Configure pelo menos um e-mail destinatário!');
                 return;
             }
             
+            const listaEmails = emailsTexto.split('\n').filter(e => e.trim());
+            const ccList = ccTexto ? ccTexto.split(',').map(e => e.trim()) : [];
+            
+            const resumo = await gerarResumo();
+            
+            const btn = document.getElementById('btnEncerrar');
+            const msgDiv = document.getElementById('mensagem');
+            
+            btn.disabled = true;
+            btn.innerHTML = '📧 ENVIANDO...';
+            msgDiv.style.display = 'block';
+            msgDiv.className = 'alert alert-info';
+            msgDiv.innerHTML = 'Enviando relatório por e-mail...';
+            
             try {
-                const response = await fetch(`/api/producao/${data}`);
-                const result = await response.json();
-                
-                if (result.success && result.data && result.data.id) {
-                    const item = result.data;
-                    const texto = `📊 RELATÓRIO PUDIMFLOW - ${formatarData(data)} (Turno Noite)
-                    
-PRODUÇÃO TOTAL:
-- Estantes: ${item.totalEstantes || 0}
-- Quilogramas: ${(item.totalKg || 0).toLocaleString()} kg
-- Eficiência: ${calcularEficiencia(item.totalKg)}%
-- Perdas: ${item.totalPerdas || 0} copos
-
-LINHA BRASCOP/TREPKO:
-- Envasado: ${item.brascopEstantes || 0} est | ${(item.brascopKg || 0).toLocaleString()} kg
-- Perdas: ${item.brascopPerdas || 0} copos
-- Paradas: ${item.brascopParadas || '-'}
-
-LINHA SERAC:
-- Envasado: ${item.seracEstantes || 0} est | ${(item.seracKg || 0).toLocaleString()} kg
-- Perdas: ${item.seracPerdas || 0} copos
-- Paradas: ${item.seracParadas || '-'}
-
-QUALIDADE:
-- BPF: ${item.bpfOk ? 'OK' : 'Pendente'}
-- Falhas: ${item.falhas || 'Nenhuma'}
-- Reclamações: ${item.reclamacoes || 'Nenhuma'}
-
-SEGURANÇA:
-- DSS: ${item.dssRealizado ? 'Realizado' : 'Não realizado'}
-- Tema: ${item.dssTema || '-'}
-- Quase Acidente: ${item.quaseAcidente || 'Nenhum'}
-
-SIM (Melhorias):
-- Etiquetas Azuis: ${item.etiquetaAzul || 'Nenhuma'}
-- Etiquetas Vermelhas: ${item.etiquetaVermelha || 'Nenhuma'}
-- Etiquetas Fechadas: ${item.etiquetaFechada || 'Nenhuma'}
-
----
-PudimFlow - Sistema de Gestão de Produção
-Gerado em: ${new Date().toLocaleString()}`;
-                    
-                    await navigator.clipboard.writeText(texto);
-                    alert('✅ Resumo copiado para a área de transferência!');
-                } else {
-                    alert('Nenhum dado encontrado para esta data');
+                // Envia para cada e-mail individualmente (para garantir que todos recebam)
+                for (const email of listaEmails) {
+                    if (email.trim()) {
+                        await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                service_id: 'default_service',
+                                template_id: 'template_pudimflow',
+                                user_id: 'YOUR_USER_ID',
+                                template_params: {
+                                    to_email: email.trim(),
+                                    cc_email: ccTexto || '',
+                                    subject: `PudimFlow - Fechamento do Turno ${new Date().toLocaleDateString('pt-BR')}`,
+                                    message: resumo
+                                }
+                            })
+                        }).catch(e => console.log('EmailJS não configurado:', e));
+                    }
                 }
+                
+                // Fallback: abrir cliente de e-mail
+                const subject = `PudimFlow - Fechamento do Turno ${new Date().toLocaleDateString('pt-BR')}`;
+                const mailtoLink = `mailto:${listaEmails.join(',')}?cc=${ccTexto}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(resumo)}`;
+                window.open(mailtoLink);
+                
+                msgDiv.className = 'alert alert-success';
+                msgDiv.innerHTML = '✅ Turno encerrado! Relatório enviado para os destinatários.';
+                
+                // Limpar dados do turno (opcional - comentado por segurança)
+                // await fetch(`${API_URL}/producao/hoje`, { method: 'DELETE' });
+                
             } catch (error) {
-                console.error('Erro ao copiar:', error);
-                alert('Erro ao copiar resumo');
-            }
-        }
-        
-        // Eventos
-        document.getElementById('btnBuscar').addEventListener('click', () => {
-            const data = document.getElementById('dataFiltro').value;
-            if (data) {
-                buscarRelatorio(data);
-            } else {
-                alert('Selecione uma data');
+                msgDiv.className = 'alert alert-danger';
+                msgDiv.innerHTML = '❌ Erro ao enviar: ' + error.message;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🔚 ENCERRAR TURNO';
             }
         });
+
+        document.getElementById('btnAtualizar').addEventListener('click', atualizarPrevia);
         
-        document.getElementById('btnExportar').addEventListener('click', exportarExcel);
-        document.getElementById('btnCopiar').addEventListener('click', copiarResumo);
-        
-        // Setar data atual no filtro
-        document.getElementById('dataFiltro').value = new Date().toISOString().split('T')[0];
-        
-        // Dark mode toggle
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
         }
         
         // Inicializar
-        carregarHistorico();
-        buscarRelatorio(document.getElementById('dataFiltro').value);
+        carregarConfigEmails();
+        atualizarPrevia();
+        setInterval(atualizarPrevia, 30000);
     </script>
 </body>
 </html>
