@@ -42,7 +42,8 @@
 
         <div class="card">
             <h2>📅 Programação de Hoje</h2>
-            <p><strong>Produto:</strong> <span id="produtoHoje">-</span></p>
+            <p><strong>Produto Brascop:</strong> <span id="produtoBrascop">-</span></p>
+            <p><strong>Produto Serac:</strong> <span id="produtoSerac">-</span></p>
             <p><strong>Meta Brascop kg:</strong> <span id="metaKgBrascop">0</span></p>
             <p><strong>Meta Serac kg:</strong> <span id="metaKgSerac">0</span></p>
             <p><strong>Meta Brascop estantes:</strong> <span id="metaEstantesBrascop">0</span></p>
@@ -127,13 +128,69 @@
 
     <script>
         const programacaoSemanal = {
-            "Segunda-feira": { produto: "Pudim Leite Batavo", metaKgBrascop: 9000, metaKgSerac: 1000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
-            "Terça-feira": { produto: "Pudim Leite Batavo", metaKgBrascop: 9000, metaKgSerac: 1000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
-            "Quarta-feira": { produto: "Pudim Leite Batavo", metaKgBrascop: 9000, metaKgSerac: 1000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
-            "Quinta-feira": { produto: "Pudim Leite Itambé", metaKgBrascop: 6000, metaKgSerac: 1000, pesoMassa: 90, pesoCalda: 10, validadeDias: 45 },
-            "Sexta-feira": { produto: "Pudim Leite Itambé", metaKgBrascop: 6000, metaKgSerac: 1000, pesoMassa: 90, pesoCalda: 10, validadeDias: 45 },
-            "Sábado": { produto: "Brigadeiro Chandelle", metaKgBrascop: 6000, metaKgSerac: 1000, pesoMassa: 90, pesoCalda: 0, validadeDias: 48 },
-            "Domingo": { produto: "Manjar Coco Batavo", metaKgBrascop: 4000, metaKgSerac: 1000, pesoMassa: 75, pesoCalda: 15, validadeDias: 45 }
+            "Segunda-feira": { 
+                produtoBrascop: "Pudim Leite Batavo", 
+                produtoSerac: "Pudim Leite Batavo",
+                metaKgBrascop: 9000, 
+                metaKgSerac: 1000, 
+                pesoMassa: 85, 
+                pesoCalda: 15, 
+                validadeDias: 45 
+            },
+            "Terça-feira": { 
+                produtoBrascop: "Pudim Leite Batavo", 
+                produtoSerac: "Pudim Leite Batavo",
+                metaKgBrascop: 9000, 
+                metaKgSerac: 1000, 
+                pesoMassa: 85, 
+                pesoCalda: 15, 
+                validadeDias: 45 
+            },
+            "Quarta-feira": { 
+                produtoBrascop: "Pudim Leite Batavo", 
+                produtoSerac: "Pudim Leite Batavo",
+                metaKgBrascop: 9000, 
+                metaKgSerac: 1000, 
+                pesoMassa: 85, 
+                pesoCalda: 15, 
+                validadeDias: 45 
+            },
+            "Quinta-feira": { 
+                produtoBrascop: "Pudim Leite Itambé", 
+                produtoSerac: "Pudim Leite Itambé",
+                metaKgBrascop: 6000, 
+                metaKgSerac: 1000, 
+                pesoMassa: 90, 
+                pesoCalda: 10, 
+                validadeDias: 45 
+            },
+            "Sexta-feira": { 
+                produtoBrascop: "Pudim Leite Itambé", 
+                produtoSerac: "Pudim Leite Itambé",
+                metaKgBrascop: 6000, 
+                metaKgSerac: 1000, 
+                pesoMassa: 90, 
+                pesoCalda: 10, 
+                validadeDias: 45 
+            },
+            "Sábado": { 
+                produtoBrascop: "Brigadeiro Chandelle", 
+                produtoSerac: "Brigadeiro Chandelle",
+                metaKgBrascop: 6000, 
+                metaKgSerac: 1000, 
+                pesoMassa: 90, 
+                pesoCalda: 0, 
+                validadeDias: 48 
+            },
+            "Domingo": { 
+                produtoBrascop: "Manjar Coco Batavo", 
+                produtoSerac: "Manjar Coco Batavo",
+                metaKgBrascop: 4000, 
+                metaKgSerac: 1000, 
+                pesoMassa: 75, 
+                pesoCalda: 15, 
+                validadeDias: 45 
+            }
         };
 
         const capacidadeBrascop = 89.6;
@@ -149,7 +206,8 @@
             const prog = programacaoSemanal[dia];
             if (!prog) return;
             
-            document.getElementById("produtoHoje").innerText = prog.produto;
+            document.getElementById("produtoBrascop").innerText = prog.produtoBrascop;
+            document.getElementById("produtoSerac").innerText = prog.produtoSerac;
             document.getElementById("metaKgBrascop").innerText = prog.metaKgBrascop;
             document.getElementById("metaKgSerac").innerText = prog.metaKgSerac;
             
