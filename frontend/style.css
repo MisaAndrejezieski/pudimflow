@@ -1,9 +1,12 @@
-/* frontend/style.css - Versão Turbinada */
-/* PudimFlow - Design Moderno com Dark Mode */
-
 /* ============================================
-   VARIÁVEIS CSS (fácil mudar cores depois)
+   PUDIMFLOW - ESTILOS GLOBAIS
+   Versão: 1.0
+   Organizado: Milifer Tech Solutions
    ============================================ */
+
+/* --------------------------------------------
+   VARIÁVEIS CSS (TEMAS CLARO E ESCURO)
+   -------------------------------------------- */
 :root {
   /* Cores principais */
   --primary: #667eea;
@@ -14,27 +17,20 @@
   --warning: #ed8936;
   --info: #4299e1;
   
-  /* Cores do tema claro */
+  /* Cores de fundo e texto */
   --bg-primary: #f5f5f5;
   --bg-secondary: #ffffff;
   --text-primary: #333333;
   --text-secondary: #666666;
   --border: #e2e8f0;
-  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   
-  /* Animações */
-  --transition-fast: 150ms;
-  --transition-normal: 300ms;
-  --transition-slow: 500ms;
-  
-  /* Bordas */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  /* Efeitos */
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+  --radius: 12px;
 }
 
-/* Dark mode ativado por preferência do sistema ou classe manual */
+/* Dark mode automático */
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-primary: #1a202c;
@@ -42,23 +38,12 @@
     --text-primary: #f7fafc;
     --text-secondary: #a0aec0;
     --border: #4a5568;
-    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
   }
 }
 
-/* Classe manual para dark mode (opcional) */
-.dark-mode {
-  --bg-primary: #1a202c;
-  --bg-secondary: #2d3748;
-  --text-primary: #f7fafc;
-  --text-secondary: #a0aec0;
-  --border: #4a5568;
-  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-}
-
-/* ============================================
+/* --------------------------------------------
    RESET E BASE
-   ============================================ */
+   -------------------------------------------- */
 * {
   margin: 0;
   padding: 0;
@@ -66,34 +51,29 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  transition: background-color var(--transition-normal), color var(--transition-normal);
+  transition: var(--transition);
   line-height: 1.5;
 }
 
-/* ============================================
-   TYPOGRAPHY
-   ============================================ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
+/* --------------------------------------------
+   TIPOGRAFIA
+   -------------------------------------------- */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   line-height: 1.2;
 }
 
-/* ============================================
+/* --------------------------------------------
    HEADER
-   ============================================ */
+   -------------------------------------------- */
 .header {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: white;
   padding: 1rem 2rem;
   box-shadow: var(--card-shadow);
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 
 .header h1 {
@@ -106,9 +86,9 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0.25rem;
 }
 
-/* ============================================
+/* --------------------------------------------
    NAVEGAÇÃO
-   ============================================ */
+   -------------------------------------------- */
 .nav {
   background: var(--bg-secondary);
   padding: 0.75rem 2rem;
@@ -116,68 +96,45 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-  position: sticky;
-  top: 0;
-  z-index: 99;
 }
 
 .nav a {
   color: var(--text-primary);
   text-decoration: none;
   padding: 0.5rem 1rem;
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
+  border-radius: 8px;
+  transition: var(--transition);
   font-weight: 500;
 }
 
-.nav a:hover {
-  background: var(--primary);
-  color: white;
-  transform: translateY(-1px);
-}
-
+.nav a:hover,
 .nav a.active {
   background: var(--primary);
   color: white;
 }
 
-/* ============================================
-   CONTAINER E LAYOUT
-   ============================================ */
+/* --------------------------------------------
+   CONTAINER E CARDS
+   -------------------------------------------- */
 .container {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  animation: fadeIn var(--transition-normal);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ============================================
-   CARDS
-   ============================================ */
 .card {
   background: var(--bg-secondary);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   box-shadow: var(--card-shadow);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   border: 1px solid var(--border);
+  transition: var(--transition);
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .card h2 {
@@ -187,102 +144,9 @@ h1, h2, h3, h4, h5, h6 {
   padding-bottom: 0.5rem;
 }
 
-/* ============================================
-   FORMULÁRIOS
-   ============================================ */
-.form-group {
-  margin-bottom: 1rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  font-size: 1rem;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-/* ============================================
-   BOTÕES
-   ============================================ */
-button {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-md);
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-button:hover {
-  background: var(--primary-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-button:active {
-  transform: translateY(0);
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Botão secundário */
-.btn-secondary {
-  background: var(--text-secondary);
-}
-
-.btn-secondary:hover {
-  background: var(--border);
-}
-
-/* Botão de sucesso */
-.btn-success {
-  background: var(--success);
-}
-
-/* Botão de perigo */
-.btn-danger {
-  background: var(--danger);
-}
-
-/* ============================================
-   GRIDS
-   ============================================ */
-.producao-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-/* Dashboard Cards */
+/* --------------------------------------------
+   CARDS DE RESUMO (DASHBOARD)
+   -------------------------------------------- */
 .dashboard-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -292,18 +156,16 @@ button:disabled {
 
 .dashboard-card {
   background: var(--bg-secondary);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   padding: 1.5rem;
   text-align: center;
   box-shadow: var(--card-shadow);
-  transition: all var(--transition-fast);
   border: 1px solid var(--border);
-  cursor: pointer;
+  transition: var(--transition);
 }
 
 .dashboard-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-card .numero {
@@ -319,90 +181,115 @@ button:disabled {
   font-size: 0.875rem;
 }
 
-/* ============================================
+/* --------------------------------------------
+   FORMULÁRIOS E INPUTS
+   -------------------------------------------- */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Inputs específicos do Dashboard */
+.faltante-input {
+  width: 100px;
+  text-align: center;
+  padding: 6px;
+}
+
+/* --------------------------------------------
    CHECKLIST
-   ============================================ */
+   -------------------------------------------- */
 .checklist-item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.75rem;
+  gap: 12px;
+  padding: 8px 0;
   border-bottom: 1px solid var(--border);
-  transition: background var(--transition-fast);
-}
-
-.checklist-item:hover {
-  background: var(--bg-primary);
-  border-radius: var(--radius-md);
 }
 
 .checklist-item input[type="checkbox"] {
   width: 20px;
   height: 20px;
   cursor: pointer;
-  accent-color: var(--success);
 }
 
-/* ============================================
-   LOADING SPINNER
-   ============================================ */
-.loading {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--border);
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+.checklist-item label {
+  margin: 0;
+  font-weight: normal;
+  cursor: pointer;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+/* --------------------------------------------
+   BOTÕES
+   -------------------------------------------- */
+button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
 }
 
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
 }
 
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid var(--bg-secondary);
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+.btn-success { background: var(--success); }
+.btn-danger { background: var(--danger); }
+.btn-warning { background: var(--warning); }
+.btn-info { background: var(--info); }
+
+/* --------------------------------------------
+   ETIQUETA RESULTADO (RESSELAGEM)
+   -------------------------------------------- */
+.etiqueta-resultado {
+  background: var(--primary);
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: center;
 }
 
-/* ============================================
+.personalizar-palete {
+  margin-top: 10px;
+  font-size: 0.875rem;
+}
+
+/* --------------------------------------------
    ALERTAS
-   ============================================ */
+   -------------------------------------------- */
 .alert {
   padding: 1rem;
-  border-radius: var(--radius-md);
+  border-radius: 8px;
   margin-bottom: 1rem;
-  animation: slideIn var(--transition-normal);
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
 }
 
 .alert-success {
@@ -420,24 +307,30 @@ button:disabled {
   color: white;
 }
 
-.alert-info {
-  background: var(--info);
+/* --------------------------------------------
+   BADGES
+   -------------------------------------------- */
+.badge-prioridade {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background: var(--danger);
   color: white;
 }
 
-/* ============================================
+/* --------------------------------------------
    TABELAS
-   ============================================ */
+   -------------------------------------------- */
 table {
   width: 100%;
   border-collapse: collapse;
   background: var(--bg-secondary);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   overflow: hidden;
 }
 
 th, td {
-  padding: 0.75rem 1rem;
+  padding: 0.75rem;
   text-align: left;
   border-bottom: 1px solid var(--border);
 }
@@ -445,45 +338,15 @@ th, td {
 th {
   background: var(--primary);
   color: white;
-  font-weight: 600;
 }
 
 tr:hover {
   background: var(--bg-primary);
 }
 
-/* ============================================
-   TOOLTIPS
-   ============================================ */
-[data-tooltip] {
-  position: relative;
-  cursor: help;
-}
-
-[data-tooltip]:before {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--text-primary);
-  color: var(--bg-primary);
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-sm);
-  font-size: 0.75rem;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--transition-fast);
-}
-
-[data-tooltip]:hover:before {
-  opacity: 1;
-}
-
-/* ============================================
+/* --------------------------------------------
    FOOTER
-   ============================================ */
+   -------------------------------------------- */
 .footer {
   text-align: center;
   padding: 1.5rem;
@@ -493,50 +356,9 @@ tr:hover {
   margin-top: 2rem;
 }
 
-/* ============================================
-   RESPONSIVIDADE
-   ============================================ */
-@media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-  }
-  
-  .producao-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .dashboard-cards {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1rem;
-  }
-  
-  .nav {
-    padding: 0.5rem 1rem;
-    gap: 0.25rem;
-  }
-  
-  .nav a {
-    padding: 0.25rem 0.75rem;
-    font-size: 0.875rem;
-  }
-  
-  .header h1 {
-    font-size: 1.25rem;
-  }
-  
-  .dashboard-card .numero {
-    font-size: 1.75rem;
-  }
-  
-  th, td {
-    padding: 0.5rem;
-    font-size: 0.875rem;
-  }
-}
-
-/* ============================================
-   DARK MODE TOGGLE BUTTON
-   ============================================ */
+/* --------------------------------------------
+   DARK MODE TOGGLE
+   -------------------------------------------- */
 .dark-mode-toggle {
   position: fixed;
   bottom: 1rem;
@@ -552,33 +374,40 @@ tr:hover {
   cursor: pointer;
   box-shadow: var(--card-shadow);
   z-index: 1000;
-  transition: all var(--transition-fast);
+  transition: var(--transition);
 }
 
 .dark-mode-toggle:hover {
   transform: scale(1.1);
 }
 
-.dark-mode-toggle .light-icon,
-.dark-mode-toggle .dark-icon {
-  font-size: 1.5rem;
-}
-
-/* Mostrar/Esconder ícones conforme tema */
-@media (prefers-color-scheme: dark) {
-  .dark-mode-toggle .light-icon {
-    display: none;
+/* --------------------------------------------
+   RESPONSIVIDADE
+   -------------------------------------------- */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
   }
-  .dark-mode-toggle .dark-icon {
-    display: inline;
+  
+  .dashboard-cards {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
   }
-}
-
-@media (prefers-color-scheme: light) {
-  .dark-mode-toggle .light-icon {
-    display: inline;
+  
+  .nav {
+    padding: 0.5rem 1rem;
   }
-  .dark-mode-toggle .dark-icon {
-    display: none;
+  
+  .nav a {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .dashboard-card .numero {
+    font-size: 1.75rem;
+  }
+  
+  .faltante-input {
+    width: 70px;
   }
 }
