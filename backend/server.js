@@ -1,3 +1,6 @@
+console.log('🚀 Iniciando servidor...');
+console.log('DATABASE_URL:', process.env.DATABASE_URL ? '✅ definida' : '❌ INDEFINIDA');
+
 const express = require('express');
 const { Client } = require('pg');
 
