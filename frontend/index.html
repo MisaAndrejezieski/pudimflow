@@ -5,51 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>PudimFlow - Dashboard</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .card {
-            margin-bottom: 1.5rem;
-        }
-        .faltante-input {
-            width: 100px;
-            text-align: center;
-            padding: 6px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-        }
-        .etiqueta-resultado {
-            background: var(--primary);
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 10px;
-            font-weight: bold;
-            text-align: center;
-        }
-        .personalizar-palete {
-            margin-top: 10px;
-            font-size: 0.875rem;
-        }
-        .checklist-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        .checklist-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-        }
-        .badge-prioridade {
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 10px;
-            background: var(--danger);
-            color: white;
-        }
-    </style>
 </head>
 <body>
     <div class="header">
@@ -74,14 +29,14 @@
             <p id="mensagemData">⚠️ Planeje as etiquetas antes da meia-noite!</p>
         </div>
 
-        <!-- DATAS (FABRICAÇÃO E VALIDADE) -->
+        <!-- DATAS -->
         <div class="card">
             <h2>📅 Datas de Produção</h2>
             <p><strong>Data de fabricação:</strong> <span id="dataFabricacao">-</span></p>
             <p><strong>Data de validade:</strong> <span id="dataValidade">-</span> (padrão: <span id="validadeDias">-</span> dias)</p>
         </div>
 
-        <!-- PRODUTO PROGRAMADO E PESOS -->
+        <!-- PRODUTO PROGRAMADO -->
         <div class="card">
             <h2>🏭 Produto Programado</h2>
             <p><strong>Produto:</strong> <span id="produtoProgramado">-</span></p>
@@ -91,40 +46,40 @@
             <p><strong>Peso total:</strong> <span id="pesoTotal">-</span> g</p>
         </div>
 
-        <!-- CHECKLIST PERSONALIZÁVEL (VOCÊ CRIA SUAS TAREFAS) -->
+        <!-- CHECKLIST PERSONALIZÁVEL -->
         <div class="card">
             <h2>📋 Meu Checklist Personalizado</h2>
             <div id="checklistPersonalizado"></div>
             <div style="display: flex; gap: 8px; margin-top: 12px;">
                 <input type="text" id="novaTarefaInput" placeholder="Nova tarefa..." style="flex: 1;">
-                <button id="btnAdicionarTarefa" style="background: var(--info);">➕ Adicionar</button>
+                <button id="btnAdicionarTarefa" class="btn-info">➕ Adicionar</button>
             </div>
         </div>
 
-        <!-- FALTANTE BRASCOP (1º, 2º, 3º turno) -->
+        <!-- FALTANTE BRASCOP -->
         <div class="card">
-            <h2>🏭 Brascop/Trepko - Faltante para terminar produção</h2>
+            <h2>🏭 Brascop/Trepko - Faltante</h2>
             <div style="display: flex; gap: 16px; flex-wrap: wrap;">
                 <div><label>1º turno (kg):</label> <input type="number" id="brascopTurno1" class="faltante-input" value="0" step="500"></div>
                 <div><label>2º turno (kg):</label> <input type="number" id="brascopTurno2" class="faltante-input" value="0" step="500"></div>
                 <div><label>3º turno (kg):</label> <input type="number" id="brascopTurno3" class="faltante-input" value="0" step="500"></div>
             </div>
-            <p><strong>Total produzido Brascop:</strong> <span id="brascopTotalProduzido">0</span> kg</p>
-            <p><strong>Meta Brascop:</strong> <span id="brascopMeta">0</span> kg</p>
-            <p><strong>⚠️ Falta produzir Brascop:</strong> <span id="brascopFalta">0</span> kg</p>
+            <p><strong>Total produzido:</strong> <span id="brascopTotalProduzido">0</span> kg</p>
+            <p><strong>Meta:</strong> <span id="brascopMeta">0</span> kg</p>
+            <p><strong>⚠️ Falta:</strong> <span id="brascopFalta">0</span> kg</p>
         </div>
 
         <!-- FALTANTE SERAC -->
         <div class="card">
-            <h2>🏭 Serac - Faltante para terminar produção</h2>
+            <h2>🏭 Serac - Faltante</h2>
             <div style="display: flex; gap: 16px; flex-wrap: wrap;">
                 <div><label>1º turno (kg):</label> <input type="number" id="seracTurno1" class="faltante-input" value="0" step="500"></div>
                 <div><label>2º turno (kg):</label> <input type="number" id="seracTurno2" class="faltante-input" value="0" step="500"></div>
                 <div><label>3º turno (kg):</label> <input type="number" id="seracTurno3" class="faltante-input" value="0" step="500"></div>
             </div>
-            <p><strong>Total produzido Serac:</strong> <span id="seracTotalProduzido">0</span> kg</p>
-            <p><strong>Meta Serac:</strong> <span id="seracMeta">0</span> kg</p>
-            <p><strong>⚠️ Falta produzir Serac:</strong> <span id="seracFalta">0</span> kg</p>
+            <p><strong>Total produzido:</strong> <span id="seracTotalProduzido">0</span> kg</p>
+            <p><strong>Meta:</strong> <span id="seracMeta">0</span> kg</p>
+            <p><strong>⚠️ Falta:</strong> <span id="seracFalta">0</span> kg</p>
         </div>
 
         <!-- RESSELAGEM BRASCOP -->
@@ -134,9 +89,7 @@
                 <label>Estantes faltando para resselar:</label>
                 <input type="number" id="brascopEstantesFaltando" value="0" step="1" style="width: 120px;">
             </div>
-            <div id="brascopEtiquetaResultado" class="etiqueta-resultado">
-                Calcule para ver as etiquetas necessárias
-            </div>
+            <div id="brascopEtiquetaResultado" class="etiqueta-resultado">Calcule para ver as etiquetas necessárias</div>
             <div class="personalizar-palete">
                 <label>Último palete (caixas):</label>
                 <input type="number" id="brascopUltimoPaleteCaixas" placeholder="deixe vazio para automático" style="width: 150px;">
@@ -148,7 +101,7 @@
         <div class="card">
             <h2>🔁 Resselagem Serac</h2>
             <div class="form-group">
-                <label>Tipo de produto (caixas/palete):</label>
+                <label>Tipo de produto:</label>
                 <select id="seracTipoProduto">
                     <option value="padrao">Padrão (242 caixas × 20 copos)</option>
                     <option value="itambe">Itambé (352 caixas × 15 copos)</option>
@@ -158,9 +111,7 @@
                 <label>Estantes faltando para resselar:</label>
                 <input type="number" id="seracEstantesFaltando" value="0" step="1" style="width: 120px;">
             </div>
-            <div id="seracEtiquetaResultado" class="etiqueta-resultado">
-                Calcule para ver as etiquetas necessárias
-            </div>
+            <div id="seracEtiquetaResultado" class="etiqueta-resultado">Calcule para ver as etiquetas necessárias</div>
             <div class="personalizar-palete">
                 <label>Último palete (caixas):</label>
                 <input type="number" id="seracUltimoPaleteCaixas" placeholder="deixe vazio para automático" style="width: 150px;">
@@ -174,7 +125,7 @@
             <div id="equipeLista"></div>
             <div style="display: flex; gap: 8px; margin-top: 12px;">
                 <input type="text" id="novoMembroInput" placeholder="Nome do colaborador..." style="flex: 1;">
-                <button id="btnAdicionarMembro" style="background: var(--info);">➕ Adicionar</button>
+                <button id="btnAdicionarMembro" class="btn-info">➕ Adicionar</button>
             </div>
         </div>
     </div>
@@ -208,14 +159,12 @@
         let metaGlobal = 10000;
 
         // ============================================
-        // ATUALIZAR DATAS E PESOS
+        // DATAS E PESOS
         // ============================================
         function atualizarDatasEPesos() {
             const hoje = new Date();
-            const dataFab = hoje.toLocaleDateString('pt-BR');
-            document.getElementById('dataFabricacao').textContent = dataFab;
-
-            const config = produtosConfig[produtoAtual] || produtosConfig['Pudim Leite Batavo'];
+            document.getElementById('dataFabricacao').textContent = hoje.toLocaleDateString('pt-BR');
+            const config = produtosConfig[produtoAtual];
             const dataValidade = new Date();
             dataValidade.setDate(hoje.getDate() + config.validadeDias);
             document.getElementById('dataValidade').textContent = dataValidade.toLocaleDateString('pt-BR');
@@ -237,8 +186,7 @@
             document.getElementById('brascopTotalProduzido').textContent = total.toLocaleString();
             const meta = metaGlobal * 0.7;
             document.getElementById('brascopMeta').textContent = meta.toLocaleString();
-            const falta = Math.max(0, meta - total);
-            document.getElementById('brascopFalta').textContent = falta.toLocaleString();
+            document.getElementById('brascopFalta').textContent = Math.max(0, meta - total).toLocaleString();
         }
 
         // ============================================
@@ -252,8 +200,7 @@
             document.getElementById('seracTotalProduzido').textContent = total.toLocaleString();
             const meta = metaGlobal * 0.3;
             document.getElementById('seracMeta').textContent = meta.toLocaleString();
-            const falta = Math.max(0, meta - total);
-            document.getElementById('seracFalta').textContent = falta.toLocaleString();
+            document.getElementById('seracFalta').textContent = Math.max(0, meta - total).toLocaleString();
         }
 
         // ============================================
@@ -314,9 +261,10 @@
         }
 
         // ============================================
-        // CHECKLIST PERSONALIZÁVEL
+        // CHECKLIST PERSONALIZADO
         // ============================================
         let tarefasPersonalizadas = JSON.parse(localStorage.getItem('tarefasPersonalizadas')) || [];
+        
         function renderizarChecklist() {
             const container = document.getElementById('checklistPersonalizado');
             if (tarefasPersonalizadas.length === 0) {
@@ -330,14 +278,18 @@
                     <button style="margin-left: auto; background: var(--danger); padding: 4px 12px;" onclick="removerTarefa(${index})">🗑️</button>
                 </div>
             `).join('');
+            
             tarefasPersonalizadas.forEach((tarefa, index) => {
                 const chk = document.getElementById(`tarefa_${index}`);
-                if (chk) chk.addEventListener('change', (e) => {
-                    tarefasPersonalizadas[index].concluida = e.target.checked;
-                    localStorage.setItem('tarefasPersonalizadas', JSON.stringify(tarefasPersonalizadas));
-                });
+                if (chk) {
+                    chk.addEventListener('change', (e) => {
+                        tarefasPersonalizadas[index].concluida = e.target.checked;
+                        localStorage.setItem('tarefasPersonalizadas', JSON.stringify(tarefasPersonalizadas));
+                    });
+                }
             });
         }
+
         function adicionarTarefa() {
             const input = document.getElementById('novaTarefaInput');
             if (input.value.trim()) {
@@ -347,16 +299,18 @@
                 input.value = '';
             }
         }
-        function removerTarefa(index) {
+
+        window.removerTarefa = function(index) {
             tarefasPersonalizadas.splice(index, 1);
             localStorage.setItem('tarefasPersonalizadas', JSON.stringify(tarefasPersonalizadas));
             renderizarChecklist();
-        }
+        };
 
         // ============================================
         // EQUIPE
         // ============================================
         let equipe = JSON.parse(localStorage.getItem('equipe')) || [];
+        
         function renderizarEquipe() {
             const container = document.getElementById('equipeLista');
             if (equipe.length === 0) {
@@ -370,14 +324,18 @@
                     <button style="margin-left: auto; background: var(--danger); padding: 4px 12px;" onclick="removerMembro(${index})">🗑️</button>
                 </div>
             `).join('');
+            
             equipe.forEach((membro, index) => {
                 const chk = document.getElementById(`membro_${index}`);
-                if (chk) chk.addEventListener('change', (e) => {
-                    equipe[index].presente = e.target.checked;
-                    localStorage.setItem('equipe', JSON.stringify(equipe));
-                });
+                if (chk) {
+                    chk.addEventListener('change', (e) => {
+                        equipe[index].presente = e.target.checked;
+                        localStorage.setItem('equipe', JSON.stringify(equipe));
+                    });
+                }
             });
         }
+
         function adicionarMembro() {
             const input = document.getElementById('novoMembroInput');
             if (input.value.trim()) {
@@ -387,11 +345,12 @@
                 input.value = '';
             }
         }
-        function removerMembro(index) {
+
+        window.removerMembro = function(index) {
             equipe.splice(index, 1);
             localStorage.setItem('equipe', JSON.stringify(equipe));
             renderizarEquipe();
-        }
+        };
 
         // ============================================
         // ALERTA 00:00
@@ -433,6 +392,7 @@
         document.getElementById('btnCalcularSerac').addEventListener('click', calcularEtiquetasSerac);
         document.getElementById('btnAdicionarTarefa').addEventListener('click', adicionarTarefa);
         document.getElementById('btnAdicionarMembro').addEventListener('click', adicionarMembro);
+        
         document.getElementById('brascopTurno1').addEventListener('input', atualizarFaltanteBrascop);
         document.getElementById('brascopTurno2').addEventListener('input', atualizarFaltanteBrascop);
         document.getElementById('brascopTurno3').addEventListener('input', atualizarFaltanteBrascop);
