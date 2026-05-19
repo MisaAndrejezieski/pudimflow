@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ProducaoDiaria {
+  id            Int      @id @default(autoincrement())
+  data          DateTime @default(now())
+  
+  brascopEstantes  Int
+  brascopKg        Float
+  brascopParadas   String
+  brascopPerdas    Int
+  
+  seracEstantes    Int
+  seracKg          Float
+  seracParadas     String
+  seracPerdas      Int
+  
+  totalEstantes    Int
+  totalKg          Float
+  totalPerdas      Int
+  
+  bpfOk            Boolean  @default(false)
+  bpfObservacao    String?
+  falhas           String?
+  reclamacoes      String?
+  
+  dssRealizado     Boolean  @default(false)
+  dssTema          String?
+  quaseAcidente    String?
+  
+  etiquetaAzul     String?
+  etiquetaVermelha String?
+  etiquetaFechada  String?
+  verAgirAntes     String?
+  verAgirDepois    String?
+  
+  criadoEm         DateTime @default(now())
+}
