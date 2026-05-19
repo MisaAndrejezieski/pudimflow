@@ -43,47 +43,65 @@
             </div>
         </div>
 
-        <!-- Checklist Técnico do Turno -->
+        <!-- Checklist do Líder (passos essenciais) -->
         <div class="card">
-            <h2>📋 Checklist Técnico do Turno</h2>
-            
+            <h2>📋 Checklist do Líder</h2>
+            <div class="checklist-item">
+                <input type="checkbox" id="checkDSS">
+                <label>DSS - Diálogo de Segurança realizado</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="checkBPF">
+                <label>BPF - Boas Práticas verificado</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="checkProducao">
+                <label>Produção registrada</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="checkEquipe">
+                <label>Equipe completa e treinada</label>
+            </div>
             <div class="checklist-item">
                 <input type="checkbox" id="checkProduto">
-                <label><strong>Produto definido:</strong> <span id="produtoAtual">-</span></label>
+                <label>Produto definido: <span id="produtoAtual">-</span></label>
             </div>
-            
             <div class="checklist-item">
                 <input type="checkbox" id="checkData">
                 <label>Data de validade conferida</label>
             </div>
-            
             <div class="checklist-item">
                 <input type="checkbox" id="checkPesoBase">
-                <label>Peso da base (massa) dentro do padrão: <span id="pesoBaseInfo">-</span></label>
+                <label>Peso da base dentro do padrão: <span id="pesoBaseInfo">-</span></label>
             </div>
-            
             <div class="checklist-item">
                 <input type="checkbox" id="checkPesoCalda">
                 <label>Peso da calda dentro do padrão: <span id="pesoCaldaInfo">-</span></label>
             </div>
-            
+        </div>
+
+        <!-- Materiais Necessários (cálculo automático) -->
+        <div class="card">
+            <h2>📦 Materiais Necessários para o Turno</h2>
             <div class="checklist-item">
                 <input type="checkbox" id="checkCopos">
-                <label>Copos disponíveis: <span id="coposNecessarios">0</span> / <span id="coposDisponiveis">0</span></label>
+                <label>Copos disponíveis: <span id="coposNecessarios">0</span> necessários / <span id="coposDisponiveis">0</span> disponíveis</label>
             </div>
-            
             <div class="checklist-item">
                 <input type="checkbox" id="checkTampas">
-                <label>Tampas disponíveis: <span id="tampasNecessarias">0</span> / <span id="tampasDisponiveis">0</span></label>
+                <label>Tampas disponíveis: <span id="tampasNecessarias">0</span> necessárias / <span id="tampasDisponiveis">0</span> disponíveis</label>
             </div>
-            
             <div class="form-group" style="margin-top: 1rem;">
-                <label>Estoque atual (copos disponíveis):</label>
+                <label>Estoque atual (copos):</label>
                 <input type="number" id="estoqueCopos" value="50000" step="1000">
             </div>
             <div class="form-group">
-                <label>Estoque atual (tampas disponíveis):</label>
+                <label>Estoque atual (tampas):</label>
                 <input type="number" id="estoqueTampas" value="50000" step="1000">
+            </div>
+            <div class="form-group">
+                <label>Meta de produção do dia (kg):</label>
+                <input type="number" id="metaProducao" value="10000" step="500">
             </div>
         </div>
 
@@ -103,26 +121,10 @@
             </div>
         </div>
 
-        <!-- Pendências de Segurança -->
+        <!-- Pendências -->
         <div class="card">
-            <h2>🛡️ Pendências de Segurança</h2>
-            <div id="pendenciasSeguranca">
-                <p style="color: var(--text-secondary);">Carregando...</p>
-            </div>
-        </div>
-
-        <!-- Pendências de Qualidade -->
-        <div class="card">
-            <h2>✅ Pendências de Qualidade</h2>
-            <div id="pendenciasQualidade">
-                <p style="color: var(--text-secondary);">Carregando...</p>
-            </div>
-        </div>
-
-        <!-- Pendências de Manutenção (Etiquetas Vermelhas) -->
-        <div class="card">
-            <h2>⚠️ Pendências de Manutenção (Etiquetas Vermelhas)</h2>
-            <div id="pendenciasManutencao">
+            <h2>⚠️ Pendências</h2>
+            <div id="pendenciasLista">
                 <p style="color: var(--text-secondary);">Carregando...</p>
             </div>
         </div>
@@ -154,7 +156,6 @@
         };
 
         let produtoAtualNome = 'Pudim Leite Batavo';
-        let metaKgHoje = 10000;
 
         async function carregarDashboard() {
             try {
@@ -168,6 +169,7 @@
                     document.getElementById('totalKg').textContent = (data.totalKg || 0).toLocaleString();
                     document.getElementById('totalPerdas').textContent = data.totalPerdas || 0;
                     
+                    const metaKgHoje = parseInt(document.getElementById('metaProducao').value) || 10000;
                     const eficiencia = ((data.totalKg || 0) / metaKgHoje * 100).toFixed(1);
                     document.getElementById('eficiencia').textContent = `${eficiencia}%`;
                     
@@ -180,63 +182,49 @@
                     document.getElementById('progressoBar').style.width = `${progresso}%`;
                     document.getElementById('progressoPercentual').textContent = `${progresso}%`;
                     
-                    // Pendências de Segurança
-                    const segurancaDiv = document.getElementById('pendenciasSeguranca');
-                    const segPendencias = [];
-                    if (!data.dssRealizado) segPendencias.push('⚠️ DSS não realizado hoje');
-                    if (data.quaseAcidente) segPendencias.push(`⚠️ Quase acidente registrado: ${data.quaseAcidente}`);
-                    if (segPendencias.length === 0) {
-                        segurancaDiv.innerHTML = '<p style="color: var(--text-secondary);">✅ Nenhuma pendência de segurança.</p>';
-                    } else {
-                        segurancaDiv.innerHTML = segPendencias.map(p => `<p>${p}</p>`).join('');
-                    }
+                    document.getElementById('checkDSS').checked = data.dssRealizado || false;
+                    document.getElementById('checkBPF').checked = data.bpfOk || false;
                     
-                    // Pendências de Qualidade
-                    const qualidadeDiv = document.getElementById('pendenciasQualidade');
-                    const qualPendencias = [];
-                    if (!data.bpfOk) qualPendencias.push('⚠️ BPF não verificado');
-                    if (data.falhas && data.falhas.trim() !== '') qualPendencias.push(`⚠️ Falhas registradas: ${data.falhas}`);
-                    if (data.reclamacoes && data.reclamacoes.trim() !== '') qualPendencias.push(`📢 Reclamações: ${data.reclamacoes}`);
-                    if (qualPendencias.length === 0) {
-                        qualidadeDiv.innerHTML = '<p style="color: var(--text-secondary);">✅ Nenhuma pendência de qualidade.</p>';
-                    } else {
-                        qualidadeDiv.innerHTML = qualPendencias.map(p => `<p>${p}</p>`).join('');
-                    }
+                    // Pendências combinadas
+                    const pendenciasDiv = document.getElementById('pendenciasLista');
+                    const pendencias = [];
                     
-                    // Pendências de Manutenção (apenas etiquetas vermelhas)
-                    const manutencaoDiv = document.getElementById('pendenciasManutencao');
-                    if (data.etiquetaVermelha && data.etiquetaVermelha.trim() !== '') {
-                        manutencaoDiv.innerHTML = `<p>🔴 ${data.etiquetaVermelha}</p>`;
-                    } else {
-                        manutencaoDiv.innerHTML = '<p style="color: var(--text-secondary);">✅ Nenhuma etiqueta vermelha em aberto.</p>';
-                    }
+                    if (!data.dssRealizado) pendencias.push('🔴 DSS não realizado hoje');
+                    if (!data.bpfOk) pendencias.push('🔴 BPF não verificado');
+                    if (data.quaseAcidente && data.quaseAcidente.trim() !== '') pendencias.push(`⚠️ Quase acidente: ${data.quaseAcidente}`);
+                    if (data.falhas && data.falhas.trim() !== '') pendencias.push(`⚠️ Falhas: ${data.falhas}`);
+                    if (data.reclamacoes && data.reclamacoes.trim() !== '') pendencias.push(`📢 Reclamações: ${data.reclamacoes}`);
+                    if (data.etiquetaVermelha && data.etiquetaVermelha.trim() !== '') pendencias.push(`🔴 Etiqueta vermelha: ${data.etiquetaVermelha}`);
                     
-                    // Programação (se existir)
-                    if (data.programacao) {
-                        produtoAtualNome = data.programacao;
-                        metaKgHoje = data.meta || 10000;
+                    if (pendencias.length === 0) {
+                        pendenciasDiv.innerHTML = '<p style="color: var(--text-secondary);">✅ Nenhuma pendência registrada</p>';
+                    } else {
+                        pendenciasDiv.innerHTML = pendencias.map(p => `<p>${p}</p>`).join('');
                     }
                 }
                 
-                // Atualiza checklist técnico
+                // Atualiza materiais necessários
+                const metaKg = parseInt(document.getElementById('metaProducao').value) || 10000;
+                const pesoPorUnidade = 0.100;
+                const unidadesNecessarias = Math.ceil(metaKg / pesoPorUnidade);
+                
+                document.getElementById('coposNecessarios').textContent = unidadesNecessarias.toLocaleString();
+                document.getElementById('tampasNecessarias').textContent = unidadesNecessarias.toLocaleString();
+                
                 const estoqueCopos = parseInt(document.getElementById('estoqueCopos').value) || 0;
                 const estoqueTampas = parseInt(document.getElementById('estoqueTampas').value) || 0;
                 
-                const pesoPorUnidade = 0.100;
-                const coposNecessarios = Math.ceil(metaKgHoje / pesoPorUnidade);
-                
-                document.getElementById('produtoAtual').textContent = produtoAtualNome;
-                document.getElementById('coposNecessarios').textContent = coposNecessarios.toLocaleString();
                 document.getElementById('coposDisponiveis').textContent = estoqueCopos.toLocaleString();
-                document.getElementById('tampasNecessarias').textContent = coposNecessarios.toLocaleString();
                 document.getElementById('tampasDisponiveis').textContent = estoqueTampas.toLocaleString();
                 
+                document.getElementById('checkCopos').checked = estoqueCopos >= unidadesNecessarias;
+                document.getElementById('checkTampas').checked = estoqueTampas >= unidadesNecessarias;
+                
+                // Pesos do produto atual
                 const config = configProdutos[produtoAtualNome] || configProdutos['Pudim Leite Batavo'];
                 document.getElementById('pesoBaseInfo').textContent = `${config.baseKg} kg (${config.padrao})`;
                 document.getElementById('pesoCaldaInfo').textContent = `${config.caldaKg} kg`;
-                
-                document.getElementById('checkCopos').checked = estoqueCopos >= coposNecessarios;
-                document.getElementById('checkTampas').checked = estoqueTampas >= coposNecessarios;
+                document.getElementById('produtoAtual').textContent = produtoAtualNome;
                 
                 document.getElementById('ultimaAtualizacao').textContent = new Date().toLocaleString();
             } catch (error) {
@@ -246,16 +234,25 @@
 
         function salvarChecklist() {
             const dados = {
-                produtoOk: document.getElementById('checkProduto').checked,
-                dataOk: document.getElementById('checkData').checked,
-                pesoBaseOk: document.getElementById('checkPesoBase').checked,
-                pesoCaldaOk: document.getElementById('checkPesoCalda').checked,
-                coposOk: document.getElementById('checkCopos').checked,
-                tampasOk: document.getElementById('checkTampas').checked
+                dss: document.getElementById('checkDSS').checked,
+                bpf: document.getElementById('checkBPF').checked,
+                producao: document.getElementById('checkProducao').checked,
+                equipe: document.getElementById('checkEquipe').checked,
+                produto: document.getElementById('checkProduto').checked,
+                data: document.getElementById('checkData').checked,
+                pesoBase: document.getElementById('checkPesoBase').checked,
+                pesoCalda: document.getElementById('checkPesoCalda').checked,
+                copos: document.getElementById('checkCopos').checked,
+                tampas: document.getElementById('checkTampas').checked
             };
             console.log('Checklist salvo:', dados);
         }
 
+        // Eventos
+        document.getElementById('checkDSS').addEventListener('change', salvarChecklist);
+        document.getElementById('checkBPF').addEventListener('change', salvarChecklist);
+        document.getElementById('checkProducao').addEventListener('change', salvarChecklist);
+        document.getElementById('checkEquipe').addEventListener('change', salvarChecklist);
         document.getElementById('checkProduto').addEventListener('change', salvarChecklist);
         document.getElementById('checkData').addEventListener('change', salvarChecklist);
         document.getElementById('checkPesoBase').addEventListener('change', salvarChecklist);
@@ -264,6 +261,7 @@
         document.getElementById('checkTampas').addEventListener('change', salvarChecklist);
         document.getElementById('estoqueCopos').addEventListener('input', () => carregarDashboard());
         document.getElementById('estoqueTampas').addEventListener('input', () => carregarDashboard());
+        document.getElementById('metaProducao').addEventListener('input', () => carregarDashboard());
 
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
