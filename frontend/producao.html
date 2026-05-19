@@ -18,10 +18,33 @@
         <a href="qualidade.html">✅ Qualidade</a>
         <a href="seguranca.html">🛡️ Segurança</a>
         <a href="sim.html">💡 SIM</a>
+        <a href="programacao.html">📅 Programação</a>
         <a href="relatorios.html">📈 Relatórios</a>
     </nav>
 
     <div class="container">
+        <!-- Informações da Programação do Dia -->
+        <div class="card" style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white;">
+            <h2 style="color: white;">📅 Programação de Hoje</h2>
+            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <strong>Produto:</strong> <span id="produtoProgramado">-</span>
+                </div>
+                <div>
+                    <strong>Meta do dia:</strong> <span id="metaProgramada">0</span> kg
+                </div>
+                <div>
+                    <strong>Produzido até agora:</strong> <span id="produzidoHoje">0</span> kg
+                </div>
+                <div>
+                    <strong>Progresso:</strong> <span id="progressoHoje">0</span>%
+                </div>
+            </div>
+            <div style="background: rgba(255,255,255,0.3); border-radius: 8px; height: 10px; margin-top: 1rem;">
+                <div id="barraProgresso" style="background: white; width: 0%; height: 10px; border-radius: 8px; transition: width 0.3s;"></div>
+            </div>
+        </div>
+
         <!-- LINHA BRASCOP/TREPKO -->
         <div class="card">
             <h2>🏭 Linha 1 - Brascop/Trepko</h2>
@@ -102,33 +125,6 @@
             </div>
         </div>
 
-        <!-- TANQUES -->
-        <div class="card">
-            <h2>🧪 Tanques</h2>
-            <div class="producao-grid">
-                <div>
-                    <div class="form-group">
-                        <label>TQ 01 (Brascop)</label>
-                        <input type="text" id="tanque01" placeholder="Ex: 1600 kg / preparação">
-                    </div>
-                    <div class="form-group">
-                        <label>TQ 02 (Brascop)</label>
-                        <input type="text" id="tanque02" placeholder="Ex: PREPARAÇÃO">
-                    </div>
-                </div>
-                <div>
-                    <div class="form-group">
-                        <label>TQ 03 (Serac)</label>
-                        <input type="text" id="tanque03" placeholder="Ex: 0%">
-                    </div>
-                    <div class="form-group">
-                        <label>TQ 04 (Serac)</label>
-                        <input type="text" id="tanque04" placeholder="Ex: 0%">
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- RESUMO E AÇÕES -->
         <div class="card">
             <h2>📊 Resumo do Turno</h2>
@@ -137,6 +133,7 @@
                 <p><strong>Total Serac:</strong> <span id="totalSeracEstantes">0</span> estantes | <span id="totalSeracKg">0</span> kg</p>
                 <p><strong>PRODUÇÃO TOTAL:</strong> <span id="totalGeralEstantes">0</span> estantes | <span id="totalGeralKg">0</span> kg</p>
                 <p><strong>Perdas totais:</strong> <span id="totalPerdasGeral">0</span> copos</p>
+                <p><strong>Falta para atingir meta:</strong> <span id="faltamMeta">0</span> kg (<span id="faltamPercentual">0</span>%)</p>
             </div>
             
             <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
@@ -158,9 +155,10 @@
         <span class="dark-icon">☀️</span>
     </div>
 
-    <script src="script.js"></script>
     <script>
-        // Elementos do DOM
+        let metaAtual = 10000;
+        let produtoAtual = '';
+
         const elements = {
             brascopEstantes: document.getElementById('brascopEstantes'),
             brascopKg: document.getElementById('brascopKg'),
@@ -172,14 +170,9 @@
             seracEstantes: document.getElementById('seracEstantes'),
             seracKg: document.getElementById('seracKg'),
             seracPerdas: document.getElementById('seracPerdas'),
-            seracParadas: document.getElementById('seracParadas'),
-            tanque01: document.getElementById('tanque01'),
-            tanque02: document.getElementById('tanque02'),
-            tanque03: document.getElementById('tanque03'),
-            tanque04: document.getElementById('tanque04')
+            seracParadas: document.getElementById('seracParadas')
         };
 
-        // Função para atualizar o resumo
         function atualizarResumo() {
             const brascopEst = parseInt(elements.brascopEstantes.value) || 0;
             const brascopKgVal = parseFloat(elements.brascopKg.value) || 0;
@@ -192,22 +185,58 @@
             const totalBrascopKg = brascopKgVal + brascopRessKg;
             
             document.getElementById('totalBrascopEstantes').textContent = totalBrascopEst;
-            document.getElementById('totalBrascopKg').textContent = totalBrascopKg;
+            document.getElementById('totalBrascopKg').textContent = totalBrascopKg.toLocaleString();
             document.getElementById('totalSeracEstantes').textContent = seracEst;
-            document.getElementById('totalSeracKg').textContent = seracKgVal;
+            document.getElementById('totalSeracKg').textContent = seracKgVal.toLocaleString();
+            
+            const totalGeralKg = totalBrascopKg + seracKgVal;
             document.getElementById('totalGeralEstantes').textContent = totalBrascopEst + seracEst;
-            document.getElementById('totalGeralKg').textContent = (totalBrascopKg + seracKgVal).toLocaleString();
+            document.getElementById('totalGeralKg').textContent = totalGeralKg.toLocaleString();
             
             const perdas = (parseInt(elements.brascopPerdas.value) || 0) + (parseInt(elements.seracPerdas.value) || 0);
             document.getElementById('totalPerdasGeral').textContent = perdas;
+            
+            const faltam = Math.max(0, metaAtual - totalGeralKg);
+            const percentual = metaAtual > 0 ? ((totalGeralKg / metaAtual) * 100).toFixed(1) : 0;
+            document.getElementById('faltamMeta').textContent = faltam.toLocaleString();
+            document.getElementById('faltamPercentual').textContent = percentual;
+            
+            // Atualiza barra de progresso do topo
+            const progresso = Math.min(percentual, 100);
+            document.getElementById('barraProgresso').style.width = `${progresso}%`;
+            document.getElementById('progressoHoje').textContent = progresso;
         }
 
-        // Adicionar eventos para atualizar resumo em tempo real
+        async function carregarProgramacao() {
+            try {
+                const response = await fetch('/api/producao/hoje');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    if (result.data.programacao) {
+                        produtoAtual = result.data.programacao;
+                        document.getElementById('produtoProgramado').textContent = produtoAtual;
+                    }
+                    if (result.data.meta) {
+                        metaAtual = result.data.meta;
+                        document.getElementById('metaProgramada').textContent = metaAtual.toLocaleString();
+                    }
+                    if (result.data.totalKg) {
+                        document.getElementById('produzidoHoje').textContent = result.data.totalKg.toLocaleString();
+                        const progresso = metaAtual > 0 ? ((result.data.totalKg / metaAtual) * 100).toFixed(1) : 0;
+                        document.getElementById('progressoHoje').textContent = progresso;
+                        document.getElementById('barraProgresso').style.width = `${Math.min(progresso, 100)}%`;
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar programação:', error);
+            }
+        }
+
         Object.values(elements).forEach(el => {
             if (el) el.addEventListener('input', atualizarResumo);
         });
 
-        // Salvar produção
         document.getElementById('btnSalvar').addEventListener('click', async () => {
             const dados = {
                 brascopEstantes: parseInt(elements.brascopEstantes.value) || 0,
@@ -230,10 +259,35 @@
             msgDiv.innerHTML = 'Salvando dados...';
             
             try {
+                const responseGet = await fetch('/api/producao/hoje');
+                const resultGet = await responseGet.json();
+                
+                let producaoExistente = {};
+                if (resultGet.success && resultGet.data && resultGet.data.id) {
+                    producaoExistente = resultGet.data;
+                }
+                
+                const dadosCompletos = {
+                    ...dados,
+                    bpfOk: producaoExistente.bpfOk || false,
+                    bpfObservacao: producaoExistente.bpfObservacao || '',
+                    falhas: producaoExistente.falhas || '',
+                    reclamacoes: producaoExistente.reclamacoes || '',
+                    dssRealizado: producaoExistente.dssRealizado || false,
+                    dssTema: producaoExistente.dssTema || '',
+                    quaseAcidente: producaoExistente.quaseAcidente || '',
+                    etiquetaAzul: producaoExistente.etiquetaAzul || '',
+                    etiquetaVermelha: producaoExistente.etiquetaVermelha || '',
+                    etiquetaFechada: producaoExistente.etiquetaFechada || '',
+                    observacoes: producaoExistente.observacoes || '',
+                    programacao: produtoAtual || producaoExistente.programacao || '',
+                    meta: metaAtual || producaoExistente.meta || 0
+                };
+                
                 const response = await fetch('/api/producao', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dados)
+                    body: JSON.stringify(dadosCompletos)
                 });
                 const result = await response.json();
                 
@@ -241,6 +295,7 @@
                     msgDiv.className = 'alert alert-success';
                     msgDiv.innerHTML = '✅ Produção salva com sucesso!';
                     setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+                    carregarProgramacao();
                 } else {
                     throw new Error(result.error);
                 }
@@ -253,7 +308,6 @@
             }
         });
         
-        // Carregar dados de hoje
         document.getElementById('btnCarregar').addEventListener('click', async () => {
             try {
                 const response = await fetch('/api/producao/hoje');
@@ -276,15 +330,13 @@
                     msgDiv.className = 'alert alert-success';
                     msgDiv.innerHTML = '✅ Dados carregados com sucesso!';
                     setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
-                } else {
-                    document.getElementById('mensagem').style.display = 'none';
                 }
+                await carregarProgramacao();
             } catch (error) {
                 console.error('Erro ao carregar:', error);
             }
         });
         
-        // Limpar formulário
         document.getElementById('btnLimpar').addEventListener('click', () => {
             Object.values(elements).forEach(el => {
                 if (el) {
@@ -296,12 +348,11 @@
             atualizarResumo();
         });
         
-        // Dark mode toggle
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
         }
         
-        // Inicializar
+        carregarProgramacao();
         atualizarResumo();
         document.getElementById('btnCarregar').click();
     </script>
