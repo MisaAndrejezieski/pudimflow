@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <!-- Checklist do Líder (passos essenciais) -->
+        <!-- Checklist do Líder -->
         <div class="card">
             <h2>📋 Checklist do Líder</h2>
             <div class="checklist-item">
@@ -64,23 +64,23 @@
             </div>
             <div class="checklist-item">
                 <input type="checkbox" id="checkProduto">
-                <label>Produto definido: <span id="produtoAtual">-</span></label>
+                <label>Produto definido: <strong><span id="produtoAtual">-</span></strong></label>
             </div>
             <div class="checklist-item">
-                <input type="checkbox" id="checkData">
-                <label>Data de validade conferida</label>
+                <input type="checkbox" id="checkDataValidade">
+                <label>Data de validade: <strong><span id="dataValidade">-</span></strong> (dentro do prazo)</label>
             </div>
             <div class="checklist-item">
                 <input type="checkbox" id="checkPesoBase">
-                <label>Peso da base dentro do padrão: <span id="pesoBaseInfo">-</span></label>
+                <label>Peso da base (massa): padrão <span id="pesoBasePadrao">-</span> kg | medido: <input type="text" id="pesoBaseMedido" size="6" placeholder="medido"> kg</label>
             </div>
             <div class="checklist-item">
                 <input type="checkbox" id="checkPesoCalda">
-                <label>Peso da calda dentro do padrão: <span id="pesoCaldaInfo">-</span></label>
+                <label>Peso da calda: padrão <span id="pesoCaldaPadrao">-</span> kg | medido: <input type="text" id="pesoCaldaMedido" size="6" placeholder="medido"> kg</label>
             </div>
         </div>
 
-        <!-- Materiais Necessários (cálculo automático) -->
+        <!-- Materiais Necessários -->
         <div class="card">
             <h2>📦 Materiais Necessários para o Turno</h2>
             <div class="checklist-item">
@@ -140,36 +140,103 @@
         <span class="dark-icon">☀️</span>
     </div>
 
-    <script src="script.js"></script>
     <script>
-        // Configuração de pesos por produto
+        // Configuração completa por produto
         const configProdutos = {
-            'Pudim Leite Batavo': { baseKg: 0.180, caldaKg: 0.020, padrao: 'Batavo: mais calda' },
-            'Pudim Leite Itambé': { baseKg: 0.190, caldaKg: 0.010, padrao: 'Itambé: menos calda' },
-            'Pudim Leite Chandelle': { baseKg: 0.185, caldaKg: 0.015, padrao: 'Chandelle: padrão' },
-            'Brigadeiro Batavo': { baseKg: 0.175, caldaKg: 0.025, padrao: 'Batavo: mais calda' },
-            'Brigadeiro Itambé': { baseKg: 0.185, caldaKg: 0.015, padrao: 'Itambé: padrão' },
-            'Brigadeiro Chandelle': { baseKg: 0.180, caldaKg: 0.020, padrao: 'Chandelle: equilibrado' },
-            'Beijinho Chandelle': { baseKg: 0.170, caldaKg: 0.030, padrao: 'Chandelle: mais calda' },
-            'Manjar Coco Batavo': { baseKg: 0.190, caldaKg: 0.010, padrao: 'Batavo: menos calda' },
-            'Romeu e Julieta Itambé': { baseKg: 0.185, caldaKg: 0.015, padrao: 'Itambé: padrão' }
+            'Pudim Leite Batavo': { 
+                baseKg: 0.180, caldaKg: 0.020, 
+                padrao: 'Batavo: mais calda',
+                validadeDias: 45,
+                tipo: 'pudim'
+            },
+            'Pudim Leite Itambé': { 
+                baseKg: 0.190, caldaKg: 0.010, 
+                padrao: 'Itambé: menos calda',
+                validadeDias: 45,
+                tipo: 'pudim'
+            },
+            'Pudim Leite Chandelle': { 
+                baseKg: 0.185, caldaKg: 0.015, 
+                padrao: 'Chandelle: padrão',
+                validadeDias: 45,
+                tipo: 'pudim'
+            },
+            'Brigadeiro Batavo': { 
+                baseKg: 0.175, caldaKg: 0.025, 
+                padrao: 'Batavo: mais calda',
+                validadeDias: 48,
+                tipo: 'brigadeiro'
+            },
+            'Brigadeiro Itambé': { 
+                baseKg: 0.185, caldaKg: 0.015, 
+                padrao: 'Itambé: padrão',
+                validadeDias: 48,
+                tipo: 'brigadeiro'
+            },
+            'Brigadeiro Chandelle': { 
+                baseKg: 0.180, caldaKg: 0.020, 
+                padrao: 'Chandelle: equilibrado',
+                validadeDias: 48,
+                tipo: 'brigadeiro'
+            },
+            'Beijinho Chandelle': { 
+                baseKg: 0.170, caldaKg: 0.030, 
+                padrao: 'Chandelle: mais calda',
+                validadeDias: 48,
+                tipo: 'brigadeiro'
+            },
+            'Manjar Coco Batavo': { 
+                baseKg: 0.190, caldaKg: 0.010, 
+                padrao: 'Batavo: menos calda',
+                validadeDias: 45,
+                tipo: 'pudim'
+            },
+            'Romeu e Julieta Itambé': { 
+                baseKg: 0.185, caldaKg: 0.015, 
+                padrao: 'Itambé: padrão',
+                validadeDias: 45,
+                tipo: 'pudim'
+            }
         };
 
         let produtoAtualNome = 'Pudim Leite Batavo';
+        let metaKgHoje = 10000;
+
+        function calcularDataValidade(dias) {
+            const data = new Date();
+            data.setDate(data.getDate() + dias);
+            return data.toLocaleDateString('pt-BR');
+        }
 
         async function carregarDashboard() {
             try {
                 const response = await fetch('/api/producao/hoje');
                 const result = await response.json();
                 
+                if (result.success && result.data && result.data.programacao) {
+                    produtoAtualNome = result.data.programacao;
+                    metaKgHoje = result.data.meta || 10000;
+                    document.getElementById('metaProducao').value = metaKgHoje;
+                }
+                
+                const config = configProdutos[produtoAtualNome] || configProdutos['Pudim Leite Batavo'];
+                
+                // Atualiza informações do produto
+                document.getElementById('produtoAtual').textContent = produtoAtualNome;
+                document.getElementById('pesoBasePadrao').textContent = config.baseKg.toFixed(3);
+                document.getElementById('pesoCaldaPadrao').textContent = config.caldaKg.toFixed(3);
+                
+                // Data de validade
+                const dataValidade = calcularDataValidade(config.validadeDias);
+                document.getElementById('dataValidade').textContent = dataValidade;
+                
+                // Atualiza produção se houver dados
                 if (result.success && result.data) {
                     const data = result.data;
-                    
                     document.getElementById('totalEstantes').textContent = data.totalEstantes || 0;
                     document.getElementById('totalKg').textContent = (data.totalKg || 0).toLocaleString();
                     document.getElementById('totalPerdas').textContent = data.totalPerdas || 0;
                     
-                    const metaKgHoje = parseInt(document.getElementById('metaProducao').value) || 10000;
                     const eficiencia = ((data.totalKg || 0) / metaKgHoje * 100).toFixed(1);
                     document.getElementById('eficiencia').textContent = `${eficiencia}%`;
                     
@@ -185,7 +252,11 @@
                     document.getElementById('checkDSS').checked = data.dssRealizado || false;
                     document.getElementById('checkBPF').checked = data.bpfOk || false;
                     
-                    // Pendências combinadas
+                    // Carregar pesos medidos se existirem
+                    if (data.pesoBaseMedido) document.getElementById('pesoBaseMedido').value = data.pesoBaseMedido;
+                    if (data.pesoCaldaMedido) document.getElementById('pesoCaldaMedido').value = data.pesoCaldaMedido;
+                    
+                    // Pendências
                     const pendenciasDiv = document.getElementById('pendenciasLista');
                     const pendencias = [];
                     
@@ -204,9 +275,8 @@
                 }
                 
                 // Atualiza materiais necessários
-                const metaKg = parseInt(document.getElementById('metaProducao').value) || 10000;
                 const pesoPorUnidade = 0.100;
-                const unidadesNecessarias = Math.ceil(metaKg / pesoPorUnidade);
+                const unidadesNecessarias = Math.ceil(metaKgHoje / pesoPorUnidade);
                 
                 document.getElementById('coposNecessarios').textContent = unidadesNecessarias.toLocaleString();
                 document.getElementById('tampasNecessarias').textContent = unidadesNecessarias.toLocaleString();
@@ -219,12 +289,6 @@
                 
                 document.getElementById('checkCopos').checked = estoqueCopos >= unidadesNecessarias;
                 document.getElementById('checkTampas').checked = estoqueTampas >= unidadesNecessarias;
-                
-                // Pesos do produto atual
-                const config = configProdutos[produtoAtualNome] || configProdutos['Pudim Leite Batavo'];
-                document.getElementById('pesoBaseInfo').textContent = `${config.baseKg} kg (${config.padrao})`;
-                document.getElementById('pesoCaldaInfo').textContent = `${config.caldaKg} kg`;
-                document.getElementById('produtoAtual').textContent = produtoAtualNome;
                 
                 document.getElementById('ultimaAtualizacao').textContent = new Date().toLocaleString();
             } catch (error) {
@@ -239,26 +303,25 @@
                 producao: document.getElementById('checkProducao').checked,
                 equipe: document.getElementById('checkEquipe').checked,
                 produto: document.getElementById('checkProduto').checked,
-                data: document.getElementById('checkData').checked,
-                pesoBase: document.getElementById('checkPesoBase').checked,
-                pesoCalda: document.getElementById('checkPesoCalda').checked,
-                copos: document.getElementById('checkCopos').checked,
-                tampas: document.getElementById('checkTampas').checked
+                dataValidade: document.getElementById('checkDataValidade').checked,
+                pesoBaseOk: document.getElementById('checkPesoBase').checked,
+                pesoCaldaOk: document.getElementById('checkPesoCalda').checked,
+                pesoBaseMedido: document.getElementById('pesoBaseMedido').value,
+                pesoCaldaMedido: document.getElementById('pesoCaldaMedido').value,
+                coposOk: document.getElementById('checkCopos').checked,
+                tampasOk: document.getElementById('checkTampas').checked
             };
             console.log('Checklist salvo:', dados);
         }
 
         // Eventos
-        document.getElementById('checkDSS').addEventListener('change', salvarChecklist);
-        document.getElementById('checkBPF').addEventListener('change', salvarChecklist);
-        document.getElementById('checkProducao').addEventListener('change', salvarChecklist);
-        document.getElementById('checkEquipe').addEventListener('change', salvarChecklist);
-        document.getElementById('checkProduto').addEventListener('change', salvarChecklist);
-        document.getElementById('checkData').addEventListener('change', salvarChecklist);
-        document.getElementById('checkPesoBase').addEventListener('change', salvarChecklist);
-        document.getElementById('checkPesoCalda').addEventListener('change', salvarChecklist);
-        document.getElementById('checkCopos').addEventListener('change', salvarChecklist);
-        document.getElementById('checkTampas').addEventListener('change', salvarChecklist);
+        const checkboxes = ['checkDSS', 'checkBPF', 'checkProducao', 'checkEquipe', 'checkProduto', 'checkDataValidade', 'checkPesoBase', 'checkPesoCalda', 'checkCopos', 'checkTampas'];
+        checkboxes.forEach(id => {
+            document.getElementById(id).addEventListener('change', salvarChecklist);
+        });
+        
+        document.getElementById('pesoBaseMedido').addEventListener('input', salvarChecklist);
+        document.getElementById('pesoCaldaMedido').addEventListener('input', salvarChecklist);
         document.getElementById('estoqueCopos').addEventListener('input', () => carregarDashboard());
         document.getElementById('estoqueTampas').addEventListener('input', () => carregarDashboard());
         document.getElementById('metaProducao').addEventListener('input', () => carregarDashboard());
