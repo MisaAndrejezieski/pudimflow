@@ -85,3 +85,7 @@ pudimflow/
 ```bash
 git clone https://github.com/MisaAndrejezieski/pudimflow.git
 cd pudimflow
+cd backend
+npm init -y
+npm install express @prisma/client prisma dotenv
+npm install -D nodemon
