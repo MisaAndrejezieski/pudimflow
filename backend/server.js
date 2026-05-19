@@ -1,13 +1,9 @@
-// backend/server.js
-// PudimFlow API - Versão completa com programação semanal
-
 const express = require('express');
 const { Client } = require('pg');
 
 const app = express();
 app.use(express.json());
 
-// CORS para frontend
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
@@ -15,16 +11,13 @@ app.use((req, res, next) => {
     next();
 });
 
-// Conexão com o banco
 const client = new Client({
     connectionString: "postgresql://neondb_owner:npg_mLxbg3UKaAP5@ep-bitter-lake-ajanohhr-pooler.c-3.us-east-2.aws.neon.tech/neondb?sslmode=require"
 });
 
 client.connect();
 
-// Criar todas as tabelas
 async function initDatabase() {
-    // Tabela de produção diária
     await client.query(`
         CREATE TABLE IF NOT EXISTS producao_diaria (
             id SERIAL PRIMARY KEY,
@@ -56,27 +49,12 @@ async function initDatabase() {
             criado_em TIMESTAMP DEFAULT NOW()
         );
     `);
-
-    // Tabela de programação semanal
-    await client.query(`
-        CREATE TABLE IF NOT EXISTS programacao_semanal (
-            id SERIAL PRIMARY KEY,
-            dia VARCHAR(20) UNIQUE,
-            produto VARCHAR(100),
-            meta FLOAT,
-            observacao TEXT,
-            dia_semana INTEGER
-        );
-    `);
-
     console.log('✅ Banco de dados inicializado');
 }
 
 // ============================================
-// ROTAS DE PRODUÇÃO
+// SALVAR PRODUÇÃO
 // ============================================
-
-// Salvar produção
 app.post('/api/producao', async (req, res) => {
     try {
         const data = req.body;
@@ -138,56 +116,94 @@ app.post('/api/producao', async (req, res) => {
     }
 });
 
-// Buscar produção de hoje
+// ============================================
+// BUSCAR PRODUÇÃO DE HOJE (camelCase)
+// ============================================
 app.get('/api/producao/hoje', async (req, res) => {
     try {
         const hoje = new Date().toISOString().split('T')[0];
-        const result = await client.query(`SELECT * FROM producao_diaria WHERE data = $1`, [hoje]);
+        const result = await client.query(`
+            SELECT 
+                id,
+                data,
+                COALESCE(brascop_estantes, 0) AS "brascopEstantes",
+                COALESCE(brascop_kg, 0) AS "brascopKg",
+                COALESCE(brascop_paradas, '') AS "brascopParadas",
+                COALESCE(brascop_perdas, 0) AS "brascopPerdas",
+                COALESCE(serac_estantes, 0) AS "seracEstantes",
+                COALESCE(serac_kg, 0) AS "seracKg",
+                COALESCE(serac_paradas, '') AS "seracParadas",
+                COALESCE(serac_perdas, 0) AS "seracPerdas",
+                COALESCE(total_estantes, 0) AS "totalEstantes",
+                COALESCE(total_kg, 0) AS "totalKg",
+                COALESCE(total_perdas, 0) AS "totalPerdas",
+                COALESCE(bpf_ok, false) AS "bpfOk",
+                COALESCE(bpf_observacao, '') AS "bpfObservacao",
+                COALESCE(falhas, '') AS falhas,
+                COALESCE(reclamacoes, '') AS reclamacoes,
+                COALESCE(dss_realizado, false) AS "dssRealizado",
+                COALESCE(dss_tema, '') AS "dssTema",
+                COALESCE(quase_acidente, '') AS "quaseAcidente",
+                COALESCE(etiqueta_azul, '') AS "etiquetaAzul",
+                COALESCE(etiqueta_vermelha, '') AS "etiquetaVermelha",
+                COALESCE(etiqueta_fechada, '') AS "etiquetaFechada",
+                COALESCE(observacoes, '') AS observacoes,
+                COALESCE(programacao, '') AS programacao,
+                COALESCE(meta, 0) AS meta
+            FROM producao_diaria 
+            WHERE data = $1
+        `, [hoje]);
         
         if (result.rows.length > 0) {
-            const row = result.rows[0];
-            res.json({ success: true, data: {
-                id: row.id,
-                brascopEstantes: row.brascop_estantes,
-                brascopKg: parseFloat(row.brascop_kg),
-                brascopParadas: row.brascop_paradas,
-                brascopPerdas: row.brascop_perdas,
-                seracEstantes: row.serac_estantes,
-                seracKg: parseFloat(row.serac_kg),
-                seracParadas: row.serac_paradas,
-                seracPerdas: row.serac_perdas,
-                totalEstantes: row.total_estantes,
-                totalKg: parseFloat(row.total_kg),
-                totalPerdas: row.total_perdas,
-                bpfOk: row.bpf_ok,
-                bpfObservacao: row.bpf_observacao,
-                falhas: row.falhas,
-                reclamacoes: row.reclamacoes,
-                dssRealizado: row.dss_realizado,
-                dssTema: row.dss_tema,
-                quaseAcidente: row.quase_acidente,
-                etiquetaAzul: row.etiqueta_azul,
-                etiquetaVermelha: row.etiqueta_vermelha,
-                etiquetaFechada: row.etiqueta_fechada,
-                observacoes: row.observacoes,
-                programacao: row.programacao,
-                meta: parseFloat(row.meta)
-            }});
+            res.json({ success: true, data: result.rows[0] });
         } else {
             res.json({ success: true, data: null });
         }
     } catch (error) {
+        console.error('Erro ao buscar produção de hoje:', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// Buscar produção por data
+// ============================================
+// BUSCAR PRODUÇÃO POR DATA
+// ============================================
 app.get('/api/producao/:data', async (req, res) => {
     try {
-        const result = await client.query(`SELECT * FROM producao_diaria WHERE data = $1`, [req.params.data]);
+        const result = await client.query(`
+            SELECT 
+                id,
+                data,
+                COALESCE(brascop_estantes, 0) AS "brascopEstantes",
+                COALESCE(brascop_kg, 0) AS "brascopKg",
+                COALESCE(brascop_paradas, '') AS "brascopParadas",
+                COALESCE(brascop_perdas, 0) AS "brascopPerdas",
+                COALESCE(serac_estantes, 0) AS "seracEstantes",
+                COALESCE(serac_kg, 0) AS "seracKg",
+                COALESCE(serac_paradas, '') AS "seracParadas",
+                COALESCE(serac_perdas, 0) AS "seracPerdas",
+                COALESCE(total_estantes, 0) AS "totalEstantes",
+                COALESCE(total_kg, 0) AS "totalKg",
+                COALESCE(total_perdas, 0) AS "totalPerdas",
+                COALESCE(bpf_ok, false) AS "bpfOk",
+                COALESCE(bpf_observacao, '') AS "bpfObservacao",
+                COALESCE(falhas, '') AS falhas,
+                COALESCE(reclamacoes, '') AS reclamacoes,
+                COALESCE(dss_realizado, false) AS "dssRealizado",
+                COALESCE(dss_tema, '') AS "dssTema",
+                COALESCE(quase_acidente, '') AS "quaseAcidente",
+                COALESCE(etiqueta_azul, '') AS "etiquetaAzul",
+                COALESCE(etiqueta_vermelha, '') AS "etiquetaVermelha",
+                COALESCE(etiqueta_fechada, '') AS "etiquetaFechada",
+                COALESCE(observacoes, '') AS observacoes,
+                COALESCE(programacao, '') AS programacao,
+                COALESCE(meta, 0) AS meta
+            FROM producao_diaria 
+            WHERE data = $1
+        `, [req.params.data]);
+        
         if (result.rows.length > 0) {
-            const row = result.rows[0];
-            res.json({ success: true, data: row });
+            res.json({ success: true, data: result.rows[0] });
         } else {
             res.json({ success: true, data: null });
         }
@@ -196,10 +212,26 @@ app.get('/api/producao/:data', async (req, res) => {
     }
 });
 
-// Histórico
+// ============================================
+// HISTÓRICO (camelCase)
+// ============================================
 app.get('/api/historico', async (req, res) => {
     try {
-        const result = await client.query(`SELECT * FROM producao_diaria ORDER BY data DESC LIMIT 30`);
+        const result = await client.query(`
+            SELECT 
+                id,
+                data,
+                COALESCE(total_estantes, 0) AS "totalEstantes",
+                COALESCE(total_kg, 0) AS "totalKg",
+                COALESCE(total_perdas, 0) AS "totalPerdas",
+                COALESCE(brascop_estantes, 0) AS "brascopEstantes",
+                COALESCE(brascop_kg, 0) AS "brascopKg",
+                COALESCE(serac_estantes, 0) AS "seracEstantes",
+                COALESCE(serac_kg, 0) AS "seracKg"
+            FROM producao_diaria 
+            ORDER BY data DESC 
+            LIMIT 30
+        `);
         res.json({ success: true, data: result.rows });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -209,37 +241,25 @@ app.get('/api/historico', async (req, res) => {
 // ============================================
 // ROTAS DE PROGRAMAÇÃO SEMANAL
 // ============================================
-
-// Salvar programação semanal
 app.post('/api/programacao', async (req, res) => {
     try {
         const { programacao } = req.body;
-        
-        // Limpa programação anterior
         await client.query(`DELETE FROM programacao_semanal`);
-        
-        // Insere nova programação
         for (const item of programacao) {
             await client.query(`
                 INSERT INTO programacao_semanal (dia, produto, meta, observacao, dia_semana)
                 VALUES ($1, $2, $3, $4, $5)
             `, [item.dia, item.produto, item.meta, item.observacao, item.diaSemana]);
         }
-        
         res.json({ success: true });
     } catch (error) {
-        console.error('Erro ao salvar programação:', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// Buscar programação semanal
 app.get('/api/programacao', async (req, res) => {
     try {
-        const result = await client.query(`
-            SELECT * FROM programacao_semanal 
-            ORDER BY dia_semana
-        `);
+        const result = await client.query(`SELECT * FROM programacao_semanal ORDER BY dia_semana`);
         res.json({ success: true, data: result.rows });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -249,7 +269,6 @@ app.get('/api/programacao', async (req, res) => {
 // ============================================
 // HEALTH CHECK
 // ============================================
-
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
@@ -257,7 +276,6 @@ app.get('/health', (req, res) => {
 // ============================================
 // INICIAR SERVIDOR
 // ============================================
-
 const PORT = 3000;
 initDatabase().then(() => {
     app.listen(PORT, () => {
