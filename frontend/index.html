@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PudimFlow - Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Remove as setinhas dos inputs number */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -55,11 +68,12 @@
             <h2>🏭 Brascop - Envase (estantes)</h2>
             <p><small>1 estante = 896 copos = 89,6 kg</small></p>
             <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                <div><label>1º turno (ontem):</label> <input type="number" id="brascop1" class="faltante-input" value="0"></div>
-                <div><label>2º turno (antes):</label> <input type="number" id="brascop2" class="faltante-input" value="0"></div>
-                <div><label>3º turno (você):</label> <input type="number" id="brascop3" class="faltante-input" value="0"></div>
+                <div><label>3º turno (ontem):</label> <input type="number" id="brascop3_ontem" class="faltante-input" value="0"></div>
+                <div><label>1º turno (antes):</label> <input type="number" id="brascop1_antes" class="faltante-input" value="0"></div>
+                <div><label>2º turno (você):</label> <input type="number" id="brascop2_voce" class="faltante-input" value="0"></div>
+                <div><label>3º turno (finalização):</label> <input type="number" id="brascop3_final" class="faltante-input" value="0"></div>
             </div>
-            <p><strong>Total:</strong> <span id="brascopTotal">0</span> estantes</p>
+            <p><strong>Total produzido:</strong> <span id="brascopTotal">0</span> estantes</p>
             <p><strong>Meta:</strong> <span id="brascopMeta">0</span> estantes</p>
             <p><strong>⚠️ Falta:</strong> <span id="brascopFalta">0</span> estantes</p>
         </div>
@@ -69,11 +83,12 @@
             <h2>🏭 Serac - Envase (estantes)</h2>
             <p><small>1 estante = 2040 copos = 204 kg</small></p>
             <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                <div><label>1º turno (ontem):</label> <input type="number" id="serac1" class="faltante-input" value="0"></div>
-                <div><label>2º turno (antes):</label> <input type="number" id="serac2" class="faltante-input" value="0"></div>
-                <div><label>3º turno (você):</label> <input type="number" id="serac3" class="faltante-input" value="0"></div>
+                <div><label>3º turno (ontem):</label> <input type="number" id="serac3_ontem" class="faltante-input" value="0"></div>
+                <div><label>1º turno (antes):</label> <input type="number" id="serac1_antes" class="faltante-input" value="0"></div>
+                <div><label>2º turno (você):</label> <input type="number" id="serac2_voce" class="faltante-input" value="0"></div>
+                <div><label>3º turno (finalização):</label> <input type="number" id="serac3_final" class="faltante-input" value="0"></div>
             </div>
-            <p><strong>Total:</strong> <span id="seracTotal">0</span> estantes</p>
+            <p><strong>Total produzido:</strong> <span id="seracTotal">0</span> estantes</p>
             <p><strong>Meta:</strong> <span id="seracMeta">0</span> estantes</p>
             <p><strong>⚠️ Falta:</strong> <span id="seracFalta">0</span> estantes</p>
         </div>
@@ -117,7 +132,7 @@
     <div class="dark-mode-toggle" onclick="document.body.classList.toggle('dark-mode')">🌓</div>
 
     <script>
-        // PROGRAMAÇÃO SEMANAL REAL
+        // PROGRAMAÇÃO SEMANAL REAL (baseada na sua planilha)
         const programacaoSemanal = {
             "Segunda-feira": { produto: "Pudim Leite Batavo", metaKg: 9000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
             "Terça-feira": { produto: "Pudim Leite Batavo", metaKg: 9000, pesoMassa: 85, pesoCalda: 15, validadeDias: 45 },
@@ -157,18 +172,20 @@
         }
 
         function atualizarFaltante() {
-            const brascop1 = +document.getElementById("brascop1").value || 0;
-            const brascop2 = +document.getElementById("brascop2").value || 0;
-            const brascop3 = +document.getElementById("brascop3").value || 0;
-            const brascopTotal = brascop1 + brascop2 + brascop3;
+            const brascopTotal = 
+                (+document.getElementById("brascop3_ontem").value || 0) +
+                (+document.getElementById("brascop1_antes").value || 0) +
+                (+document.getElementById("brascop2_voce").value || 0) +
+                (+document.getElementById("brascop3_final").value || 0);
             const brascopMeta = +document.getElementById("brascopMeta").innerText || 0;
             document.getElementById("brascopTotal").innerText = brascopTotal;
             document.getElementById("brascopFalta").innerText = Math.max(0, brascopMeta - brascopTotal);
 
-            const serac1 = +document.getElementById("serac1").value || 0;
-            const serac2 = +document.getElementById("serac2").value || 0;
-            const serac3 = +document.getElementById("serac3").value || 0;
-            const seracTotal = serac1 + serac2 + serac3;
+            const seracTotal = 
+                (+document.getElementById("serac3_ontem").value || 0) +
+                (+document.getElementById("serac1_antes").value || 0) +
+                (+document.getElementById("serac2_voce").value || 0) +
+                (+document.getElementById("serac3_final").value || 0);
             const seracMeta = +document.getElementById("seracMeta").innerText || 0;
             document.getElementById("seracTotal").innerText = seracTotal;
             document.getElementById("seracFalta").innerText = Math.max(0, seracMeta - seracTotal);
@@ -249,12 +266,15 @@
             }
         };
 
-        document.getElementById("brascop1").oninput = atualizarFaltante;
-        document.getElementById("brascop2").oninput = atualizarFaltante;
-        document.getElementById("brascop3").oninput = atualizarFaltante;
-        document.getElementById("serac1").oninput = atualizarFaltante;
-        document.getElementById("serac2").oninput = atualizarFaltante;
-        document.getElementById("serac3").oninput = atualizarFaltante;
+        // EVENTOS
+        document.getElementById("brascop3_ontem").oninput = atualizarFaltante;
+        document.getElementById("brascop1_antes").oninput = atualizarFaltante;
+        document.getElementById("brascop2_voce").oninput = atualizarFaltante;
+        document.getElementById("brascop3_final").oninput = atualizarFaltante;
+        document.getElementById("serac3_ontem").oninput = atualizarFaltante;
+        document.getElementById("serac1_antes").oninput = atualizarFaltante;
+        document.getElementById("serac2_voce").oninput = atualizarFaltante;
+        document.getElementById("serac3_final").oninput = atualizarFaltante;
         document.getElementById("calcBrascop").onclick = calcEtiquetasBrascop;
         document.getElementById("calcSerac").onclick = calcEtiquetasSerac;
 
