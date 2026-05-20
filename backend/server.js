@@ -1,12 +1,18 @@
-console.log('🚀 Iniciando servidor...');
-console.log('DATABASE_URL:', process.env.DATABASE_URL ? '✅ definida' : '❌ INDEFINIDA');
+// backend/server.js
+// PudimFlow API - Versão estável sem Prisma
+
+require('dotenv').config();
 
 const express = require('express');
 const { Client } = require('pg');
 
+console.log('🚀 Iniciando servidor...');
+console.log('DATABASE_URL:', process.env.DATABASE_URL ? '✅ definida' : '❌ INDEFINIDA');
+
 const app = express();
 app.use(express.json());
 
+// CORS para o frontend (Vercel)
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
@@ -14,12 +20,21 @@ app.use((req, res, next) => {
     next();
 });
 
+// Conexão com o banco
 const client = new Client({
-    connectionString: "postgresql://neondb_owner:npg_mLxbg3UKaAP5@ep-bitter-lake-ajanohhr-pooler.c-3.us-east-2.aws.neon.tech/neondb?sslmode=require"
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
 });
 
-client.connect();
+client.connect((err) => {
+    if (err) {
+        console.error('❌ Erro fatal ao conectar no banco:', err.message);
+        process.exit(1);
+    }
+    console.log('✅ Conectado ao PostgreSQL');
+});
 
+// Criar tabela se não existir
 async function initDatabase() {
     await client.query(`
         CREATE TABLE IF NOT EXISTS producao_diaria (
@@ -56,8 +71,9 @@ async function initDatabase() {
 }
 
 // ============================================
-// SALVAR PRODUÇÃO
+// ROTAS
 // ============================================
+
 app.post('/api/producao', async (req, res) => {
     try {
         const data = req.body;
@@ -119,9 +135,6 @@ app.post('/api/producao', async (req, res) => {
     }
 });
 
-// ============================================
-// BUSCAR PRODUÇÃO DE HOJE (camelCase)
-// ============================================
 app.get('/api/producao/hoje', async (req, res) => {
     try {
         const hoje = new Date().toISOString().split('T')[0];
@@ -168,9 +181,6 @@ app.get('/api/producao/hoje', async (req, res) => {
     }
 });
 
-// ============================================
-// BUSCAR PRODUÇÃO POR DATA
-// ============================================
 app.get('/api/producao/:data', async (req, res) => {
     try {
         const result = await client.query(`
@@ -215,9 +225,6 @@ app.get('/api/producao/:data', async (req, res) => {
     }
 });
 
-// ============================================
-// HISTÓRICO (camelCase)
-// ============================================
 app.get('/api/historico', async (req, res) => {
     try {
         const result = await client.query(`
@@ -241,37 +248,6 @@ app.get('/api/historico', async (req, res) => {
     }
 });
 
-// ============================================
-// ROTAS DE PROGRAMAÇÃO SEMANAL
-// ============================================
-app.post('/api/programacao', async (req, res) => {
-    try {
-        const { programacao } = req.body;
-        await client.query(`DELETE FROM programacao_semanal`);
-        for (const item of programacao) {
-            await client.query(`
-                INSERT INTO programacao_semanal (dia, produto, meta, observacao, dia_semana)
-                VALUES ($1, $2, $3, $4, $5)
-            `, [item.dia, item.produto, item.meta, item.observacao, item.diaSemana]);
-        }
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-app.get('/api/programacao', async (req, res) => {
-    try {
-        const result = await client.query(`SELECT * FROM programacao_semanal ORDER BY dia_semana`);
-        res.json({ success: true, data: result.rows });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// ============================================
-// HEALTH CHECK
-// ============================================
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
@@ -279,7 +255,7 @@ app.get('/health', (req, res) => {
 // ============================================
 // INICIAR SERVIDOR
 // ============================================
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 initDatabase().then(() => {
     app.listen(PORT, () => {
         console.log(`🚀 PudimFlow API rodando na porta ${PORT}`);
