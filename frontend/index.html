@@ -19,7 +19,6 @@
             line-height: 1.5;
         }
 
-        /* Header */
         .header {
             background: linear-gradient(135deg, #0f2b3d 0%, #1e6f9f 100%);
             color: white;
@@ -30,7 +29,6 @@
         .header h1 {
             font-size: 1.6rem;
             font-weight: 600;
-            letter-spacing: -0.5px;
         }
 
         .header h1::before {
@@ -43,7 +41,6 @@
             margin-top: 6px;
         }
 
-        /* Navegação */
         .nav {
             background: white;
             padding: 12px 20px;
@@ -55,7 +52,6 @@
             position: sticky;
             top: 0;
             z-index: 99;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .nav a {
@@ -65,30 +61,53 @@
             border-radius: 40px;
             font-size: 0.85rem;
             font-weight: 500;
-            transition: all 0.2s ease;
             background: #f1f5f9;
+            transition: all 0.2s ease;
         }
 
-        .nav a:hover {
+        .nav a:hover, .nav a.active {
             background: #1e6f9f;
             color: white;
-            transform: translateY(-1px);
         }
 
-        .nav a.active {
-            background: #1e6f9f;
-            color: white;
-            box-shadow: 0 2px 8px rgba(30,111,159,0.3);
-        }
-
-        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 24px;
         }
 
-        /* Cards */
+        /* Seletor de data */
+        .data-selector {
+            background: white;
+            border-radius: 20px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .data-selector button {
+            background: #64748b;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+        }
+
+        .data-selector button.hoje {
+            background: #1e6f9f;
+        }
+
+        .data-selector input {
+            width: auto;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
         .card {
             background: white;
             border-radius: 20px;
@@ -96,7 +115,7 @@
             margin-bottom: 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             border: 1px solid #eef2f6;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.2s ease;
         }
 
         .card:hover {
@@ -113,7 +132,6 @@
             padding-left: 12px;
         }
 
-        /* Dashboard Cards */
         .dashboard-cards {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -135,19 +153,12 @@
             text-align: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             border: 1px solid #eef2f6;
-            transition: all 0.2s ease;
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
         }
 
         .dashboard-card .numero {
             font-size: 2.2rem;
             font-weight: 700;
             color: #1e6f9f;
-            line-height: 1.2;
         }
 
         .dashboard-card .label {
@@ -157,7 +168,6 @@
             font-weight: 500;
         }
 
-        /* Checklist */
         .checklist-item {
             display: flex;
             align-items: center;
@@ -166,25 +176,12 @@
             border-bottom: 1px solid #edf2f7;
         }
 
-        .checklist-item:last-child {
-            border-bottom: none;
-        }
-
         .checklist-item input[type="checkbox"] {
             width: 20px;
             height: 20px;
-            cursor: pointer;
             accent-color: #2ecc71;
         }
 
-        .checklist-item label {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #2d3e50;
-            cursor: pointer;
-        }
-
-        /* Formulários */
         .form-group {
             margin-bottom: 16px;
         }
@@ -204,21 +201,13 @@
             border-radius: 12px;
             font-size: 0.9rem;
             font-family: 'Inter', sans-serif;
-            transition: all 0.2s ease;
-            background: white;
         }
 
-        input:focus, select:focus, textarea:focus {
+        input:focus {
             outline: none;
             border-color: #1e6f9f;
-            box-shadow: 0 0 0 3px rgba(30,111,159,0.1);
         }
 
-        input[type="number"] {
-            text-align: center;
-        }
-
-        /* Botões */
         button {
             background: #1e6f9f;
             color: white;
@@ -229,36 +218,19 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-family: 'Inter', sans-serif;
         }
 
         button:hover {
             background: #0f2b3d;
-            transform: scale(0.98);
         }
 
         .btn-success {
             background: #2ecc71;
         }
-        .btn-success:hover {
-            background: #27ae60;
-        }
-
         .btn-danger {
             background: #e74c3c;
         }
-        .btn-danger:hover {
-            background: #c0392b;
-        }
 
-        .btn-warning {
-            background: #f39c12;
-        }
-        .btn-warning:hover {
-            background: #e67e22;
-        }
-
-        /* Alerta meia-noite */
         .alerta-meianoite {
             background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
@@ -266,7 +238,6 @@
             border: none;
         }
 
-        /* Etiqueta resultado */
         .etiqueta-resultado {
             background: #eef2ff;
             color: #1e6f9f;
@@ -275,10 +246,8 @@
             margin-top: 12px;
             text-align: center;
             font-weight: 600;
-            font-size: 0.85rem;
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 20px;
@@ -288,7 +257,6 @@
             margin-top: 20px;
         }
 
-        /* Responsividade */
         @media (max-width: 640px) {
             .container {
                 padding: 16px;
@@ -296,16 +264,12 @@
             .card {
                 padding: 16px;
             }
-            .dashboard-card .numero {
-                font-size: 1.6rem;
+            .data-selector {
+                flex-direction: column;
+                align-items: stretch;
             }
-            .nav a {
-                padding: 6px 14px;
-                font-size: 0.75rem;
-            }
-            button {
+            .data-selector button, .data-selector input {
                 width: 100%;
-                margin-bottom: 8px;
             }
         }
     </style>
@@ -313,7 +277,7 @@
 <body>
     <div class="header">
         <h1>PudimFlow</h1>
-        <div class="turno">Misa</div>
+        <div class="turno">Turno da Noite - Misa</div>
     </div>
 
     <nav class="nav">
@@ -327,13 +291,22 @@
     </nav>
 
     <div class="container">
+        <!-- Seletor de Data -->
+        <div class="data-selector">
+            <button id="btnDiaAnterior">◀ Dia anterior</button>
+            <input type="date" id="seletorData" value="">
+            <button id="btnProximoDia">Próximo dia ▶</button>
+            <button id="btnHoje" class="hoje">Hoje</button>
+        </div>
+
         <div class="card alerta-meianoite">
             <h2 id="tempoRestante">⏰ Calculando...</h2>
             <p>⚠️ Planeje as etiquetas antes da meia-noite</p>
         </div>
 
         <div class="card">
-            <h2>📅 Programação de Hoje</h2>
+            <h2>📅 Programação</h2>
+            <p><strong>Data:</strong> <span id="dataSelecionada">-</span></p>
             <p><strong>Produto Brascop:</strong> <span id="produtoBrascop">-</span></p>
             <p><strong>Produto Serac:</strong> <span id="produtoSerac">-</span></p>
             <p><strong>Meta Brascop kg:</strong> <span id="metaKgBrascop">0</span></p>
@@ -350,7 +323,7 @@
             <div id="checklistPersonalizado"></div>
             <div style="display: flex; gap: 12px; margin-top: 16px;">
                 <input type="text" id="novaTarefa" placeholder="Nova tarefa..." style="flex: 1;">
-                <button id="btnAddTarefa" class="btn-success" style="width: auto; padding: 10px 18px;">➕ Adicionar</button>
+                <button id="btnAddTarefa" class="btn-success" style="width: auto;">➕</button>
             </div>
         </div>
 
@@ -382,31 +355,23 @@
 
         <div class="card">
             <h2>🔁 Resselagem Brascop</h2>
-            <label>Estantes faltando para resselar</label>
+            <label>Estantes faltando</label>
             <input type="number" id="brascopRess" value="0">
             <button id="calcBrascop" style="margin-top: 12px;">Calcular etiquetas</button>
-            <div id="brascopEtiquetas" class="etiqueta-resultado">Calcule para ver as etiquetas</div>
-            <div style="margin-top: 8px;">
-                <label>Último palete (caixas)</label>
-                <input type="number" id="brascopPersonalizar" placeholder="automático">
-            </div>
+            <div id="brascopEtiquetas" class="etiqueta-resultado">Calcule</div>
         </div>
 
         <div class="card">
             <h2>🔁 Resselagem Serac</h2>
-            <label>Tipo de produto</label>
+            <label>Tipo</label>
             <select id="seracTipo">
-                <option value="padrao">Padrão (242 caixas × 20 copos)</option>
-                <option value="itambe">Itambé (352 caixas × 15 copos)</option>
+                <option value="padrao">Padrão (242 caixas x 20 copos)</option>
+                <option value="itambe">Itambé (352 caixas x 15 copos)</option>
             </select>
-            <label style="margin-top: 12px;">Estantes faltando para resselar</label>
+            <label>Estantes faltando</label>
             <input type="number" id="seracRess" value="0">
             <button id="calcSerac" style="margin-top: 12px;">Calcular etiquetas</button>
-            <div id="seracEtiquetas" class="etiqueta-resultado">Calcule para ver as etiquetas</div>
-            <div style="margin-top: 8px;">
-                <label>Último palete (caixas)</label>
-                <input type="number" id="seracPersonalizar" placeholder="automático">
-            </div>
+            <div id="seracEtiquetas" class="etiqueta-resultado">Calcule</div>
         </div>
     </div>
 
@@ -417,31 +382,42 @@
     <script>
         const API_URL = 'https://pudimflow.onrender.com/api';
         
+        // Validade: pudim 43 dias, brigadeiro 48 dias
         const produtosConfig = {
-            'Pudim Leite Batavo': { massaG: 85, caldaG: 15, totalG: 100, validadeDias: 45 },
-            'Pudim Leite Itambé': { massaG: 90, caldaG: 10, totalG: 100, validadeDias: 45 },
-            'Pudim Leite Chandelle': { massaG: 90, caldaG: 10, totalG: 100, validadeDias: 45 },
+            'Pudim Leite Batavo': { massaG: 85, caldaG: 15, totalG: 100, validadeDias: 43 },
+            'Pudim Leite Itambé': { massaG: 90, caldaG: 10, totalG: 100, validadeDias: 43 },
+            'Pudim Leite Chandelle': { massaG: 90, caldaG: 10, totalG: 100, validadeDias: 43 },
             'Brigadeiro Batavo': { massaG: 90, caldaG: 0, totalG: 90, validadeDias: 48 },
             'Brigadeiro Itambé': { massaG: 90, caldaG: 0, totalG: 90, validadeDias: 48 },
             'Brigadeiro Chandelle': { massaG: 90, caldaG: 0, totalG: 90, validadeDias: 48 },
             'Beijinho Chandelle': { massaG: 90, caldaG: 0, totalG: 90, validadeDias: 48 },
-            'Manjar Coco Batavo': { massaG: 75, caldaG: 15, totalG: 90, validadeDias: 45 },
-            'Romeu e Julieta Itambé': { massaG: 90, caldaG: 10, totalG: 100, validadeDias: 45 }
+            'Manjar Coco Batavo': { massaG: 75, caldaG: 15, totalG: 90, validadeDias: 43 },
+            'Romeu e Julieta Itambé': { massaG: 90, caldaG: 10, totalG: 100, validadeDias: 43 }
         };
 
+        let dataAtual = new Date().toISOString().split('T')[0];
         let produtoAtual = 'Pudim Leite Batavo';
         let metaGlobal = 10000;
 
-        function calcularDataValidade(dias) {
-            const data = new Date();
+        document.getElementById('seletorData').value = dataAtual;
+
+        function formatarDataBrasil(dataStr) {
+            const [ano, mes, dia] = dataStr.split('-');
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        function calcularDataValidade(dias, dataBaseStr) {
+            const data = new Date(dataBaseStr);
             data.setDate(data.getDate() + dias);
             return data.toLocaleDateString('pt-BR');
         }
 
         async function carregarDashboard() {
             try {
-                const response = await fetch(`${API_URL}/producao/hoje`);
+                const response = await fetch(`${API_URL}/producao/${dataAtual}`);
                 const result = await response.json();
+                
+                document.getElementById('dataSelecionada').textContent = formatarDataBrasil(dataAtual);
                 
                 if (result.success && result.data) {
                     if (result.data.programacao) produtoAtual = result.data.programacao;
@@ -454,8 +430,16 @@
                     document.getElementById('metaKgSerac').textContent = Math.round(metaGlobal * 0.1);
                     document.getElementById('pesoMassa').textContent = config.massaG;
                     document.getElementById('pesoCalda').textContent = config.caldaG;
-                    document.getElementById('dataValidade').textContent = calcularDataValidade(config.validadeDias);
-                    document.getElementById('dataFabricacao').textContent = new Date().toLocaleDateString('pt-BR');
+                    document.getElementById('dataValidade').textContent = calcularDataValidade(config.validadeDias, dataAtual);
+                    document.getElementById('dataFabricacao').textContent = formatarDataBrasil(dataAtual);
+                } else {
+                    // Dados vazios
+                    document.getElementById('produtoBrascop').textContent = 'Não definido';
+                    document.getElementById('produtoSerac').textContent = 'Não definido';
+                    document.getElementById('metaKgBrascop').textContent = '0';
+                    document.getElementById('metaKgSerac').textContent = '0';
+                    document.getElementById('dataValidade').textContent = '-';
+                    document.getElementById('dataFabricacao').textContent = formatarDataBrasil(dataAtual);
                 }
             } catch (error) {
                 console.error('Erro:', error);
@@ -486,29 +470,24 @@
 
         function calcEtiquetasBrascop() {
             let estantes = +document.getElementById('brascopRess').value || 0;
-            const personalizado = +document.getElementById('brascopPersonalizar').value;
             const caixas = (estantes * 896) / 20;
             const caixasPorPalete = 242;
             let paletes = Math.ceil(caixas / caixasPorPalete);
             let ultimo = caixas % caixasPorPalete;
             if (ultimo === 0 && caixas > 0) ultimo = caixasPorPalete;
-            if (!isNaN(personalizado) && personalizado > 0) ultimo = personalizado;
             document.getElementById('brascopEtiquetas').innerHTML = `<strong>📦 Etiquetas: ${paletes}</strong><br>📊 Último palete: ${ultimo} caixas`;
         }
 
         function calcEtiquetasSerac() {
             let estantes = +document.getElementById('seracRess').value || 0;
-            const personalizado = +document.getElementById('seracPersonalizar').value;
             const tipo = document.getElementById('seracTipo').value;
-            const coposPorEstante = 2040;
-            let coposPorCaixa, caixasPorPalete;
+            let caixasPorPalete, coposPorCaixa;
             if (tipo === 'padrao') { coposPorCaixa = 20; caixasPorPalete = 242; }
             else { coposPorCaixa = 15; caixasPorPalete = 352; }
-            const caixas = (estantes * coposPorEstante) / coposPorCaixa;
+            const caixas = (estantes * 2040) / coposPorCaixa;
             let paletes = Math.ceil(caixas / caixasPorPalete);
             let ultimo = caixas % caixasPorPalete;
             if (ultimo === 0 && caixas > 0) ultimo = caixasPorPalete;
-            if (!isNaN(personalizado) && personalizado > 0) ultimo = personalizado;
             document.getElementById('seracEtiquetas').innerHTML = `<strong>📦 Etiquetas: ${paletes}</strong><br>📊 Último palete: ${ultimo} caixas`;
         }
 
@@ -522,7 +501,28 @@
             document.getElementById('tempoRestante').innerHTML = `⏰ ${horas}h ${minutos}min para meia-noite`;
         }
 
-        // Checklist personalizado
+        // Navegação entre datas
+        function mudarData(delta) {
+            const data = new Date(dataAtual);
+            data.setDate(data.getDate() + delta);
+            dataAtual = data.toISOString().split('T')[0];
+            document.getElementById('seletorData').value = dataAtual;
+            carregarDashboard();
+        }
+
+        document.getElementById('btnDiaAnterior').onclick = () => mudarData(-1);
+        document.getElementById('btnProximoDia').onclick = () => mudarData(1);
+        document.getElementById('btnHoje').onclick = () => {
+            dataAtual = new Date().toISOString().split('T')[0];
+            document.getElementById('seletorData').value = dataAtual;
+            carregarDashboard();
+        };
+        document.getElementById('seletorData').onchange = (e) => {
+            dataAtual = e.target.value;
+            carregarDashboard();
+        };
+
+        // Checklist
         let tarefas = JSON.parse(localStorage.getItem('tarefas') || '[]');
         function renderTarefas() {
             const div = document.getElementById('checklistPersonalizado');
@@ -531,7 +531,7 @@
                 <div class="checklist-item">
                     <input type="checkbox" ${t.feita ? 'checked' : ''} data-index="${i}">
                     <label>${t.texto}</label>
-                    <button style="margin-left:auto; background:#e74c3c; padding:4px 12px; border-radius:30px;" onclick="removerTarefa(${i})">🗑️</button>
+                    <button style="margin-left:auto; background:#e74c3c; padding:4px 12px;" onclick="removerTarefa(${i})">🗑️</button>
                 </div>
             `).join('');
             document.querySelectorAll('#checklistPersonalizado input[type=checkbox]').forEach(chk => {
@@ -568,7 +568,6 @@
         atualizarMeiaNoite();
         renderTarefas();
         setInterval(atualizarMeiaNoite, 60000);
-        setInterval(carregarDashboard, 30000);
     </script>
 </body>
 </html>
