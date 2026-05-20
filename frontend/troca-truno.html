@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>PudimFlow - Troca de Turno</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        input, textarea, select {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        button {
+            background: #1e6f9f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0f2b3d;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f2b3d, #1e6f9f);
+            padding: 20px 24px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+        }
+
+        .header .turno {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 12px 20px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            border-bottom: 1px solid #334155;
+        }
+
+        .nav a {
+            background: #334155;
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .nav a.active, .nav a:hover {
+            background: #1e6f9f;
+            color: white;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 24px;
+        }
+
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            color: #38bdf8;
+            border-left: 4px solid #1e6f9f;
+            padding-left: 12px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.75rem;
+            color: #64748b;
+            border-top: 1px solid #334155;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🍮 PudimFlow - Troca de Turno</h1>
+    <div class="turno">3° turno → 1° turno</div>
+</div>
+
+<nav class="nav">
+    <a href="index.html">📊 Dashboard</a>
+    <a href="producao.html">🏭 Produção</a>
+    <a href="qualidade.html">✅ Qualidade</a>
+    <a href="seguranca.html">🛡️ Segurança</a>
+    <a href="sim.html">💡 SIM</a>
+    <a href="troca-turno.html" class="active">🔄 Troca de Turno</a>
+    <a href="relatorios.html">🔚 Fechamento</a>
+</nav>
+
+<div class="container">
+    <div class="card">
+        <h2>📋 Informações para o próximo turno</h2>
+
+        <div class="grid-2">
+            <div>
+                <label>📅 Data do turno</label>
+                <input type="date" id="dataTurno">
+            </div>
+            <div>
+                <label>👤 Líder do turno</label>
+                <input type="text" id="lider" value="Misa" placeholder="Seu nome">
+            </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+            <label>📝 Resumo da produção</label>
+            <textarea id="resumoProducao" rows="3" placeholder="Ex.: Brascop produziu 120 estantes / Serac 30 estantes / Paletes finalizados: 4"></textarea>
+        </div>
+
+        <div style="margin-top: 16px;">
+            <label>⚠️ Pendências que ficam para o próximo turno</label>
+            <textarea id="pendencias" rows="3" placeholder="Ex.: Etiqueta vermelha no forno 7 / Falta de tampas / Manutenção agendada"></textarea>
+        </div>
+
+        <div style="margin-top: 16px;">
+            <label>🔧 O que precisa ser feito amanhã cedo</label>
+            <textarea idacoes" rows="3" placeholder="Ex.: Reprogramar a máquina / Conferir esteira / Ligar para manutenção"></textarea>
+        </div>
+
+        <div style="margin-top: 16px;">
+            <label>📌 Observações gerais</label>
+            <textarea id="observacoes" rows="2" placeholder="Qualquer outra informação relevante"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 16px; margin-top: 24px;">
+            <button id="btnSalvar">💾 Salvar informações</button>
+            <button id="btnCarregar" style="background: #475569;">📂 Carregar último</button>
+            <button id="btnLimpar" style="background: #e74c3c;">🗑️ Limpar</button>
+        </div>
+
+        <div id="mensagem" style="margin-top: 16px; display: none;" class="alert"></div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>PudimFlow - Misael Andrejezieski</p>
+</div>
+
+<script>
+    const STORAGE_KEY = 'trocaTurno';
+
+    function salvarDados() {
+        const dados = {
+            data: document.getElementById('dataTurno').value,
+            lider: document.getElementById('lider').value,
+            resumoProducao: document.getElementById('resumoProducao').value,
+            pendencias: document.getElementById('pendencias').value,
+            acoes: document.getElementById('acoes').value,
+            observacoes: document.getElementById('observacoes').value,
+            timestamp: new Date().toISOString()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+        mostrarMensagem('✅ Informações salvas com sucesso!', '#2ecc71');
+    }
+
+    function carregarDados() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            const dados = JSON.parse(saved);
+            document.getElementById('dataTurno').value = dados.data || '';
+            document.getElementById('lider').value = dados.lider || 'Misa';
+            document.getElementById('resumoProducao').value = dados.resumoProducao || '';
+            document.getElementById('pendencias').value = dados.pendencias || '';
+            document.getElementById('acoes').value = dados.acoes || '';
+            document.getElementById('observacoes').value = dados.observacoes || '';
+            mostrarMensagem('📂 Últimas informações carregadas.', '#38bdf8');
+        } else {
+            mostrarMensagem('⚠️ Nenhuma informação salva ainda.', '#e67e22');
+        }
+    }
+
+    function limparFormulario() {
+        document.getElementById('dataTurno').value = '';
+        document.getElementById('lider').value = 'Misa';
+        document.getElementById('resumoProducao').value = '';
+        document.getElementById('pendencias').value = '';
+        document.getElementById('acoes').value = '';
+        document.getElementById('observacoes').value = '';
+        mostrarMensagem('🧹 Formulário limpo.', '#e74c3c');
+    }
+
+    function mostrarMensagem(texto, cor) {
+        const msg = document.getElementById('mensagem');
+        msg.style.display = 'block';
+        msg.style.background = cor;
+        msg.style.color = 'white';
+        msg.style.padding = '12px';
+        msg.style.borderRadius = '12px';
+        msg.innerHTML = texto;
+        setTimeout(() => { msg.style.display = 'none'; }, 3000);
+    }
+
+    document.getElementById('btnSalvar').addEventListener('click', salvarDados);
+    document.getElementById('btnCarregar').addEventListener('click', carregarDados);
+    document.getElementById('btnLimpar').addEventListener('click', limparFormulario);
+
+    // Data atual como padrão
+    const hoje = new Date().toISOString().split('T')[0];
+    if (!document.getElementById('dataTurno').value) {
+        document.getElementById('dataTurno').value = hoje;
+    }
+</script>
+
+</body>
+</html>
