@@ -19,7 +19,18 @@
             line-height: 1.5;
         }
 
-        /* Header */
+        /* Remove as setinhas dos inputs number */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
         .header {
             background: linear-gradient(135deg, #0f2b3d 0%, #1e6f9f 100%);
             color: white;
@@ -42,7 +53,6 @@
             margin-top: 6px;
         }
 
-        /* Navegação */
         .nav {
             background: #1e293b;
             padding: 12px 20px;
@@ -72,14 +82,12 @@
             color: white;
         }
 
-        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 24px;
         }
 
-        /* Seletor de data */
         .data-selector {
             background: #1e293b;
             border-radius: 20px;
@@ -90,7 +98,6 @@
             align-items: center;
             flex-wrap: wrap;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
             border: 1px solid #334155;
         }
 
@@ -99,6 +106,9 @@
             padding: 8px 16px;
             border-radius: 40px;
             font-size: 0.8rem;
+            border: none;
+            color: white;
+            cursor: pointer;
         }
 
         .data-selector button.hoje {
@@ -116,7 +126,6 @@
             border-radius: 12px;
         }
 
-        /* Cards */
         .card {
             background: #1e293b;
             border-radius: 20px;
@@ -129,7 +138,6 @@
 
         .card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
         }
 
         .card h2 {
@@ -141,7 +149,6 @@
             padding-left: 12px;
         }
 
-        /* Dashboard Cards */
         .dashboard-cards {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -177,7 +184,6 @@
             font-weight: 500;
         }
 
-        /* Checklist */
         .checklist-item {
             display: flex;
             align-items: center;
@@ -244,9 +250,8 @@
             background: #e74c3c;
         }
 
-        /* Alerta meia-noite */
         .alerta-meianoite {
-            background: linear-gradient(135deg, #7f1a1a, #991b1b);
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
             text-align: center;
             border: none;
@@ -263,7 +268,6 @@
             border: 1px solid #334155;
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 20px;
@@ -279,6 +283,9 @@
             }
             .card {
                 padding: 16px;
+            }
+            .dashboard-cards {
+                gap: 12px;
             }
             .data-selector {
                 flex-direction: column;
@@ -302,14 +309,14 @@
         <a href="qualidade.html">✅ Qualidade</a>
         <a href="seguranca.html">🛡️ Segurança</a>
         <a href="sim.html">💡 SIM</a>
-        <a href="programacao.html">📅 Programação</a>
+        <a href="troca-turno.html">🔄 Troca de Turno</a>
         <a href="relatorios.html">🔚 Fechamento</a>
     </nav>
 
     <div class="container">
         <div class="data-selector">
             <button id="btnDiaAnterior">◀ Dia anterior</button>
-            <input type="date" id="seletorData" value="">
+            <input type="date" id="seletorData">
             <button id="btnProximoDia">Próximo dia ▶</button>
             <button id="btnHoje" class="hoje">Hoje</button>
         </div>
@@ -339,6 +346,25 @@
             <div style="display: flex; gap: 12px; margin-top: 16px;">
                 <input type="text" id="novaTarefa" placeholder="Nova tarefa..." style="flex: 1;">
                 <button id="btnAddTarefa" class="btn-success" style="width: auto;">➕</button>
+            </div>
+        </div>
+
+        <div class="dashboard-cards">
+            <div class="dashboard-card">
+                <div class="numero" id="totalEstantes">0</div>
+                <div class="label">Estantes produzidas</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="numero" id="totalKg">0</div>
+                <div class="label">Quilogramas</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="numero" id="totalPerdas">0</div>
+                <div class="label">Perdas (copos)</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="numero" id="eficiencia">0%</div>
+                <div class="label">Eficiência</div>
             </div>
         </div>
 
@@ -380,8 +406,8 @@
             <h2>🔁 Resselagem Serac</h2>
             <label>Tipo</label>
             <select id="seracTipo">
-                <option value="padrao">Padrão (242 caixas x 20 copos)</option>
-                <option value="itambe">Itambé (352 caixas x 15 copos)</option>
+                <option value="padrao">Padrão 242 caixas x 20 copos</option>
+                <option value="itambe">Itambé 352 caixas x 15 copos</option>
             </select>
             <label>Estantes faltando</label>
             <input type="number" id="seracRess" value="0">
@@ -479,6 +505,10 @@
             document.getElementById('seracMeta').textContent = seracMeta;
             document.getElementById('seracTotal').textContent = seracTotal;
             document.getElementById('seracFalta').textContent = Math.max(0, seracMeta - seracTotal);
+            
+            document.getElementById('totalEstantes').textContent = brascopTotal + seracTotal;
+            document.getElementById('totalKg').textContent = (brascopTotal * 89.6 + seracTotal * 204).toLocaleString();
+            document.getElementById('eficiencia').textContent = ((brascopTotal * 89.6 + seracTotal * 204) / metaGlobal * 100).toFixed(1);
         }
 
         function calcEtiquetasBrascop() {
@@ -579,6 +609,7 @@
         atualizarMeiaNoite();
         renderTarefas();
         setInterval(atualizarMeiaNoite, 60000);
+        setInterval(carregarDashboard, 30000);
     </script>
 </body>
 </html>
