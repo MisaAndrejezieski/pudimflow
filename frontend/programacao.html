@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,15 +13,18 @@
             border-color: #38a169 !important;
             font-weight: bold !important;
         }
+
         .planilha-container {
             overflow-x: auto;
         }
+
         .planilha-programacao {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.7rem;
             min-width: 900px;
         }
+
         .planilha-programacao th,
         .planilha-programacao td {
             border: 1px solid var(--border);
@@ -28,11 +32,13 @@
             text-align: center;
             vertical-align: middle;
         }
+
         .planilha-programacao th {
             background: var(--primary);
             color: white;
             font-weight: bold;
         }
+
         .planilha-programacao input {
             width: 85px;
             padding: 4px;
@@ -43,30 +49,36 @@
             color: var(--text-primary);
             font-size: 0.7rem;
         }
+
         .produto-cell {
             text-align: left;
             font-weight: bold;
             background: var(--bg-secondary);
             font-size: 0.65rem;
         }
+
         .total-row {
             background: var(--secondary);
             color: white;
             font-weight: bold;
         }
+
         .total-row td {
             background: var(--secondary);
             color: white;
         }
+
         .total-geral-row {
             background: var(--primary);
             color: white;
             font-weight: bold;
         }
+
         .total-geral-row td {
             background: var(--primary);
             color: white;
         }
+
         .unidade-indicador {
             font-size: 0.65rem;
             color: #94a3b8;
@@ -74,6 +86,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <h1>🍮 PudimFlow - Programação Semanal</h1>
@@ -171,7 +184,8 @@
                 <button id="btnCarregar">📂 CARREGAR PROGRAMAÇÃO</button>
                 <button id="btnLimpar">🗑️ LIMPAR TUDO</button>
             </div>
-            <div id="mensagem" style="margin-top: 1rem; display: none; text-align: center; padding: 12px; border-radius: 12px;"></div>
+            <div id="mensagem"
+                style="margin-top: 1rem; display: none; text-align: center; padding: 12px; border-radius: 12px;"></div>
         </div>
     </div>
 
@@ -183,8 +197,8 @@
 
     <script>
         // Configuração da API (corrigida para funcionar local e em produção)
-        const API_URL = window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000/api' 
+        const API_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:3000/api'
             : 'https://pudimflow.onrender.com/api';
 
         const dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
@@ -209,16 +223,25 @@
             { codigo: "610102496", nome: "PUDIM LEITE COND ITAMBE 100G", unidade: "kg" }
         ];
 
-        // Dados padrão (vazios para você preencher)
-        const dadosPadraoTrepko = {};
-        produtosTrepko.forEach(produto => {
-            dadosPadraoTrepko[produto.codigo] = ["", "", "", "", "", "", ""];
-        });
+        // Dados TREPKO com valores do PDF
+        const dadosPadraoTrepko = {
+            "610100542": ["6000", "", "", "", "", "", ""],
+            "610102542": ["3333", "", "", "4000", "", "", ""],
+            "610103542": ["", "", "", "", "2222", "", ""],
+            "610101551": ["", "", "", "", "", "", ""],
+            "610102551": ["", "", "", "", "", "", ""],
+            "610100551": ["", "", "", "", "", "", ""],
+            "610101542": ["", "", "", "", "", "", ""],
+            "610101544": ["1667", "", "", "6000", "", "", ""],
+            "610104544": ["", "9000", "9000", "6000", "3000", "3000", ""],
+            "610100550": ["", "4500", "4500", "3000", "1500", "1500", ""]
+        };
 
-        const dadosPadraoSerac = {};
-        produtosSerac.forEach(produto => {
-            dadosPadraoSerac[produto.codigo] = ["", "", "", "", "", "", ""];
-        });
+        // Dados SERAC com valores do PDF
+        const dadosPadraoSerac = {
+            "610100544": ["5000", "4500", "4500", "5222", "4500", "4500", ""],
+            "610102496": ["1000", "1000", "1000", "1000", "1500", "", ""]
+        };
 
         function extrairMeta(valor) {
             if (!valor) return 0;
@@ -266,16 +289,16 @@
                 const totalTrepko = calcularTotalDia('tabelaTrepko', i);
                 const cellTrepko = document.getElementById(`totalDiaTrepko_${i}`);
                 if (cellTrepko) cellTrepko.textContent = totalTrepko.toLocaleString();
-                
+
                 const totalSerac = calcularTotalDia('tabelaSerac', i);
                 const cellSerac = document.getElementById(`totalDiaSerac_${i}`);
                 if (cellSerac) cellSerac.textContent = totalSerac.toLocaleString();
-                
+
                 const totalGeral = totalTrepko + totalSerac;
                 const cellGeral = document.getElementById(`totalGeralDia_${i}`);
                 if (cellGeral) cellGeral.textContent = totalGeral.toLocaleString();
             }
-            
+
             let totalSemanaTrepko = 0;
             let totalSemanaSerac = 0;
             for (let i = 0; i < dias.length; i++) {
@@ -290,7 +313,7 @@
         function adicionarEventos() {
             const inputs = document.querySelectorAll('.planilha-programacao input[data-dia]');
             inputs.forEach(input => {
-                input.removeEventListener('input', function() {});
+                input.removeEventListener('input', function () { });
                 input.addEventListener('input', () => {
                     const row = input.closest('tr');
                     if (row) calcularTotaisLinha(row);
@@ -404,4 +427,5 @@
         carregarProgramacao();
     </script>
 </body>
+
 </html>
