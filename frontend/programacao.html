@@ -6,7 +6,6 @@
     <title>PudimFlow - Programação Semanal</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Garantia do destaque verde */
         .planilha-programacao input.input-preenchido {
             background: #48bb78 !important;
             color: white !important;
@@ -68,44 +67,46 @@
             background: var(--primary);
             color: white;
         }
+        .unidade-indicador {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            margin-left: 4px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🍮 PudimFlow - Programação Semanal</h1>
-        <div class="turno">MERCEARIA - Semana 21 (15/05/2026)</div>
+        <div class="turno">MERCEARIA - Planejamento de Produção</div>
     </div>
 
     <nav class="nav">
         <a href="index.html">📊 Dashboard</a>
-        <a href="producao.html">🏭 Produção</a>
-        <a href="qualidade.html">✅ Qualidade</a>
-        <a href="seguranca.html">🛡️ Segurança</a>
         <a href="sim.html">💡 SIM</a>
+        <a href="troca-turno.html">🔄 Troca de Turno</a>
         <a href="programacao.html" class="active">📅 Programação</a>
-        <a href="relatorios.html">🔚 Fechamento</a>
     </nav>
 
     <div class="container planilha-container">
         <div class="card">
-            <h2>📊 Programação Semanal - Linha Trepko (Pudins)</h2>
+            <h2>📊 Programação Semanal - Linha TREPKO (Brascop)</h2>
             <table class="planilha-programacao" id="tabelaTrepko">
                 <thead>
                     <tr>
                         <th>Produto / Código</th>
-                        <th>Segunda</th>
-                        <th>Terça</th>
-                        <th>Quarta</th>
-                        <th>Quinta</th>
-                        <th>Sexta</th>
-                        <th>Sábado</th>
-                        <th>Domingo</th>
+                        <th>Segunda<br><span class="unidade-indicador">(kg/L)</span></th>
+                        <th>Terça<br><span class="unidade-indicador">(kg/L)</span></th>
+                        <th>Quarta<br><span class="unidade-indicador">(kg/L)</span></th>
+                        <th>Quinta<br><span class="unidade-indicador">(kg/L)</span></th>
+                        <th>Sexta<br><span class="unidade-indicador">(kg/L)</span></th>
+                        <th>Sábado<br><span class="unidade-indicador">(kg/L)</span></th>
+                        <th>Domingo<br><span class="unidade-indicador">(kg/L)</span></th>
                         <th>Total Semana</th>
                     </tr>
                 </thead>
                 <tbody id="corpoTrepko"></tbody>
                 <tfoot>
-                    <tr class="total-row" id="totalTrepkoRow">
+                    <tr class="total-row">
                         <td><strong>TOTAL LINHA TREPKO</strong></td>
                         <td id="totalDiaTrepko_0">-</td>
                         <td id="totalDiaTrepko_1">-</td>
@@ -121,24 +122,24 @@
         </div>
 
         <div class="card" style="margin-top: 1.5rem;">
-            <h2>📊 Programação Semanal - Linha Serac (Pudins)</h2>
+            <h2>📊 Programação Semanal - Linha SERAC</h2>
             <table class="planilha-programacao" id="tabelaSerac">
                 <thead>
                     <tr>
                         <th>Produto / Código</th>
-                        <th>Segunda</th>
-                        <th>Terça</th>
-                        <th>Quarta</th>
-                        <th>Quinta</th>
-                        <th>Sexta</th>
-                        <th>Sábado</th>
-                        <th>Domingo</th>
+                        <th>Segunda<br><span class="unidade-indicador">(kg/L)</span></th>
+                        <th>Terça<br><span class="unidade-indicador">(kg/L)</span></th>
+                        <th>Quarta<br><span class="unidade-indicador">(kg/L)</span></th>
+                        <th>Quinta<br><span class="unidade-indicador">(kg/L)</span></th>
+                        <th>Sexta<br><span class="unidade-indicador">(kg/L)</span></th>
+                        <th>Sábado<br><span class="unidade-indicador">(kg/L)</span></th>
+                        <th>Domingo<br><span class="unidade-indicador">(kg/L)</span></th>
                         <th>Total Semana</th>
                     </tr>
                 </thead>
                 <tbody id="corpoSerac"></tbody>
                 <tfoot>
-                    <tr class="total-row" id="totalSeracRow">
+                    <tr class="total-row">
                         <td><strong>TOTAL LINHA SERAC</strong></td>
                         <td id="totalDiaSerac_0">-</td>
                         <td id="totalDiaSerac_1">-</td>
@@ -149,7 +150,7 @@
                         <td id="totalDiaSerac_6">-</td>
                         <td id="totalSemanaSerac">0</td>
                     </tr>
-                    <tr class="total-geral-row" id="totalGeralRow">
+                    <tr class="total-geral-row">
                         <td><strong>TOTAL GERAL (TREPKO + SERAC)</strong></td>
                         <td id="totalGeralDia_0">-</td>
                         <td id="totalGeralDia_1">-</td>
@@ -165,12 +166,12 @@
         </div>
 
         <div class="card" style="margin-top: 1.5rem;">
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
                 <button id="btnSalvar" style="background: var(--success);">💾 SALVAR PROGRAMAÇÃO</button>
                 <button id="btnCarregar">📂 CARREGAR PROGRAMAÇÃO</button>
-                <button id="btnAplicarHoje">📆 APLICAR PROGRAMAÇÃO DE HOJE</button>
+                <button id="btnLimpar">🗑️ LIMPAR TUDO</button>
             </div>
-            <div id="mensagem" style="margin-top: 1rem; display: none;"></div>
+            <div id="mensagem" style="margin-top: 1rem; display: none; text-align: center; padding: 12px; border-radius: 12px;"></div>
         </div>
     </div>
 
@@ -181,44 +182,43 @@
     <div class="dark-mode-toggle" onclick="toggleDarkMode()">🌓</div>
 
     <script>
-        const API_URL = 'http://localhost:3000/api';
+        // Configuração da API (corrigida para funcionar local e em produção)
+        const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000/api' 
+            : 'https://pudimflow.onrender.com/api';
+
         const dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
 
-        const dadosReaisTrepko = {
-            "610100542": ["6000", "", "", "", "", "", ""],
-            "610102542": ["", "", "", "4000", "", "", ""],
-            "610103542": ["", "", "", "", "", "", ""],
-            "610101551": ["", "", "", "", "", "", ""],
-            "610102551": ["", "", "", "", "", "", ""],
-            "610100551": ["", "", "", "", "", "", ""],
-            "610101542": ["3000", "", "", "", "", "", ""],
-            "610101544": ["", "", "", "", "6000", "", ""],
-            "610104544": ["", "9000", "9000", "6000", "3000", "3000", ""],
-            "610100550": ["", "", "", "", "", "", "6000"]
-        };
-
-        const dadosReaisSerac = {
-            "610100544": ["1000", "1000", "1000", "1000", "1000", "", ""],
-            "610102496": ["", "", "", "", "", "", ""]
-        };
-
+        // Produtos TREPKO (Brascop)
         const produtosTrepko = [
-            { codigo: "610100542", nome: "SOB BRIGADEIRA CHOCO BATAVO 180g" },
-            { codigo: "610102542", nome: "SOB MANJAR COCO BATAVO CX10 180G CB" },
-            { codigo: "610103542", nome: "SOB ROMEU E JULIETA ITAMBE CX10 180G" },
-            { codigo: "610101551", nome: "SOB BEIJINHO CHANDELLE CX20 90G CBI" },
-            { codigo: "610102551", nome: "SOB BRIG MORANGO CHANDELLE CX20 90G" },
-            { codigo: "610100551", nome: "SOB BRIGADEIRA CHANDELLE 180G" },
-            { codigo: "610101542", nome: "SOB BRIGADEIRA ITAMBE 180G" },
-            { codigo: "610101544", nome: "SOB PUDIM LEITE ITAMBE 200G" },
-            { codigo: "610104544", nome: "SOB PUDIM LEITE BATAVO 200G" },
-            { codigo: "610100550", nome: "SOB PUDIM LEITE CHANDELLE 200G" }
+            { codigo: "610100542", nome: "SOB BRIGADEIRA CHOCO BATAVO 180g", unidade: "kg" },
+            { codigo: "610102542", nome: "SOB MANJAR COCO BATAVO CX10 180G CB", unidade: "kg" },
+            { codigo: "610103542", nome: "SOB ROMEU E JULIETA ITAMBE CX10 180G", unidade: "kg" },
+            { codigo: "610101551", nome: "SOB BEIJINHO CHANDELLE CX20 90G CBI", unidade: "kg" },
+            { codigo: "610102551", nome: "SOB BRIG MORANGO CHANDELLE CX20 90G", unidade: "kg" },
+            { codigo: "610100551", nome: "SOB BRIGADEIRA CHANDELLE 180G", unidade: "kg" },
+            { codigo: "610101542", nome: "SOB BRIGADEIRA ITAMBE 180G", unidade: "kg" },
+            { codigo: "610101544", nome: "SOB PUDIM LEITE ITAMBE 200G", unidade: "kg" },
+            { codigo: "610104544", nome: "SOB PUDIM LEITE BATAVO 200G", unidade: "kg" },
+            { codigo: "610100550", nome: "SOB PUDIM LEITE CHANDELLE 200G", unidade: "kg" }
         ];
 
+        // Produtos SERAC
         const produtosSerac = [
-            { codigo: "610100544", nome: "SOB PUDIM LEITE BATAVO 200G" },
-            { codigo: "610102496", nome: "PUDIM LEITE COND ITAMBE 100G" }
+            { codigo: "610100544", nome: "SOB PUDIM LEITE BATAVO 200G", unidade: "L" },
+            { codigo: "610102496", nome: "PUDIM LEITE COND ITAMBE 100G", unidade: "kg" }
         ];
+
+        // Dados padrão (vazios para você preencher)
+        const dadosPadraoTrepko = {};
+        produtosTrepko.forEach(produto => {
+            dadosPadraoTrepko[produto.codigo] = ["", "", "", "", "", "", ""];
+        });
+
+        const dadosPadraoSerac = {};
+        produtosSerac.forEach(produto => {
+            dadosPadraoSerac[produto.codigo] = ["", "", "", "", "", "", ""];
+        });
 
         function extrairMeta(valor) {
             if (!valor) return 0;
@@ -300,16 +300,16 @@
             });
         }
 
-        function carregarTabelaTrepko(dados = dadosReaisTrepko) {
+        function carregarTabelaTrepko(dados = dadosPadraoTrepko) {
             const tbody = document.getElementById('corpoTrepko');
             tbody.innerHTML = '';
             produtosTrepko.forEach(produto => {
                 const valores = dados[produto.codigo] || ["", "", "", "", "", "", ""];
                 const row = tbody.insertRow();
-                row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small></div>`;
+                row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small><br><small style="color:#94a3b8;">(${produto.unidade})</small></div>`;
                 for (let i = 0; i < dias.length; i++) {
                     const cell = row.insertCell(i + 1);
-                    cell.innerHTML = `<input type="text" data-dia="${dias[i]}" value="${valores[i] || ''}" placeholder="Meta">`;
+                    cell.innerHTML = `<input type="text" data-dia="${dias[i]}" value="${valores[i] || ''}" placeholder="0">`;
                 }
                 const totalCell = row.insertCell(dias.length + 1);
                 totalCell.className = 'total-semana';
@@ -320,16 +320,16 @@
             atualizarDestaqueInputs();
         }
 
-        function carregarTabelaSerac(dados = dadosReaisSerac) {
+        function carregarTabelaSerac(dados = dadosPadraoSerac) {
             const tbody = document.getElementById('corpoSerac');
             tbody.innerHTML = '';
             produtosSerac.forEach(produto => {
                 const valores = dados[produto.codigo] || ["", "", "", "", "", "", ""];
                 const row = tbody.insertRow();
-                row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small></div>`;
+                row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small><br><small style="color:#94a3b8;">(${produto.unidade})</small></div>`;
                 for (let i = 0; i < dias.length; i++) {
                     const cell = row.insertCell(i + 1);
-                    cell.innerHTML = `<input type="text" data-dia="${dias[i]}" value="${valores[i] || ''}" placeholder="Meta">`;
+                    cell.innerHTML = `<input type="text" data-dia="${dias[i]}" value="${valores[i] || ''}" placeholder="0">`;
                 }
                 const totalCell = row.insertCell(dias.length + 1);
                 totalCell.className = 'total-semana';
@@ -338,6 +338,14 @@
             adicionarEventos();
             atualizarTodosTotais();
             atualizarDestaqueInputs();
+        }
+
+        function mostrarMensagem(texto, tipo = 'success') {
+            const msgDiv = document.getElementById('mensagem');
+            msgDiv.style.display = 'block';
+            msgDiv.className = `alert alert-${tipo}`;
+            msgDiv.innerHTML = texto;
+            setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
         }
 
         function salvarProgramacao() {
@@ -365,75 +373,34 @@
 
             localStorage.setItem('programacao_trepko', JSON.stringify(dadosTrepko));
             localStorage.setItem('programacao_serac', JSON.stringify(dadosSerac));
-
-            const msgDiv = document.getElementById('mensagem');
-            msgDiv.style.display = 'block';
-            msgDiv.className = 'alert alert-success';
-            msgDiv.innerHTML = '✅ Programação salva no navegador!';
-            setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+            mostrarMensagem('✅ Programação salva no navegador!', 'success');
         }
 
         function carregarProgramacao() {
             const savedTrepko = localStorage.getItem('programacao_trepko');
             const savedSerac = localStorage.getItem('programacao_serac');
-            carregarTabelaTrepko(savedTrepko ? JSON.parse(savedTrepko) : dadosReaisTrepko);
-            carregarTabelaSerac(savedSerac ? JSON.parse(savedSerac) : dadosReaisSerac);
+            carregarTabelaTrepko(savedTrepko ? JSON.parse(savedTrepko) : dadosPadraoTrepko);
+            carregarTabelaSerac(savedSerac ? JSON.parse(savedSerac) : dadosPadraoSerac);
+            mostrarMensagem('📂 Programação carregada!', 'info');
         }
 
-        function aplicarProgramacaoHoje() {
-            const hoje = new Date();
-            const diaSemana = dias[hoje.getDay() === 0 ? 6 : hoje.getDay() - 1];
-            
-            let metaHoje = 0;
-            let produtoHoje = '';
-            
-            const rowsTrepko = document.querySelectorAll('#corpoTrepko tr');
-            for (let i = 0; i < rowsTrepko.length; i++) {
-                const input = rowsTrepko[i].querySelector(`input[data-dia="${diaSemana}"]`);
-                if (input && input.value) {
-                    const meta = extrairMeta(input.value);
-                    if (meta > 0) {
-                        metaHoje = meta;
-                        produtoHoje = produtosTrepko[i].nome;
-                        break;
-                    }
-                }
+        function limparTudo() {
+            if (confirm('⚠️ Tem certeza que deseja limpar TODA a programação? Os dados serão perdidos.')) {
+                carregarTabelaTrepko(dadosPadraoTrepko);
+                carregarTabelaSerac(dadosPadraoSerac);
+                mostrarMensagem('🗑️ Programação limpa!', 'warning');
             }
-            
-            if (metaHoje === 0) {
-                alert(`Não há programação definida para ${diaSemana}`);
-                return;
-            }
-            
-            fetch('/api/producao', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    programacao: produtoHoje,
-                    meta: metaHoje,
-                    metaBrascop: metaHoje,
-                    metaSerac: 1000
-                })
-            }).then(() => {
-                const msgDiv = document.getElementById('mensagem');
-                msgDiv.style.display = 'block';
-                msgDiv.className = 'alert alert-success';
-                msgDiv.innerHTML = `✅ Programação de ${diaSemana} aplicada!<br>Produto: ${produtoHoje}<br>Meta: ${metaHoje} kg`;
-                setTimeout(() => { msgDiv.style.display = 'none'; }, 5000);
-            }).catch(error => {
-                console.error('Erro:', error);
-                alert('Erro ao aplicar programação');
-            });
         }
 
         document.getElementById('btnSalvar').addEventListener('click', salvarProgramacao);
         document.getElementById('btnCarregar').addEventListener('click', carregarProgramacao);
-        document.getElementById('btnAplicarHoje').addEventListener('click', aplicarProgramacaoHoje);
+        document.getElementById('btnLimpar').addEventListener('click', limparTudo);
 
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
         }
 
+        // Inicializar
         carregarProgramacao();
     </script>
 </body>
