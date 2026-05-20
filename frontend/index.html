@@ -14,16 +14,17 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: #f4f6f9;
-            color: #1a2a3a;
+            background-color: #0f172a;
+            color: #e2e8f0;
             line-height: 1.5;
         }
 
+        /* Header */
         .header {
             background: linear-gradient(135deg, #0f2b3d 0%, #1e6f9f 100%);
             color: white;
             padding: 20px 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         .header h1 {
@@ -41,27 +42,28 @@
             margin-top: 6px;
         }
 
+        /* Navegação */
         .nav {
-            background: white;
+            background: #1e293b;
             padding: 12px 20px;
             display: flex;
             gap: 8px;
             overflow-x: auto;
             white-space: nowrap;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #334155;
             position: sticky;
             top: 0;
             z-index: 99;
         }
 
         .nav a {
-            color: #4a5568;
+            color: #cbd5e1;
             text-decoration: none;
             padding: 8px 18px;
             border-radius: 40px;
             font-size: 0.85rem;
             font-weight: 500;
-            background: #f1f5f9;
+            background: #334155;
             transition: all 0.2s ease;
         }
 
@@ -70,6 +72,7 @@
             color: white;
         }
 
+        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -78,7 +81,7 @@
 
         /* Seletor de data */
         .data-selector {
-            background: white;
+            background: #1e293b;
             border-radius: 20px;
             padding: 16px 20px;
             margin-bottom: 20px;
@@ -87,11 +90,12 @@
             align-items: center;
             flex-wrap: wrap;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            border: 1px solid #334155;
         }
 
         .data-selector button {
-            background: #64748b;
+            background: #475569;
             padding: 8px 16px;
             border-radius: 40px;
             font-size: 0.8rem;
@@ -106,32 +110,38 @@
             padding: 8px 12px;
             font-size: 0.9rem;
             text-align: center;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            border-radius: 12px;
         }
 
+        /* Cards */
         .card {
-            background: white;
+            background: #1e293b;
             border-radius: 20px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border: 1px solid #eef2f6;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: 1px solid #334155;
             transition: transform 0.2s ease;
         }
 
         .card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
         }
 
         .card h2 {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 16px;
-            color: #0f2b3d;
+            color: #38bdf8;
             border-left: 4px solid #1e6f9f;
             padding-left: 12px;
         }
 
+        /* Dashboard Cards */
         .dashboard-cards {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -147,38 +157,39 @@
         }
 
         .dashboard-card {
-            background: white;
+            background: #0f172a;
             border-radius: 20px;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border: 1px solid #eef2f6;
+            border: 1px solid #334155;
         }
 
         .dashboard-card .numero {
             font-size: 2.2rem;
             font-weight: 700;
-            color: #1e6f9f;
+            color: #38bdf8;
         }
 
         .dashboard-card .label {
             font-size: 0.8rem;
-            color: #64748b;
+            color: #94a3b8;
             margin-top: 8px;
             font-weight: 500;
         }
 
+        /* Checklist */
         .checklist-item {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 10px 0;
-            border-bottom: 1px solid #edf2f7;
+            border-bottom: 1px solid #334155;
         }
 
         .checklist-item input[type="checkbox"] {
             width: 20px;
             height: 20px;
+            cursor: pointer;
             accent-color: #2ecc71;
         }
 
@@ -189,7 +200,7 @@
         label {
             font-size: 0.8rem;
             font-weight: 600;
-            color: #475569;
+            color: #94a3b8;
             display: block;
             margin-bottom: 6px;
         }
@@ -197,10 +208,12 @@
         input, select, textarea {
             width: 100%;
             padding: 10px 14px;
-            border: 1.5px solid #e2e8f0;
+            border: 1.5px solid #334155;
             border-radius: 12px;
             font-size: 0.9rem;
             font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
         }
 
         input:focus {
@@ -231,29 +244,32 @@
             background: #e74c3c;
         }
 
+        /* Alerta meia-noite */
         .alerta-meianoite {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            background: linear-gradient(135deg, #7f1a1a, #991b1b);
             color: white;
             text-align: center;
             border: none;
         }
 
         .etiqueta-resultado {
-            background: #eef2ff;
-            color: #1e6f9f;
+            background: #0f172a;
+            color: #38bdf8;
             padding: 12px;
             border-radius: 14px;
             margin-top: 12px;
             text-align: center;
             font-weight: 600;
+            border: 1px solid #334155;
         }
 
+        /* Footer */
         .footer {
             text-align: center;
             padding: 20px;
             font-size: 0.75rem;
-            color: #94a3b8;
-            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            border-top: 1px solid #334155;
             margin-top: 20px;
         }
 
@@ -277,7 +293,7 @@
 <body>
     <div class="header">
         <h1>PudimFlow</h1>
-        <div class="turno">Turno da Noite - Misa</div>
+        <div class="turno">3° turno</div>
     </div>
 
     <nav class="nav">
@@ -291,7 +307,6 @@
     </nav>
 
     <div class="container">
-        <!-- Seletor de Data -->
         <div class="data-selector">
             <button id="btnDiaAnterior">◀ Dia anterior</button>
             <input type="date" id="seletorData" value="">
@@ -376,13 +391,12 @@
     </div>
 
     <div class="footer">
-        <p>PudimFlow - Sistema de Gestão de Produção | Turno da Noite</p>
+        <p>PudimFlow - Misael Andrejezieski</p>
     </div>
 
     <script>
         const API_URL = 'https://pudimflow.onrender.com/api';
         
-        // Validade: pudim 43 dias, brigadeiro 48 dias
         const produtosConfig = {
             'Pudim Leite Batavo': { massaG: 85, caldaG: 15, totalG: 100, validadeDias: 43 },
             'Pudim Leite Itambé': { massaG: 90, caldaG: 10, totalG: 100, validadeDias: 43 },
@@ -433,7 +447,6 @@
                     document.getElementById('dataValidade').textContent = calcularDataValidade(config.validadeDias, dataAtual);
                     document.getElementById('dataFabricacao').textContent = formatarDataBrasil(dataAtual);
                 } else {
-                    // Dados vazios
                     document.getElementById('produtoBrascop').textContent = 'Não definido';
                     document.getElementById('produtoSerac').textContent = 'Não definido';
                     document.getElementById('metaKgBrascop').textContent = '0';
@@ -501,7 +514,6 @@
             document.getElementById('tempoRestante').innerHTML = `⏰ ${horas}h ${minutos}min para meia-noite`;
         }
 
-        // Navegação entre datas
         function mudarData(delta) {
             const data = new Date(dataAtual);
             data.setDate(data.getDate() + delta);
@@ -522,7 +534,6 @@
             carregarDashboard();
         };
 
-        // Checklist
         let tarefas = JSON.parse(localStorage.getItem('tarefas') || '[]');
         function renderTarefas() {
             const div = document.getElementById('checklistPersonalizado');
