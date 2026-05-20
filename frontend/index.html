@@ -264,6 +264,36 @@
             margin-top: 20px;
         }
 
+        /* Mensagem de erro/sucesso global */
+        #globalMessage {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .alert-success {
+            background: #2ecc71;
+            color: white;
+        }
+        .alert-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        .alert-warning {
+            background: #f39c12;
+            color: white;
+        }
+        .alert-info {
+            background: #3498db;
+            color: white;
+        }
+
         @media (max-width: 640px) {
             .container {
                 padding: 16px;
@@ -278,6 +308,11 @@
             .data-selector button, .data-selector input {
                 width: 100%;
             }
+            #globalMessage {
+                top: 70px;
+                right: 10px;
+                left: 10px;
+            }
         }
     </style>
 </head>
@@ -289,11 +324,8 @@
 
     <nav class="nav">
         <a href="index.html" class="active">📊 Dashboard</a>
-        <a href="qualidade.html">✅ Qualidade</a>
-        <a href="seguranca.html">🛡️ Segurança</a>
         <a href="sim.html">💡 SIM</a>
         <a href="troca-turno.html">🔄 Troca de Turno</a>
-        <a href="relatorios.html">🔚 Fechamento</a>
     </nav>
 
     <div class="container">
@@ -336,10 +368,10 @@
             <h2>🏭 Brascop - Envase</h2>
             <p><small>1 estante = 896 copos = 89,6 kg</small></p>
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-                <div><label>3º turno ontem</label> <input type="number" id="brascop3_ontem" value="0"></div>
-                <div><label>1º turno antes</label> <input type="number" id="brascop1_antes" value="0"></div>
-                <div><label>2º turno você</label> <input type="number" id="brascop2_voce" value="0"></div>
-                <div><label>3º turno final</label> <input type="number" id="brascop3_final" value="0"></div>
+                <div><label>3º turno ontem</label> <input type="number" id="brascop3_ontem" placeholder="0"></div>
+                <div><label>1º turno antes</label> <input type="number" id="brascop1_antes" placeholder="0"></div>
+                <div><label>2º turno você</label> <input type="number" id="brascop2_voce" placeholder="0"></div>
+                <div><label>3º turno final</label> <input type="number" id="brascop3_final" placeholder="0"></div>
             </div>
             <p style="margin-top: 12px;"><strong>Total produzido:</strong> <span id="brascopTotal">0</span> estantes</p>
             <p><strong>Meta:</strong> <span id="brascopMeta">0</span> estantes | <strong>⚠️ Falta:</strong> <span id="brascopFalta">0</span> estantes</p>
@@ -349,10 +381,10 @@
             <h2>🏭 Serac - Envase</h2>
             <p><small>1 estante = 2040 copos = 204 kg</small></p>
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-                <div><label>3º turno ontem</label> <input type="number" id="serac3_ontem" value="0"></div>
-                <div><label>1º turno antes</label> <input type="number" id="serac1_antes" value="0"></div>
-                <div><label>2º turno você</label> <input type="number" id="serac2_voce" value="0"></div>
-                <div><label>3º turno final</label> <input type="number" id="serac3_final" value="0"></div>
+                <div><label>3º turno ontem</label> <input type="number" id="serac3_ontem" placeholder="0"></div>
+                <div><label>1º turno antes</label> <input type="number" id="serac1_antes" placeholder="0"></div>
+                <div><label>2º turno você</label> <input type="number" id="serac2_voce" placeholder="0"></div>
+                <div><label>3º turno final</label> <input type="number" id="serac3_final" placeholder="0"></div>
             </div>
             <p style="margin-top: 12px;"><strong>Total produzido:</strong> <span id="seracTotal">0</span> estantes</p>
             <p><strong>Meta:</strong> <span id="seracMeta">0</span> estantes | <strong>⚠️ Falta:</strong> <span id="seracFalta">0</span> estantes</p>
@@ -361,7 +393,7 @@
         <div class="card">
             <h2>🔁 Resselagem Brascop</h2>
             <label>Estantes faltando</label>
-            <input type="number" id="brascopRess" value="0">
+            <input type="number" id="brascopRess" placeholder="0">
             <button id="calcBrascop" style="margin-top: 12px;">Calcular etiquetas</button>
             <div id="brascopEtiquetas" class="etiqueta-resultado">Calcule</div>
         </div>
@@ -374,7 +406,7 @@
                 <option value="itambe">Itambé (352 caixas x 15 copos)</option>
             </select>
             <label>Estantes faltando</label>
-            <input type="number" id="seracRess" value="0">
+            <input type="number" id="seracRess" placeholder="0">
             <button id="calcSerac" style="margin-top: 12px;">Calcular etiquetas</button>
             <div id="seracEtiquetas" class="etiqueta-resultado">Calcule</div>
         </div>
@@ -384,9 +416,25 @@
         <p>PudimFlow - Misael Andrejezieski</p>
     </div>
 
+    <div id="globalMessage"></div>
+
     <script>
-        const API_URL = 'https://pudimflow.onrender.com/api';
-        
+        // Configuração da API
+        const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000/api' 
+            : 'https://pudimflow.onrender.com/api';
+
+        // Função para mostrar mensagem
+        function showMessage(message, type = 'success') {
+            const msgDiv = document.getElementById('globalMessage');
+            msgDiv.className = `alert-${type}`;
+            msgDiv.innerHTML = message;
+            msgDiv.style.display = 'block';
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 3000);
+        }
+
         const produtosConfig = {
             'Pudim Leite Batavo': { massaG: 85, caldaG: 15, totalG: 100, validadeDias: 43 },
             'Pudim Leite Itambé': { massaG: 90, caldaG: 10, totalG: 100, validadeDias: 43 },
@@ -445,7 +493,8 @@
                     document.getElementById('dataFabricacao').textContent = formatarDataBrasil(dataAtual);
                 }
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('Erro ao carregar dashboard:', error);
+                showMessage('Erro ao carregar dados do servidor', 'danger');
             }
         }
 
