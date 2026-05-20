@@ -4,226 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>PudimFlow - Produção</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: #0f172a;
-            color: #e2e8f0;
-            line-height: 1.5;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #0f2b3d 0%, #1e6f9f 100%);
-            color: white;
-            padding: 20px 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        .header h1 {
-            font-size: 1.6rem;
-            font-weight: 600;
-        }
-
-        .header h1::before {
-            content: "🍮 ";
-        }
-
-        .header .turno {
-            font-size: 0.85rem;
-            opacity: 0.85;
-            margin-top: 6px;
-        }
-
-        .nav {
-            background: #1e293b;
-            padding: 12px 20px;
-            display: flex;
-            gap: 8px;
+        .planilha-container {
             overflow-x: auto;
-            white-space: nowrap;
-            border-bottom: 1px solid #334155;
-            position: sticky;
-            top: 0;
-            z-index: 99;
         }
-
-        .nav a {
-            color: #cbd5e1;
-            text-decoration: none;
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            background: #334155;
-            transition: all 0.2s ease;
-        }
-
-        .nav a:hover, .nav a.active {
-            background: #1e6f9f;
-            color: white;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-
-        .data-selector {
-            background: #1e293b;
-            border-radius: 20px;
-            padding: 16px 20px;
-            margin-bottom: 20px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            border: 1px solid #334155;
-        }
-
-        .data-selector button {
-            background: #475569;
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-        }
-
-        .data-selector button.hoje {
-            background: #1e6f9f;
-        }
-
-        .data-selector input {
-            width: auto;
-            padding: 8px 12px;
-            font-size: 0.9rem;
-            text-align: center;
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: #e2e8f0;
-            border-radius: 12px;
-        }
-
-        .card {
-            background: #1e293b;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            border: 1px solid #334155;
-            transition: transform 0.2s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-        }
-
-        .card h2 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: #38bdf8;
-            border-left: 4px solid #1e6f9f;
-            padding-left: 12px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #94a3b8;
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        input, select, textarea {
+        .planilha-table {
             width: 100%;
-            padding: 10px 14px;
-            border: 1.5px solid #334155;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-family: 'Inter', sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
+            border-collapse: collapse;
+            font-size: 0.875rem;
         }
-
-        input:focus {
-            outline: none;
-            border-color: #1e6f9f;
-        }
-
-        button {
-            background: #1e6f9f;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        button:hover {
-            background: #0f2b3d;
-        }
-
-        .btn-success {
-            background: #2ecc71;
-        }
-        .btn-danger {
-            background: #e74c3c;
-        }
-
-        .resumo-producao {
-            background: #0f172a;
-            border-radius: 16px;
-            padding: 16px;
-            margin-top: 16px;
-            border: 1px solid #334155;
-        }
-
-        .footer {
+        .planilha-table th, .planilha-table td {
+            border: 1px solid var(--border);
+            padding: 8px;
             text-align: center;
-            padding: 20px;
-            font-size: 0.75rem;
-            color: #64748b;
-            border-top: 1px solid #334155;
-            margin-top: 20px;
+            vertical-align: top;
         }
-
-        @media (max-width: 640px) {
-            .container {
-                padding: 16px;
-            }
-            .card {
-                padding: 16px;
-            }
-            .data-selector {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .data-selector button, .data-selector input {
-                width: 100%;
-            }
+        .planilha-table th {
+            background: var(--primary);
+            color: white;
+        }
+        .meta-realizado {
+            font-family: monospace;
+        }
+        .paradas-input {
+            width: 100%;
+            min-width: 150px;
+            font-size: 0.75rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 4px;
+            color: var(--text-primary);
+        }
+        .numero-input {
+            width: 80px;
+            text-align: center;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 4px;
+            color: var(--text-primary);
+        }
+        .perdas-input {
+            width: 60px;
+            text-align: center;
+        }
+        .secao-titulo {
+            background: var(--secondary);
+            color: white;
+            font-weight: bold;
+        }
+        .observacao {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>PudimFlow</h1>
-        <div class="turno">3° turno</div>
+        <h1>🍮 PudimFlow - Produção</h1>
+        <div class="turno" id="turnoInfo">Turno da Noite - Misa</div>
     </div>
 
     <nav class="nav">
@@ -236,234 +77,327 @@
         <a href="relatorios.html">🔚 Fechamento</a>
     </nav>
 
-    <div class="container">
-        <div class="data-selector">
-            <button id="btnDiaAnterior">◀ Dia anterior</button>
-            <input type="date" id="seletorData" value="">
-            <button id="btnProximoDia">Próximo dia ▶</button>
-            <button id="btnHoje" class="hoje">Hoje</button>
-        </div>
-
-        <div class="card">
-            <h2>🏭 Brascop - Envase</h2>
-            <p><small>1 estante = 896 copos = 89,6 kg</small></p>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-                <div><label>3º turno ontem</label> <input type="number" id="brascop3_ontem" value="0"></div>
-                <div><label>1º turno antes</label> <input type="number" id="brascop1_antes" value="0"></div>
-                <div><label>2º turno você</label> <input type="number" id="brascop2_voce" value="0"></div>
-                <div><label>3º turno final</label> <input type="number" id="brascop3_final" value="0"></div>
+    <div class="container planilha-container">
+        <!-- Programação do dia -->
+        <div class="card" style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                <div><strong>📅 Programação:</strong> <span id="produtoProgramado">-</span></div>
+                <div><strong>🎯 Meta:</strong> <span id="metaProgramada">0</span> kg</div>
+                <div><strong>✅ Produzido:</strong> <span id="produzidoHoje">0</span> kg</div>
+                <div><strong>📈 Progresso:</strong> <span id="progressoHoje">0</span>%</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.3); border-radius: 8px; height: 10px; margin-top: 0.75rem;">
+                <div id="barraProgresso" style="background: white; width: 0%; height: 10px; border-radius: 8px;"></div>
             </div>
         </div>
 
-        <div class="card">
-            <h2>🏭 Serac - Envase</h2>
-            <p><small>1 estante = 2040 copos = 204 kg</small></p>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-                <div><label>3º turno ontem</label> <input type="number" id="serac3_ontem" value="0"></div>
-                <div><label>1º turno antes</label> <input type="number" id="serac1_antes" value="0"></div>
-                <div><label>2º turno você</label> <input type="number" id="serac2_voce" value="0"></div>
-                <div><label>3º turno final</label> <input type="number" id="serac3_final" value="0"></div>
-            </div>
-        </div>
+        <!-- LINHA BRASCOP/TREPKO -->
+        <table class="planilha-table">
+            <thead>
+                <tr>
+                    <th colspan="2">LINHA BRASCOP/TREPKO</th>
+                    <th>Meta - Realizado</th>
+                    <th>Paradas</th>
+                    <th>Perdas (copos)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="2"><strong>Envasado</strong></td>
+                    <td>Estantes</td>
+                    <td><input type="number" id="brascopEnvasadoEstantes" class="numero-input" value="0" step="1"></td>
+                    <td rowspan="2">
+                        <textarea id="brascopEnvasadoParadas" class="paradas-input" rows="4" placeholder="00:30 aguardando resfriamento tanque&#10;00:15 troca de sabor&#10;01:00 refeição&#10;00:10 limpeza manual"></textarea>
+                    </td>
+                    <td rowspan="2">
+                        <input type="number" id="brascopEnvasadoPerdas" class="numero-input perdas-input" value="0" step="1">
+                    </td>
+                </tr>
+                <tr>
+                    <td>KG</td>
+                    <td><input type="number" id="brascopEnvasadoKg" class="numero-input" value="0" step="100"></td>
+                </tr>
+                <tr>
+                    <td rowspan="2"><strong>Resselagem</strong></td>
+                    <td>Estantes</td>
+                    <td><input type="number" id="brascopResselagemEstantes" class="numero-input" value="0" step="1"></td>
+                    <td rowspan="2">
+                        <textarea id="brascopResselagemParadas" class="paradas-input" rows="3" placeholder="00:10 troca de data&#10;00:20 falha no pegador de copos&#10;00:10 falha na máquina de caixas"></textarea>
+                    </td>
+                    <td rowspan="2">
+                        <input type="number" id="brascopResselagemPerdas" class="numero-input perdas-input" value="0" step="1">
+                    </td>
+                </tr>
+                <tr>
+                    <td>KG</td>
+                    <td><input type="number" id="brascopResselagemKg" class="numero-input" value="0" step="100"></td>
+                </tr>
+            </tbody>
+        </table>
 
-        <div class="card">
-            <h2>🔁 Resselagem Brascop</h2>
-            <label>Estantes faltando para resselar</label>
-            <input type="number" id="brascopRess" value="0">
-            <button id="calcBrascop" style="margin-top: 12px;">Calcular etiquetas</button>
-            <div id="brascopEtiquetas" class="resumo-producao" style="margin-top: 12px;">Calcule para ver as etiquetas</div>
-            <div style="margin-top: 12px;">
-                <label>Último palete (caixas)</label>
-                <input type="number" id="brascopPersonalizar" placeholder="automático">
-            </div>
-        </div>
+        <!-- LINHA SERAC -->
+        <table class="planilha-table" style="margin-top: 1.5rem;">
+            <thead>
+                <tr>
+                    <th colspan="2">LINHA SERAC</th>
+                    <th>Meta - Realizado</th>
+                    <th>Paradas</th>
+                    <th>Perdas (copos)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="2"><strong>Envasado</strong></td>
+                    <td>Estantes</td>
+                    <td><input type="number" id="seracEnvasadoEstantes" class="numero-input" value="0" step="1"></td>
+                    <td rowspan="2">
+                        <textarea id="seracEnvasadoParadas" class="paradas-input" rows="3" placeholder="04:00 FALTA DE PROGRAMAÇÃO"></textarea>
+                    </td>
+                    <td rowspan="2">
+                        <input type="number" id="seracEnvasadoPerdas" class="numero-input perdas-input" value="0" step="1">
+                    </td>
+                </tr>
+                <tr>
+                    <td>KG</td>
+                    <td><input type="number" id="seracEnvasadoKg" class="numero-input" value="0" step="100"></td>
+                </tr>
+            </tbody>
+        </table>
 
-        <div class="card">
-            <h2>🔁 Resselagem Serac</h2>
-            <label>Tipo de produto</label>
-            <select id="seracTipo">
-                <option value="padrao">Padrão (242 caixas × 20 copos)</option>
-                <option value="itambe">Itambé (352 caixas × 15 copos)</option>
-            </select>
-            <label style="margin-top: 12px;">Estantes faltando para resselar</label>
-            <input type="number" id="seracRess" value="0">
-            <button id="calcSerac" style="margin-top: 12px;">Calcular etiquetas</button>
-            <div id="seracEtiquetas" class="resumo-producao" style="margin-top: 12px;">Calcule para ver as etiquetas</div>
-            <div style="margin-top: 12px;">
-                <label>Último palete (caixas)</label>
-                <input type="number" id="seracPersonalizar" placeholder="automático">
-            </div>
-        </div>
+        <!-- TANQUES -->
+        <table class="planilha-table" style="margin-top: 1.5rem;">
+            <thead>
+                <tr>
+                    <th colspan="4">TANQUES</th>
+                </tr>
+                <tr>
+                    <th>TQ 01 (Brascop)</th>
+                    <th>TQ 02 (Brascop)</th>
+                    <th>TQ 03 (Serac)</th>
+                    <th>TQ 04 (Serac)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" id="tanque01" class="paradas-input" placeholder="1600 kg / preparação"></td>
+                    <td><input type="text" id="tanque02" class="paradas-input" placeholder="PREPARAÇÃO"></td>
+                    <td><input type="text" id="tanque03" class="paradas-input" placeholder="0%"></td>
+                    <td><input type="text" id="tanque04" class="paradas-input" placeholder="0%"></td>
+                </tr>
+            </tbody>
+        </table>
 
-        <div class="card">
-            <h2>📊 Resumo da Produção</h2>
-            <div class="resumo-producao">
-                <p><strong>📅 Data:</strong> <span id="dataProducao">-</span></p>
-                <p><strong>🏭 Brascop total:</strong> <span id="brascopTotal">0</span> estantes | <span id="brascopKg">0</span> kg</p>
-                <p><strong>🏭 Serac total:</strong> <span id="seracTotal">0</span> estantes | <span id="seracKg">0</span> kg</p>
-                <p><strong>📦 PRODUÇÃO TOTAL:</strong> <span id="totalEstantes">0</span> estantes | <span id="totalKg">0</span> kg</p>
-                <p><strong>⚠️ Perdas totais:</strong> <span id="totalPerdas">0</span> copos</p>
+        <!-- RESUMO E AÇÕES -->
+        <table class="planilha-table" style="margin-top: 1.5rem;">
+            <tbody>
+                <tr class="secao-titulo">
+                    <td colspan="2"><strong>📊 RESUMO DO TURNO</strong></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;"><strong>Total Brascop:</strong></td>
+                    <td><span id="totalBrascopEstantes">0</span> estantes | <span id="totalBrascopKg">0</span> kg</td>
+                </tr>
+                <tr>
+                    <td><strong>Total Serac:</strong></td>
+                    <td><span id="totalSeracEstantes">0</span> estantes | <span id="totalSeracKg">0</span> kg</td>
+                </tr>
+                <tr>
+                    <td><strong>PRODUÇÃO TOTAL:</strong></td>
+                    <td><span id="totalGeralEstantes">0</span> estantes | <span id="totalGeralKg">0</span> kg</td>
+                </tr>
+                <tr>
+                    <td><strong>Perdas totais:</strong></td>
+                    <td><span id="totalPerdasGeral">0</span> copos</td>
+                </tr>
+                <tr>
+                    <td><strong>Falta para atingir meta:</strong></td>
+                    <td><span id="faltamMeta">0</span> kg (<span id="faltamPercentual">0</span>%)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="card" style="margin-top: 1.5rem;">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button id="btnSalvar" style="background: var(--success);">💾 SALVAR PRODUÇÃO</button>
+                <button id="btnCarregar">📂 CARREGAR DADOS DE HOJE</button>
+                <button id="btnLimpar">🗑️ LIMPAR FORMULÁRIO</button>
             </div>
-            <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
-                <button id="btnSalvar" class="btn-success">💾 SALVAR PRODUÇÃO</button>
-                <button id="btnCarregar">📂 CARREGAR DADOS</button>
-                <button id="btnLimpar" class="btn-danger">🗑️ LIMPAR</button>
-            </div>
-            <div id="mensagem" style="margin-top: 12px; display: none;" class="resumo-producao"></div>
+            <div id="mensagem" style="margin-top: 1rem; display: none;"></div>
         </div>
     </div>
 
     <div class="footer">
-        <p>PudimFlow - Misael Andrejezieski</p>
+        <p>PudimFlow - Sistema de Gestão de Produção | Turno da Noite</p>
+    </div>
+
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <span class="light-icon">🌙</span>
+        <span class="dark-icon">☀️</span>
     </div>
 
     <script>
-        const API_URL = 'https://pudimflow.onrender.com/api';
-        let dataAtual = new Date().toISOString().split('T')[0];
-        document.getElementById('seletorData').value = dataAtual;
-        document.getElementById('dataProducao').textContent = formatarDataBrasil(dataAtual);
-
-        function formatarDataBrasil(dataStr) {
-            const [ano, mes, dia] = dataStr.split('-');
-            return `${dia}/${mes}/${ano}`;
-        }
+        let metaAtual = 10000;
+        let produtoAtual = '';
 
         function atualizarResumo() {
-            const brascopEst = (parseInt(document.getElementById('brascop3_ontem').value) || 0) +
-                                (parseInt(document.getElementById('brascop1_antes').value) || 0) +
-                                (parseInt(document.getElementById('brascop2_voce').value) || 0) +
-                                (parseInt(document.getElementById('brascop3_final').value) || 0);
-            const brascopKg = brascopEst * 89.6;
+            const brascopEst = (parseInt(document.getElementById('brascopEnvasadoEstantes').value) || 0) + (parseInt(document.getElementById('brascopResselagemEstantes').value) || 0);
+            const brascopKg = (parseFloat(document.getElementById('brascopEnvasadoKg').value) || 0) + (parseFloat(document.getElementById('brascopResselagemKg').value) || 0);
+            const seracEst = parseInt(document.getElementById('seracEnvasadoEstantes').value) || 0;
+            const seracKg = parseFloat(document.getElementById('seracEnvasadoKg').value) || 0;
             
-            const seracEst = (parseInt(document.getElementById('serac3_ontem').value) || 0) +
-                             (parseInt(document.getElementById('serac1_antes').value) || 0) +
-                             (parseInt(document.getElementById('serac2_voce').value) || 0) +
-                             (parseInt(document.getElementById('serac3_final').value) || 0);
-            const seracKg = seracEst * 204;
+            const totalEst = brascopEst + seracEst;
+            const totalKg = brascopKg + seracKg;
+            const totalPerdas = (parseInt(document.getElementById('brascopEnvasadoPerdas').value) || 0) +
+                                (parseInt(document.getElementById('brascopResselagemPerdas').value) || 0) +
+                                (parseInt(document.getElementById('seracEnvasadoPerdas').value) || 0);
             
-            document.getElementById('brascopTotal').textContent = brascopEst;
-            document.getElementById('brascopKg').textContent = brascopKg.toLocaleString();
-            document.getElementById('seracTotal').textContent = seracEst;
-            document.getElementById('seracKg').textContent = seracKg.toLocaleString();
-            document.getElementById('totalEstantes').textContent = brascopEst + seracEst;
-            document.getElementById('totalKg').textContent = (brascopKg + seracKg).toLocaleString();
+            document.getElementById('totalBrascopEstantes').textContent = brascopEst;
+            document.getElementById('totalBrascopKg').textContent = brascopKg.toLocaleString();
+            document.getElementById('totalSeracEstantes').textContent = seracEst;
+            document.getElementById('totalSeracKg').textContent = seracKg.toLocaleString();
+            document.getElementById('totalGeralEstantes').textContent = totalEst;
+            document.getElementById('totalGeralKg').textContent = totalKg.toLocaleString();
+            document.getElementById('totalPerdasGeral').textContent = totalPerdas;
+            
+            const faltam = Math.max(0, metaAtual - totalKg);
+            const percentual = metaAtual > 0 ? ((totalKg / metaAtual) * 100).toFixed(1) : 0;
+            document.getElementById('faltamMeta').textContent = faltam.toLocaleString();
+            document.getElementById('faltamPercentual').textContent = percentual;
+            document.getElementById('progressoHoje').textContent = percentual;
+            document.getElementById('barraProgresso').style.width = `${Math.min(percentual, 100)}%`;
+            document.getElementById('produzidoHoje').textContent = totalKg.toLocaleString();
         }
 
-        function calcEtiquetasBrascop() {
-            let estantes = +document.getElementById('brascopRess').value || 0;
-            const personalizado = +document.getElementById('brascopPersonalizar').value;
-            const caixas = (estantes * 896) / 20;
-            const caixasPorPalete = 242;
-            let paletes = Math.ceil(caixas / caixasPorPalete);
-            let ultimo = caixas % caixasPorPalete;
-            if (ultimo === 0 && caixas > 0) ultimo = caixasPorPalete;
-            if (!isNaN(personalizado) && personalizado > 0) ultimo = personalizado;
-            document.getElementById('brascopEtiquetas').innerHTML = `<strong>📦 Etiquetas: ${paletes}</strong><br>📊 Último palete: ${ultimo} caixas`;
+        async function carregarProgramacao() {
+            try {
+                const response = await fetch('/api/producao/hoje');
+                const result = await response.json();
+                if (result.success && result.data) {
+                    if (result.data.programacao) produtoAtual = result.data.programacao;
+                    if (result.data.meta) metaAtual = result.data.meta;
+                    if (result.data.totalKg) document.getElementById('produzidoHoje').textContent = result.data.totalKg.toLocaleString();
+                    document.getElementById('produtoProgramado').textContent = produtoAtual || '-';
+                    document.getElementById('metaProgramada').textContent = metaAtual.toLocaleString();
+                    atualizarResumo();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar programação:', error);
+            }
         }
 
-        function calcEtiquetasSerac() {
-            let estantes = +document.getElementById('seracRess').value || 0;
-            const personalizado = +document.getElementById('seracPersonalizar').value;
-            const tipo = document.getElementById('seracTipo').value;
-            let caixasPorPalete, coposPorCaixa;
-            if (tipo === 'padrao') { coposPorCaixa = 20; caixasPorPalete = 242; }
-            else { coposPorCaixa = 15; caixasPorPalete = 352; }
-            const caixas = (estantes * 2040) / coposPorCaixa;
-            let paletes = Math.ceil(caixas / caixasPorPalete);
-            let ultimo = caixas % caixasPorPalete;
-            if (ultimo === 0 && caixas > 0) ultimo = caixasPorPalete;
-            if (!isNaN(personalizado) && personalizado > 0) ultimo = personalizado;
-            document.getElementById('seracEtiquetas').innerHTML = `<strong>📦 Etiquetas: ${paletes}</strong><br>📊 Último palete: ${ultimo} caixas`;
-        }
+        document.querySelectorAll('input, textarea').forEach(el => {
+            if (el.type !== 'button') el.addEventListener('input', atualizarResumo);
+        });
 
-        async function salvarProducao() {
+        document.getElementById('btnSalvar').addEventListener('click', async () => {
             const dados = {
-                data: dataAtual,
-                brascopEstantes: (parseInt(document.getElementById('brascop3_ontem').value) || 0) +
-                                 (parseInt(document.getElementById('brascop1_antes').value) || 0) +
-                                 (parseInt(document.getElementById('brascop2_voce').value) || 0) +
-                                 (parseInt(document.getElementById('brascop3_final').value) || 0),
-                seracEstantes: (parseInt(document.getElementById('serac3_ontem').value) || 0) +
-                               (parseInt(document.getElementById('serac1_antes').value) || 0) +
-                               (parseInt(document.getElementById('serac2_voce').value) || 0) +
-                               (parseInt(document.getElementById('serac3_final').value) || 0)
+                brascopEstantes: parseInt(document.getElementById('brascopEnvasadoEstantes').value) || 0,
+                brascopKg: parseFloat(document.getElementById('brascopEnvasadoKg').value) || 0,
+                brascopParadas: document.getElementById('brascopEnvasadoParadas').value || '',
+                brascopPerdas: parseInt(document.getElementById('brascopEnvasadoPerdas').value) || 0,
+                seracEstantes: parseInt(document.getElementById('seracEnvasadoEstantes').value) || 0,
+                seracKg: parseFloat(document.getElementById('seracEnvasadoKg').value) || 0,
+                seracParadas: document.getElementById('seracEnvasadoParadas').value || '',
+                seracPerdas: parseInt(document.getElementById('seracEnvasadoPerdas').value) || 0
             };
             
+            const btn = document.getElementById('btnSalvar');
             const msgDiv = document.getElementById('mensagem');
+            btn.disabled = true;
+            btn.innerHTML = '💾 SALVANDO...';
             msgDiv.style.display = 'block';
-            msgDiv.innerHTML = '💾 Salvando...';
-            msgDiv.style.background = '#1e6f9f';
+            msgDiv.className = 'alert alert-info';
+            msgDiv.innerHTML = 'Salvando dados...';
             
             try {
-                const response = await fetch(`${API_URL}/producao`, {
+                const responseGet = await fetch('/api/producao/hoje');
+                const resultGet = await responseGet.json();
+                let producaoExistente = resultGet.success && resultGet.data ? resultGet.data : {};
+                
+                const dadosCompletos = {
+                    ...dados,
+                    bpfOk: producaoExistente.bpfOk || false,
+                    bpfObservacao: producaoExistente.bpfObservacao || '',
+                    falhas: producaoExistente.falhas || '',
+                    reclamacoes: producaoExistente.reclamacoes || '',
+                    dssRealizado: producaoExistente.dssRealizado || false,
+                    dssTema: producaoExistente.dssTema || '',
+                    quaseAcidente: producaoExistente.quaseAcidente || '',
+                    etiquetaAzul: producaoExistente.etiquetaAzul || '',
+                    etiquetaVermelha: producaoExistente.etiquetaVermelha || '',
+                    etiquetaFechada: producaoExistente.etiquetaFechada || '',
+                    observacoes: producaoExistente.observacoes || '',
+                    programacao: produtoAtual || producaoExistente.programacao || '',
+                    meta: metaAtual || producaoExistente.meta || 0
+                };
+                
+                const response = await fetch('/api/producao', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dados)
+                    body: JSON.stringify(dadosCompletos)
                 });
                 const result = await response.json();
+                
                 if (result.success) {
+                    msgDiv.className = 'alert alert-success';
                     msgDiv.innerHTML = '✅ Produção salva com sucesso!';
-                    msgDiv.style.background = '#2ecc71';
                     setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+                    carregarProgramacao();
                 } else {
                     throw new Error(result.error);
                 }
             } catch (error) {
+                msgDiv.className = 'alert alert-danger';
                 msgDiv.innerHTML = '❌ Erro ao salvar: ' + error.message;
-                msgDiv.style.background = '#e74c3c';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '💾 SALVAR PRODUÇÃO';
             }
-        }
-
-        async function carregarProducao() {
+        });
+        
+        document.getElementById('btnCarregar').addEventListener('click', async () => {
             try {
-                const response = await fetch(`${API_URL}/producao/${dataAtual}`);
+                const response = await fetch('/api/producao/hoje');
                 const result = await response.json();
                 if (result.success && result.data) {
-                    // Carregar dados (implementar quando o backend retornar os campos)
+                    const data = result.data;
+                    document.getElementById('brascopEnvasadoEstantes').value = data.brascopEstantes || 0;
+                    document.getElementById('brascopEnvasadoKg').value = data.brascopKg || 0;
+                    document.getElementById('brascopEnvasadoParadas').value = data.brascopParadas || '';
+                    document.getElementById('brascopEnvasadoPerdas').value = data.brascopPerdas || 0;
+                    document.getElementById('seracEnvasadoEstantes').value = data.seracEstantes || 0;
+                    document.getElementById('seracEnvasadoKg').value = data.seracKg || 0;
+                    document.getElementById('seracEnvasadoParadas').value = data.seracParadas || '';
+                    document.getElementById('seracEnvasadoPerdas').value = data.seracPerdas || 0;
+                    atualizarResumo();
+                    
+                    const msgDiv = document.getElementById('mensagem');
+                    msgDiv.style.display = 'block';
+                    msgDiv.className = 'alert alert-success';
+                    msgDiv.innerHTML = '✅ Dados carregados com sucesso!';
+                    setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
                 }
+                await carregarProgramacao();
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('Erro ao carregar:', error);
             }
-        }
-
-        document.getElementById('btnSalvar').onclick = salvarProducao;
-        document.getElementById('btnCarregar').onclick = carregarProducao;
-        document.getElementById('btnLimpar').onclick = () => {
-            document.querySelectorAll('input[type="number"]').forEach(input => input.value = 0);
-            atualizarResumo();
-        };
-        document.getElementById('calcBrascop').onclick = calcEtiquetasBrascop;
-        document.getElementById('calcSerac').onclick = calcEtiquetasSerac;
-        
-        document.querySelectorAll('input[type="number"]').forEach(input => {
-            input.addEventListener('input', atualizarResumo);
         });
-
-        function mudarData(delta) {
-            const data = new Date(dataAtual);
-            data.setDate(data.getDate() + delta);
-            dataAtual = data.toISOString().split('T')[0];
-            document.getElementById('seletorData').value = dataAtual;
-            document.getElementById('dataProducao').textContent = formatarDataBrasil(dataAtual);
-            carregarProducao();
+        
+        document.getElementById('btnLimpar').addEventListener('click', () => {
+            document.querySelectorAll('input, textarea').forEach(el => {
+                if (el.type === 'number') el.value = 0;
+                else if (el.tagName === 'TEXTAREA') el.value = '';
+                else if (el.type !== 'button') el.value = '';
+            });
+            atualizarResumo();
+        });
+        
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
         }
-
-        document.getElementById('btnDiaAnterior').onclick = () => mudarData(-1);
-        document.getElementById('btnProximoDia').onclick = () => mudarData(1);
-        document.getElementById('btnHoje').onclick = () => {
-            dataAtual = new Date().toISOString().split('T')[0];
-            document.getElementById('seletorData').value = dataAtual;
-            document.getElementById('dataProducao').textContent = formatarDataBrasil(dataAtual);
-            carregarProducao();
-        };
-        document.getElementById('seletorData').onchange = (e) => {
-            dataAtual = e.target.value;
-            document.getElementById('dataProducao').textContent = formatarDataBrasil(dataAtual);
-            carregarProducao();
-        };
-
-        atualizarResumo();
-        carregarProducao();
+        
+        carregarProgramacao();
+        document.getElementById('btnCarregar').click();
     </script>
 </body>
 </html>
