@@ -4,240 +4,714 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>PudimFlow - SIM</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f2b3d 0%, #1e6f9f 100%);
+            color: white;
+            padding: 20px 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        .header h1::before {
+            content: "🍮 ";
+        }
+
+        .header .turno {
+            font-size: 0.85rem;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 12px 20px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            white-space: nowrap;
+            border-bottom: 1px solid #334155;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+
+        .nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: #334155;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover, .nav a.active {
+            background: #1e6f9f;
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: 1px solid #334155;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #38bdf8;
+            border-left: 4px solid #1e6f9f;
+            padding-left: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #94a3b8;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #334155;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #1e6f9f;
+        }
+
+        button {
+            background: #1e6f9f;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background: #0f2b3d;
+        }
+
+        .btn-azul {
+            background: #3b82f6;
+        }
+        .btn-azul:hover {
+            background: #2563eb;
+        }
+        .btn-vermelho {
+            background: #ef4444;
+        }
+        .btn-vermelho:hover {
+            background: #dc2626;
+        }
+        .btn-verde {
+            background: #22c55e;
+        }
+        .btn-verde:hover {
+            background: #16a34a;
+        }
+
+        .etiqueta-item {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid;
+        }
+
+        .etiqueta-azul {
+            border-left-color: #3b82f6;
+        }
+
+        .etiqueta-vermelha {
+            border-left-color: #ef4444;
+        }
+
+        .etiqueta-fechada {
+            opacity: 0.6;
+            border-left-color: #22c55e;
+        }
+
+        .etiqueta-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .etiqueta-tipo {
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .etiqueta-data {
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+
+        .etiqueta-descricao {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .etiqueta-local {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .etiqueta-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .prioridade-alta {
+            color: #ef4444;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .prioridade-media {
+            color: #f59e0b;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .prioridade-baixa {
+            color: #22c55e;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .badge {
+            background: #334155;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 12px;
+        }
+
+        .tab {
+            background: transparent;
+            color: #94a3b8;
+            border-radius: 8px;
+        }
+
+        .tab.active {
+            background: #1e6f9f;
+            color: white;
+        }
+
+        .tab:hover {
+            background: #334155;
+            color: white;
+        }
+
+        .filtros {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filtros select, .filtros input {
+            width: auto;
+            min-width: 150px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.75rem;
+            color: #64748b;
+            border-top: 1px solid #334155;
+            margin-top: 20px;
+        }
+
+        #globalMessage {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .alert-success {
+            background: #22c55e;
+            color: white;
+        }
+        .alert-danger {
+            background: #ef4444;
+            color: white;
+        }
+        .alert-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 16px;
+            }
+            .card {
+                padding: 16px;
+            }
+            .etiqueta-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            #globalMessage {
+                top: 70px;
+                right: 10px;
+                left: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="header">
-        <h1>🍮 PudimFlow - SIM</h1>
+        <h1>PudimFlow - SIM</h1>
         <div class="turno">Sistema de Ideias e Melhorias</div>
     </div>
 
     <nav class="nav">
         <a href="index.html">📊 Dashboard</a>
-        <a href="producao.html">🏭 Produção</a>
-        <a href="qualidade.html">✅ Qualidade</a>
-        <a href="seguranca.html">🛡️ Segurança</a>
         <a href="sim.html" class="active">💡 SIM</a>
+        <a href="troca-turno.html">🔄 Troca de Turno</a>
         <a href="programacao.html">📅 Programação</a>
-        <a href="relatorios.html">📈 Relatórios</a>
     </nav>
 
     <div class="container">
-        <!-- ETIQUETA AZUL (resolvido pela equipe) -->
-        <div class="card">
-            <h2>🔵 Etiqueta Azul</h2>
-            <p style="margin-bottom: 1rem; font-size: 0.875rem;">Problemas resolvidos pela própria equipe (limpeza, organização, pequenas manutenções)</p>
-            
-            <div class="form-group">
-                <label>Nova etiqueta azul aberta hoje?</label>
-                <textarea id="etiquetaAzul" rows="3" placeholder="Ex: João organizou as ferramentas da esteira&#10;Maria fez limpeza do pré-forno&#10;Carlos fez pequena solda no carrinho"></textarea>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="abertas">🔴🔵 Abertas</button>
+            <button class="tab" data-tab="fechadas">✅ Fechadas</button>
+            <button class="tab" data-tab="nova">➕ Nova Etiqueta</button>
+        </div>
+
+        <!-- Lista de Etiquetas Abertas -->
+        <div id="tab-abertas" class="tab-content">
+            <div class="filtros">
+                <select id="filtroTipo">
+                    <option value="todas">Todas</option>
+                    <option value="azul">🔵 Azuis</option>
+                    <option value="vermelha">🔴 Vermelhas</option>
+                </select>
+                <input type="text" id="filtroBusca" placeholder="Buscar por descrição...">
+            </div>
+            <div id="listaAbertas" class="card">
+                <p style="color: #64748b; text-align: center;">Carregando etiquetas...</p>
             </div>
         </div>
 
-        <!-- ETIQUETA VERMELHA (manutenção necessária) -->
-        <div class="card">
-            <h2>🔴 Etiqueta Vermelha</h2>
-            <p style="margin-bottom: 1rem; font-size: 0.875rem;">Problemas que precisam de manutenção (mecânica, elétrica, civil)</p>
-            
-            <div class="form-group">
-                <label>Nova etiqueta vermelha aberta hoje?</label>
-                <textarea id="etiquetaVermelha" rows="3" placeholder="Ex: Forno 7 com aquecimento irregular&#10;Esteira com ruído estranho&#10;Vazamento na tubulação"></textarea>
+        <!-- Lista de Etiquetas Fechadas -->
+        <div id="tab-fechadas" class="tab-content" style="display: none;">
+            <div class="filtros">
+                <select id="filtroTipoFechadas">
+                    <option value="todas">Todas</option>
+                    <option value="azul">🔵 Azuis</option>
+                    <option value="vermelha">🔴 Vermelhas</option>
+                </select>
+                <input type="text" id="filtroBuscaFechadas" placeholder="Buscar por descrição...">
+            </div>
+            <div id="listaFechadas" class="card">
+                <p style="color: #64748b; text-align: center;">Carregando etiquetas...</p>
             </div>
         </div>
 
-        <!-- ETIQUETA FECHADA -->
-        <div class="card">
-            <h2>🔵🔴 Etiquetas Fechadas Hoje</h2>
-            <p style="margin-bottom: 1rem; font-size: 0.875rem;">Registrar etiquetas que foram resolvidas neste turno</p>
-            
-            <div class="form-group">
-                <label>Etiquetas concluídas hoje</label>
-                <textarea id="etiquetaFechada" rows="3" placeholder="Ex: Vazamento na tubulação - resolvido&#10;Troca de lâmpada - concluído"></textarea>
+        <!-- Nova Etiqueta -->
+        <div id="tab-nova" class="tab-content" style="display: none;">
+            <div class="card">
+                <h2>🔵 ETIQUETA AZUL</h2>
+                <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 16px;">Problemas resolvidos pela própria equipe (limpeza, organização, pequenos ajustes)</p>
+                
+                <div class="form-group">
+                    <label>Descrição do problema/solução *</label>
+                    <textarea id="azulDescricao" rows="3" placeholder="Ex: João organizou as ferramentas da esteira"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Local / Máquina</label>
+                    <input type="text" id="azulLocal" placeholder="Ex: Esteira 3, Forno 7, Área de resselagem">
+                </div>
+                
+                <div class="form-group">
+                    <label>Responsável pela ação</label>
+                    <input type="text" id="azulResponsavel" placeholder="Ex: João Silva">
+                </div>
+                
+                <button id="btnLançarAzul" class="btn-azul">🔵 LANÇAR ETIQUETA AZUL</button>
             </div>
-        </div>
 
-        <!-- OBSERVAÇÕES GERAIS -->
-        <div class="card">
-            <h2>📝 Observações do Turno</h2>
-            <div class="form-group">
-                <label>Observações adicionais sobre o SIM</label>
-                <textarea id="observacoes" rows="3" placeholder="Registrar qualquer outra observação relevante sobre melhorias, sugestões, etc."></textarea>
+            <div class="card" style="margin-top: 20px;">
+                <h2>🔴 ETIQUETA VERMELHA</h2>
+                <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 16px;">Problemas que precisam de manutenção (mecânica, elétrica, civil)</p>
+                
+                <div class="form-group">
+                    <label>Descrição do problema *</label>
+                    <textarea id="vermelhaDescricao" rows="3" placeholder="Ex: Forno 7 com aquecimento irregular"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Local / Máquina</label>
+                    <input type="text" id="vermelhaLocal" placeholder="Ex: Forno 7, Esteira 2">
+                </div>
+                
+                <div class="form-group">
+                    <label>Prioridade</label>
+                    <select id="vermelhaPrioridade">
+                        <option value="baixa">🟢 Baixa</option>
+                        <option value="media">🟡 Média</option>
+                        <option value="alta">🔴 Alta</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Responsável por abrir</label>
+                    <input type="text" id="vermelhaResponsavel" placeholder="Ex: Misa">
+                </div>
+                
+                <button id="btnLançarVermelha" class="btn-vermelho">🔴 LANÇAR ETIQUETA VERMELHA</button>
             </div>
-        </div>
-
-        <!-- RESUMO DO SIM -->
-        <div class="card">
-            <h2>📊 Resumo do SIM no Turno</h2>
-            <div style="background: var(--bg-primary); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                <p><strong>Etiquetas Abertas:</strong> <span id="resumoAbertas">0</span> (🔵 <span id="resumoAzul">0</span> + 🔴 <span id="resumoVermelha">0</span>)</p>
-                <p><strong>Etiquetas Fechadas:</strong> <span id="resumoFechadas">0</span></p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                <button id="btnSalvar" style="background: var(--success);">💾 SALVAR SIM</button>
-                <button id="btnCarregar">📂 CARREGAR DADOS DE HOJE</button>
-                <button id="btnLimpar">🗑️ LIMPAR</button>
-            </div>
-            
-            <div id="mensagem" style="margin-top: 1rem; display: none;"></div>
         </div>
     </div>
 
     <div class="footer">
-        <p>PudimFlow - Sistema de Gestão de Produção | Turno da Noite</p>
+        <p>PudimFlow - Misael Andrejezieski</p>
     </div>
 
-    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
-        <span class="light-icon">🌙</span>
-        <span class="dark-icon">☀️</span>
-    </div>
+    <div id="globalMessage"></div>
 
     <script>
-        // Elementos
-        const etiquetaAzul = document.getElementById('etiquetaAzul');
-        const etiquetaVermelha = document.getElementById('etiquetaVermelha');
-        const etiquetaFechada = document.getElementById('etiquetaFechada');
-        const observacoes = document.getElementById('observacoes');
+        // Configuração da API
+        const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000/api' 
+            : 'https://pudimflow.onrender.com/api';
 
-        // Atualizar resumo
-        function atualizarResumo() {
-            const azul = etiquetaAzul.value.trim() ? 1 : 0;
-            const vermelha = etiquetaVermelha.value.trim() ? 1 : 0;
-            const fechadas = etiquetaFechada.value.trim() ? etiquetaFechada.value.trim().split('\n').length : 0;
-            
-            document.getElementById('resumoAzul').textContent = azul;
-            document.getElementById('resumoVermelha').textContent = vermelha;
-            document.getElementById('resumoAbertas').textContent = azul + vermelha;
-            document.getElementById('resumoFechadas').textContent = fechadas;
+        // Chave para localStorage (enquanto não tem backend de etiquetas)
+        const STORAGE_KEY = 'pudimflow_etiquetas';
+
+        // Função para mostrar mensagem
+        function showMessage(message, type = 'success') {
+            const msgDiv = document.getElementById('globalMessage');
+            msgDiv.className = `alert-${type}`;
+            msgDiv.innerHTML = message;
+            msgDiv.style.display = 'block';
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 3000);
         }
 
-        // Adicionar eventos
-        etiquetaAzul.addEventListener('input', atualizarResumo);
-        etiquetaVermelha.addEventListener('input', atualizarResumo);
-        etiquetaFechada.addEventListener('input', atualizarResumo);
+        // Carregar etiquetas do localStorage
+        function carregarEtiquetas() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            // Dados de exemplo
+            return [
+                {
+                    id: 1,
+                    tipo: 'azul',
+                    descricao: 'Organização das ferramentas da esteira 3',
+                    local: 'Esteira 3',
+                    responsavel: 'João Silva',
+                    dataAbertura: new Date().toLocaleDateString('pt-BR'),
+                    status: 'aberta'
+                },
+                {
+                    id: 2,
+                    tipo: 'vermelha',
+                    descricao: 'Forno 7 com aquecimento irregular',
+                    local: 'Forno 7',
+                    responsavel: 'Misa',
+                    prioridade: 'alta',
+                    dataAbertura: new Date().toLocaleDateString('pt-BR'),
+                    status: 'aberta'
+                }
+            ];
+        }
 
-        // Salvar SIM
-        document.getElementById('btnSalvar').addEventListener('click', async () => {
-            const dados = {
-                etiquetaAzul: etiquetaAzul.value || '',
-                etiquetaVermelha: etiquetaVermelha.value || '',
-                etiquetaFechada: etiquetaFechada.value || '',
-                observacoes: observacoes.value || ''
+        // Salvar etiquetas no localStorage
+        function salvarEtiquetas(etiquetas) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(etiquetas));
+        }
+
+        // Renderizar lista de etiquetas abertas
+        function renderizarAbertas() {
+            let etiquetas = carregarEtiquetas();
+            const filtroTipo = document.getElementById('filtroTipo').value;
+            const filtroBusca = document.getElementById('filtroBusca').value.toLowerCase();
+            
+            let abertas = etiquetas.filter(e => e.status === 'aberta');
+            
+            if (filtroTipo !== 'todas') {
+                abertas = abertas.filter(e => e.tipo === filtroTipo);
+            }
+            
+            if (filtroBusca) {
+                abertas = abertas.filter(e => e.descricao.toLowerCase().includes(filtroBusca));
+            }
+            
+            const container = document.getElementById('listaAbertas');
+            
+            if (abertas.length === 0) {
+                container.innerHTML = '<p style="color: #64748b; text-align: center;">Nenhuma etiqueta aberta</p>';
+                return;
+            }
+            
+            container.innerHTML = abertas.map(etiqueta => `
+                <div class="etiqueta-item ${etiqueta.tipo === 'azul' ? 'etiqueta-azul' : 'etiqueta-vermelha'}">
+                    <div class="etiqueta-header">
+                        <span class="etiqueta-tipo">${etiqueta.tipo === 'azul' ? '🔵 Etiqueta Azul' : '🔴 Etiqueta Vermelha'}</span>
+                        <span class="etiqueta-data">📅 ${etiqueta.dataAbertura}</span>
+                        ${etiqueta.prioridade ? `<span class="prioridade-${etiqueta.prioridade}">⚠️ Prioridade ${etiqueta.prioridade.toUpperCase()}</span>` : ''}
+                    </div>
+                    <div class="etiqueta-descricao">${etiqueta.descricao}</div>
+                    <div class="etiqueta-local">📍 ${etiqueta.local || 'Não informado'}</div>
+                    <div class="etiqueta-footer">
+                        <span class="badge">👤 ${etiqueta.responsavel || 'Não informado'}</span>
+                        <button class="btn-verde" onclick="fecharEtiqueta(${etiqueta.id})">✅ Marcar como resolvida</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Renderizar lista de etiquetas fechadas
+        function renderizarFechadas() {
+            let etiquetas = carregarEtiquetas();
+            const filtroTipo = document.getElementById('filtroTipoFechadas').value;
+            const filtroBusca = document.getElementById('filtroBuscaFechadas').value.toLowerCase();
+            
+            let fechadas = etiquetas.filter(e => e.status === 'fechada');
+            
+            if (filtroTipo !== 'todas') {
+                fechadas = fechadas.filter(e => e.tipo === filtroTipo);
+            }
+            
+            if (filtroBusca) {
+                fechadas = fechadas.filter(e => e.descricao.toLowerCase().includes(filtroBusca));
+            }
+            
+            const container = document.getElementById('listaFechadas');
+            
+            if (fechadas.length === 0) {
+                container.innerHTML = '<p style="color: #64748b; text-align: center;">Nenhuma etiqueta fechada</p>';
+                return;
+            }
+            
+            container.innerHTML = fechadas.map(etiqueta => `
+                <div class="etiqueta-item etiqueta-fechada ${etiqueta.tipo === 'azul' ? 'etiqueta-azul' : 'etiqueta-vermelha'}">
+                    <div class="etiqueta-header">
+                        <span class="etiqueta-tipo">${etiqueta.tipo === 'azul' ? '🔵 Etiqueta Azul' : '🔴 Etiqueta Vermelha'}</span>
+                        <span class="etiqueta-data">📅 Abertura: ${etiqueta.dataAbertura}</span>
+                        <span class="etiqueta-data">✅ Fechamento: ${etiqueta.dataFechamento || '-'}</span>
+                    </div>
+                    <div class="etiqueta-descricao">${etiqueta.descricao}</div>
+                    <div class="etiqueta-local">📍 ${etiqueta.local || 'Não informado'}</div>
+                    <div class="etiqueta-footer">
+                        <span class="badge">👤 Aberta por: ${etiqueta.responsavel || 'Não informado'}</span>
+                        ${etiqueta.fechadoPor ? `<span class="badge">✅ Fechada por: ${etiqueta.fechadoPor}</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Fechar etiqueta
+        window.fecharEtiqueta = function(id) {
+            let etiquetas = carregarEtiquetas();
+            const index = etiquetas.findIndex(e => e.id === id);
+            if (index !== -1) {
+                etiquetas[index].status = 'fechada';
+                etiquetas[index].dataFechamento = new Date().toLocaleDateString('pt-BR');
+                etiquetas[index].fechadoPor = 'Misa'; // Pega do usuário logado depois
+                salvarEtiquetas(etiquetas);
+                renderizarAbertas();
+                renderizarFechadas();
+                showMessage('✅ Etiqueta marcada como resolvida!', 'success');
+            }
+        };
+
+        // Lançar etiqueta azul
+        document.getElementById('btnLançarAzul').addEventListener('click', () => {
+            const descricao = document.getElementById('azulDescricao').value.trim();
+            const local = document.getElementById('azulLocal').value.trim();
+            const responsavel = document.getElementById('azulResponsavel').value.trim();
+            
+            if (!descricao) {
+                showMessage('❌ Descrição é obrigatória', 'danger');
+                return;
+            }
+            
+            const etiquetas = carregarEtiquetas();
+            const novaEtiqueta = {
+                id: Date.now(),
+                tipo: 'azul',
+                descricao: descricao,
+                local: local,
+                responsavel: responsavel || 'Não informado',
+                dataAbertura: new Date().toLocaleDateString('pt-BR'),
+                status: 'aberta'
             };
             
-            const btn = document.getElementById('btnSalvar');
-            const msgDiv = document.getElementById('mensagem');
+            etiquetas.push(novaEtiqueta);
+            salvarEtiquetas(etiquetas);
             
-            btn.disabled = true;
-            btn.innerHTML = '💾 SALVANDO...';
-            msgDiv.style.display = 'block';
-            msgDiv.className = 'alert alert-info';
-            msgDiv.innerHTML = 'Salvando dados do SIM...';
+            // Limpar formulário
+            document.getElementById('azulDescricao').value = '';
+            document.getElementById('azulLocal').value = '';
+            document.getElementById('azulResponsavel').value = '';
             
-            try {
-                const responseGet = await fetch('/api/producao/hoje');
-                const resultGet = await responseGet.json();
+            renderizarAbertas();
+            showMessage('🔵 Etiqueta azul lançada com sucesso!', 'success');
+            
+            // Mudar para aba de abertas
+            document.querySelector('.tab[data-tab="abertas"]').click();
+        });
+
+        // Lançar etiqueta vermelha
+        document.getElementById('btnLançarVermelha').addEventListener('click', () => {
+            const descricao = document.getElementById('vermelhaDescricao').value.trim();
+            const local = document.getElementById('vermelhaLocal').value.trim();
+            const prioridade = document.getElementById('vermelhaPrioridade').value;
+            const responsavel = document.getElementById('vermelhaResponsavel').value.trim();
+            
+            if (!descricao) {
+                showMessage('❌ Descrição é obrigatória', 'danger');
+                return;
+            }
+            
+            const etiquetas = carregarEtiquetas();
+            const novaEtiqueta = {
+                id: Date.now(),
+                tipo: 'vermelha',
+                descricao: descricao,
+                local: local,
+                prioridade: prioridade,
+                responsavel: responsavel || 'Não informado',
+                dataAbertura: new Date().toLocaleDateString('pt-BR'),
+                status: 'aberta'
+            };
+            
+            etiquetas.push(novaEtiqueta);
+            salvarEtiquetas(etiquetas);
+            
+            // Limpar formulário
+            document.getElementById('vermelhaDescricao').value = '';
+            document.getElementById('vermelhaLocal').value = '';
+            document.getElementById('vermelhaPrioridade').value = 'baixa';
+            document.getElementById('vermelhaResponsavel').value = '';
+            
+            renderizarAbertas();
+            showMessage('🔴 Etiqueta vermelha lançada com sucesso!', 'success');
+            
+            // Mudar para aba de abertas
+            document.querySelector('.tab[data-tab="abertas"]').click();
+        });
+
+        // Sistema de abas
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
                 
-                let producaoExistente = {};
-                if (resultGet.success && resultGet.data && resultGet.data.id) {
-                    producaoExistente = resultGet.data;
-                }
+                // Atualizar abas
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
                 
-                const dadosCompletos = {
-                    brascopEstantes: producaoExistente.brascopEstantes || 0,
-                    brascopKg: producaoExistente.brascopKg || 0,
-                    brascopParadas: producaoExistente.brascopParadas || '',
-                    brascopPerdas: producaoExistente.brascopPerdas || 0,
-                    seracEstantes: producaoExistente.seracEstantes || 0,
-                    seracKg: producaoExistente.seracKg || 0,
-                    seracParadas: producaoExistente.seracParadas || '',
-                    seracPerdas: producaoExistente.seracPerdas || 0,
-                    bpfOk: producaoExistente.bpfOk || false,
-                    bpfObservacao: producaoExistente.bpfObservacao || '',
-                    falhas: producaoExistente.falhas || '',
-                    reclamacoes: producaoExistente.reclamacoes || '',
-                    dssRealizado: producaoExistente.dssRealizado || false,
-                    dssTema: producaoExistente.dssTema || '',
-                    quaseAcidente: producaoExistente.quaseAcidente || '',
-                    ...dados
-                };
-                
-                const response = await fetch('/api/producao', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dadosCompletos)
+                // Mostrar conteúdo correto
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.style.display = 'none';
                 });
-                const result = await response.json();
                 
-                if (result.success) {
-                    msgDiv.className = 'alert alert-success';
-                    msgDiv.innerHTML = '✅ Dados do SIM salvos com sucesso!';
-                    setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
-                } else {
-                    throw new Error(result.error);
+                if (tabName === 'abertas') {
+                    document.getElementById('tab-abertas').style.display = 'block';
+                    renderizarAbertas();
+                } else if (tabName === 'fechadas') {
+                    document.getElementById('tab-fechadas').style.display = 'block';
+                    renderizarFechadas();
+                } else if (tabName === 'nova') {
+                    document.getElementById('tab-nova').style.display = 'block';
                 }
-            } catch (error) {
-                msgDiv.className = 'alert alert-danger';
-                msgDiv.innerHTML = '❌ Erro ao salvar: ' + error.message;
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '💾 SALVAR SIM';
-            }
+            });
         });
-        
-        // Carregar dados de hoje
-        document.getElementById('btnCarregar').addEventListener('click', async () => {
-            try {
-                const response = await fetch('/api/producao/hoje');
-                const result = await response.json();
-                
-                if (result.success && result.data && result.data.id) {
-                    const data = result.data;
-                    
-                    etiquetaAzul.value = data.etiquetaAzul || '';
-                    etiquetaVermelha.value = data.etiquetaVermelha || '';
-                    etiquetaFechada.value = data.etiquetaFechada || '';
-                    observacoes.value = data.observacoes || '';
-                    
-                    atualizarResumo();
-                    
-                    const msgDiv = document.getElementById('mensagem');
-                    msgDiv.style.display = 'block';
-                    msgDiv.className = 'alert alert-success';
-                    msgDiv.innerHTML = '✅ Dados carregados com sucesso!';
-                    setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
-                } else {
-                    // Reset para valores padrão
-                    etiquetaAzul.value = '';
-                    etiquetaVermelha.value = '';
-                    etiquetaFechada.value = '';
-                    observacoes.value = '';
-                    atualizarResumo();
-                }
-            } catch (error) {
-                console.error('Erro ao carregar:', error);
-            }
-        });
-        
-        // Limpar formulário
-        document.getElementById('btnLimpar').addEventListener('click', () => {
-            etiquetaAzul.value = '';
-            etiquetaVermelha.value = '';
-            etiquetaFechada.value = '';
-            observacoes.value = '';
-            atualizarResumo();
-        });
-        
-        // Dark mode toggle
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-        }
-        
+
+        // Filtros
+        document.getElementById('filtroTipo').addEventListener('change', renderizarAbertas);
+        document.getElementById('filtroBusca').addEventListener('input', renderizarAbertas);
+        document.getElementById('filtroTipoFechadas').addEventListener('change', renderizarFechadas);
+        document.getElementById('filtroBuscaFechadas').addEventListener('input', renderizarFechadas);
+
         // Inicializar
-        atualizarResumo();
-        document.getElementById('btnCarregar').click();
+        renderizarAbertas();
     </script>
 </body>
 </html>
