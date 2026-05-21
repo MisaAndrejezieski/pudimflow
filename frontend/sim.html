@@ -4,185 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>PudimFlow - SIM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #e2e8f0;
-            line-height: 1.5;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #0f2b3d 0%, #1e6f9f 100%);
-            color: white;
-            padding: 20px 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        .header h1 {
-            font-size: 1.6rem;
-            font-weight: 600;
-        }
-
-        .header h1::before {
-            content: "🍮 ";
-        }
-
-        .header .turno {
-            font-size: 0.85rem;
-            opacity: 0.85;
-            margin-top: 6px;
-        }
-
-        .nav {
-            background: #1e293b;
-            padding: 12px 20px;
+        /* ============================================
+           ESTILOS ESPECÍFICOS DO SIM
+           ============================================ */
+        
+        /* Abas */
+        .tabs {
             display: flex;
             gap: 8px;
-            overflow-x: auto;
-            white-space: nowrap;
-            border-bottom: 1px solid #334155;
-            position: sticky;
-            top: 0;
-            z-index: 99;
-        }
-
-        .nav a {
-            color: #cbd5e1;
-            text-decoration: none;
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            background: #334155;
-            transition: all 0.2s ease;
-        }
-
-        .nav a:hover, .nav a.active {
-            background: #1e6f9f;
-            color: white;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-
-        .card {
-            background: #1e293b;
-            border-radius: 20px;
-            padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            border: 1px solid #334155;
-            transition: transform 0.2s ease;
+            border-bottom: 1px solid var(--border, #334155);
+            padding-bottom: 12px;
+            flex-wrap: wrap;
         }
-
-        .card:hover {
-            transform: translateY(-2px);
-        }
-
-        .card h2 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: #38bdf8;
-            border-left: 4px solid #1e6f9f;
-            padding-left: 12px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #94a3b8;
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1.5px solid #334155;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-family: 'Inter', sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #1e6f9f;
-        }
-
-        button {
-            background: #1e6f9f;
-            color: white;
-            border: none;
-            padding: 10px 18px;
+        
+        .tab-btn {
+            background: transparent;
+            color: var(--text-secondary, #94a3b8);
             border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            padding: 10px 20px;
+            font-size: 0.9rem;
         }
-
-        button:hover {
-            background: #0f2b3d;
+        
+        .tab-btn:hover {
+            background: var(--bg-tertiary, #334155);
+            color: white;
+            transform: none;
         }
-
-        .btn-azul {
-            background: #3b82f6;
+        
+        .tab-btn.active {
+            background: var(--primary, #1e6f9f);
+            color: white;
         }
-        .btn-azul:hover {
-            background: #2563eb;
-        }
-        .btn-vermelho {
-            background: #ef4444;
-        }
-        .btn-vermelho:hover {
-            background: #dc2626;
-        }
-        .btn-verde {
-            background: #22c55e;
-        }
-        .btn-verde:hover {
-            background: #16a34a;
-        }
-
+        
+        /* Cards de etiqueta */
         .etiqueta-item {
-            background: #0f172a;
-            border-radius: 12px;
-            padding: 12px;
+            background: var(--bg-primary, #0f172a);
+            border-radius: 16px;
+            padding: 16px;
             margin-bottom: 12px;
             border-left: 4px solid;
+            transition: all 0.2s ease;
         }
-
+        
         .etiqueta-azul {
             border-left-color: #3b82f6;
         }
-
+        
         .etiqueta-vermelha {
             border-left-color: #ef4444;
         }
-
+        
         .etiqueta-fechada {
-            opacity: 0.6;
+            opacity: 0.7;
             border-left-color: #22c55e;
         }
-
+        
         .etiqueta-header {
             display: flex;
             justify-content: space-between;
@@ -191,28 +70,29 @@
             flex-wrap: wrap;
             gap: 8px;
         }
-
+        
         .etiqueta-tipo {
             font-weight: bold;
             font-size: 0.8rem;
         }
-
+        
         .etiqueta-data {
             font-size: 0.7rem;
-            color: #94a3b8;
+            color: var(--text-tertiary, #94a3b8);
         }
-
+        
         .etiqueta-descricao {
             font-size: 0.9rem;
             margin-bottom: 8px;
+            font-weight: 500;
         }
-
+        
         .etiqueta-local {
-            font-size: 0.7rem;
-            color: #94a3b8;
+            font-size: 0.75rem;
+            color: var(--text-tertiary, #94a3b8);
             margin-bottom: 8px;
         }
-
+        
         .etiqueta-footer {
             display: flex;
             justify-content: space-between;
@@ -221,125 +101,125 @@
             flex-wrap: wrap;
             gap: 8px;
         }
-
+        
         .prioridade-alta {
             color: #ef4444;
             font-size: 0.7rem;
             font-weight: bold;
         }
-
+        
         .prioridade-media {
             color: #f59e0b;
             font-size: 0.7rem;
             font-weight: bold;
         }
-
+        
         .prioridade-baixa {
             color: #22c55e;
             font-size: 0.7rem;
             font-weight: bold;
         }
-
+        
         .badge {
-            background: #334155;
-            padding: 2px 8px;
+            background: var(--bg-tertiary, #334155);
+            padding: 4px 10px;
             border-radius: 20px;
             font-size: 0.7rem;
+            font-weight: 500;
         }
-
-        .tabs {
-            display: flex;
-            gap: 8px;
+        
+        /* Formulários */
+        .form-card {
+            background: var(--bg-secondary, #1e293b);
+            border-radius: 16px;
+            padding: 20px;
             margin-bottom: 20px;
-            border-bottom: 1px solid #334155;
-            padding-bottom: 12px;
         }
-
-        .tab {
-            background: transparent;
-            color: #94a3b8;
-            border-radius: 8px;
+        
+        .form-card h3 {
+            margin-bottom: 16px;
+            color: var(--primary-light, #38bdf8);
+            font-size: 1rem;
         }
-
-        .tab.active {
-            background: #1e6f9f;
-            color: white;
+        
+        /* Grid para GA */
+        .ga-config {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: flex-end;
         }
-
-        .tab:hover {
-            background: #334155;
-            color: white;
+        
+        .ga-config .form-group {
+            flex: 1;
+            min-width: 150px;
+            margin-bottom: 0;
         }
-
+        
+        .ga-config button {
+            margin-bottom: 0;
+        }
+        
+        .historico-ga {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border, #334155);
+        }
+        
+        .historico-item {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-light, #334155);
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        @media (max-width: 640px) {
+            .etiqueta-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .ga-config {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .ga-config .form-group {
+                width: 100%;
+            }
+            .tab-btn {
+                flex: 1;
+                text-align: center;
+                font-size: 0.8rem;
+                padding: 8px 12px;
+            }
+        }
+        
+        /* Filtros */
         .filtros {
             display: flex;
             gap: 12px;
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
-
+        
         .filtros select, .filtros input {
             width: auto;
             min-width: 150px;
         }
-
-        .footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 0.75rem;
-            color: #64748b;
-            border-top: 1px solid #334155;
-            margin-top: 20px;
-        }
-
-        #globalMessage {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            z-index: 9999;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            display: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-
-        .alert-success {
-            background: #22c55e;
-            color: white;
-        }
-        .alert-danger {
-            background: #ef4444;
-            color: white;
-        }
-        .alert-warning {
-            background: #f59e0b;
-            color: white;
-        }
-
+        
         @media (max-width: 640px) {
-            .container {
-                padding: 16px;
-            }
-            .card {
-                padding: 16px;
-            }
-            .etiqueta-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            #globalMessage {
-                top: 70px;
-                right: 10px;
-                left: 10px;
+            .filtros select, .filtros input {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>PudimFlow - SIM</h1>
+        <h1>🍮 PudimFlow - SIM</h1>
         <div class="turno">Sistema de Ideias e Melhorias</div>
     </div>
 
@@ -348,91 +228,69 @@
         <a href="sim.html" class="active">💡 SIM</a>
         <a href="troca-turno.html">🔄 Troca de Turno</a>
         <a href="programacao.html">📅 Programação</a>
+        <a href="preparacao.html">🍯 Preparação</a>
     </nav>
 
     <div class="container">
-        <!-- Tabs -->
+        <!-- Abas -->
         <div class="tabs">
-            <button class="tab active" data-tab="abertas">🔴🔵 Abertas</button>
-            <button class="tab" data-tab="fechadas">✅ Fechadas</button>
-            <button class="tab" data-tab="nova">➕ Nova Etiqueta</button>
+            <button class="tab-btn active" data-tab="etiquetas">🏷️ Etiquetas</button>
+            <button class="tab-btn" data-tab="ga">👥 GA - Grupo Autônomo</button>
         </div>
 
-        <!-- Lista de Etiquetas Abertas -->
-        <div id="tab-abertas" class="tab-content">
-            <div class="filtros">
-                <select id="filtroTipo">
-                    <option value="todas">Todas</option>
-                    <option value="azul">🔵 Azuis</option>
-                    <option value="vermelha">🔴 Vermelhas</option>
-                </select>
-                <input type="text" id="filtroBusca" placeholder="Buscar por descrição...">
-            </div>
-            <div id="listaAbertas" class="card">
-                <p style="color: #64748b; text-align: center;">Carregando etiquetas...</p>
-            </div>
-        </div>
-
-        <!-- Lista de Etiquetas Fechadas -->
-        <div id="tab-fechadas" class="tab-content" style="display: none;">
-            <div class="filtros">
-                <select id="filtroTipoFechadas">
-                    <option value="todas">Todas</option>
-                    <option value="azul">🔵 Azuis</option>
-                    <option value="vermelha">🔴 Vermelhas</option>
-                </select>
-                <input type="text" id="filtroBuscaFechadas" placeholder="Buscar por descrição...">
-            </div>
-            <div id="listaFechadas" class="card">
-                <p style="color: #64748b; text-align: center;">Carregando etiquetas...</p>
-            </div>
-        </div>
-
-        <!-- Nova Etiqueta -->
-        <div id="tab-nova" class="tab-content" style="display: none;">
-            <div class="card">
-                <h2>🔵 ETIQUETA AZUL</h2>
-                <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 16px;">Problemas resolvidos pela própria equipe (limpeza, organização, pequenos ajustes)</p>
+        <!-- Conteúdo: Etiquetas -->
+        <div id="tab-etiquetas" class="tab-content">
+            <!-- Etiqueta Azul -->
+            <div class="form-card">
+                <h3>🔵 Etiqueta Azul</h3>
+                <p style="font-size: 0.8rem; color: var(--text-tertiary, #94a3b8); margin-bottom: 16px;">
+                    Problemas resolvidos pela própria equipe (limpeza, organização, pequenos ajustes)
+                </p>
                 
                 <div class="form-group">
                     <label>Descrição do problema/solução *</label>
-                    <textarea id="azulDescricao" rows="3" placeholder="Ex: João organizou as ferramentas da esteira"></textarea>
+                    <textarea id="azulDescricao" rows="2" placeholder="Ex: João organizou as ferramentas da esteira"></textarea>
                 </div>
                 
-                <div class="form-group">
-                    <label>Local / Máquina</label>
-                    <input type="text" id="azulLocal" placeholder="Ex: Esteira 3, Forno 7, Área de resselagem">
+                <div class="grid-2-colunas" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label>Local / Máquina</label>
+                        <input type="text" id="azulLocal" placeholder="Ex: Esteira 3, Forno 7">
+                    </div>
+                    <div class="form-group">
+                        <label>Responsável</label>
+                        <input type="text" id="azulResponsavel" placeholder="Ex: João Silva">
+                    </div>
                 </div>
                 
-                <div class="form-group">
-                    <label>Responsável pela ação</label>
-                    <input type="text" id="azulResponsavel" placeholder="Ex: João Silva">
-                </div>
-                
-                <button id="btnLançarAzul" class="btn-azul">🔵 LANÇAR ETIQUETA AZUL</button>
+                <button id="btnLancarAzul" style="background: #3b82f6; width: auto;">🔵 LANÇAR ETIQUETA AZUL</button>
             </div>
 
-            <div class="card" style="margin-top: 20px;">
-                <h2>🔴 ETIQUETA VERMELHA</h2>
-                <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 16px;">Problemas que precisam de manutenção (mecânica, elétrica, civil)</p>
+            <!-- Etiqueta Vermelha -->
+            <div class="form-card">
+                <h3>🔴 Etiqueta Vermelha</h3>
+                <p style="font-size: 0.8rem; color: var(--text-tertiary, #94a3b8); margin-bottom: 16px;">
+                    Problemas que precisam de manutenção (mecânica, elétrica, civil)
+                </p>
                 
                 <div class="form-group">
                     <label>Descrição do problema *</label>
-                    <textarea id="vermelhaDescricao" rows="3" placeholder="Ex: Forno 7 com aquecimento irregular"></textarea>
+                    <textarea id="vermelhaDescricao" rows="2" placeholder="Ex: Forno 7 com aquecimento irregular"></textarea>
                 </div>
                 
-                <div class="form-group">
-                    <label>Local / Máquina</label>
-                    <input type="text" id="vermelhaLocal" placeholder="Ex: Forno 7, Esteira 2">
-                </div>
-                
-                <div class="form-group">
-                    <label>Prioridade</label>
-                    <select id="vermelhaPrioridade">
-                        <option value="baixa">🟢 Baixa</option>
-                        <option value="media">🟡 Média</option>
-                        <option value="alta">🔴 Alta</option>
-                    </select>
+                <div class="grid-2-colunas" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label>Local / Máquina</label>
+                        <input type="text" id="vermelhaLocal" placeholder="Ex: Forno 7, Esteira 2">
+                    </div>
+                    <div class="form-group">
+                        <label>Prioridade</label>
+                        <select id="vermelhaPrioridade">
+                            <option value="baixa">🟢 Baixa</option>
+                            <option value="media">🟡 Média</option>
+                            <option value="alta">🔴 Alta</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -440,29 +298,106 @@
                     <input type="text" id="vermelhaResponsavel" placeholder="Ex: Misa">
                 </div>
                 
-                <button id="btnLançarVermelha" class="btn-vermelho">🔴 LANÇAR ETIQUETA VERMELHA</button>
+                <button id="btnLancarVermelha" style="background: #ef4444; width: auto;">🔴 LANÇAR ETIQUETA VERMELHA</button>
+            </div>
+
+            <!-- Filtros e Lista de Etiquetas Abertas -->
+            <div class="card">
+                <h2>📋 Etiquetas Abertas</h2>
+                <div class="filtros">
+                    <select id="filtroTipo">
+                        <option value="todas">Todas</option>
+                        <option value="azul">🔵 Azuis</option>
+                        <option value="vermelha">🔴 Vermelhas</option>
+                    </select>
+                    <input type="text" id="filtroBusca" placeholder="Buscar por descrição...">
+                </div>
+                <div id="listaAbertas">
+                    <p style="color: var(--text-tertiary, #94a3b8); text-align: center;">Carregando etiquetas...</p>
+                </div>
+            </div>
+
+            <!-- Histórico de Etiquetas Fechadas -->
+            <div class="card">
+                <h2>✅ Histórico de Etiquetas Fechadas</h2>
+                <div class="filtros">
+                    <select id="filtroTipoFechadas">
+                        <option value="todas">Todas</option>
+                        <option value="azul">🔵 Azuis</option>
+                        <option value="vermelha">🔴 Vermelhas</option>
+                    </select>
+                    <input type="text" id="filtroBuscaFechadas" placeholder="Buscar por descrição...">
+                </div>
+                <div id="listaFechadas">
+                    <p style="color: var(--text-tertiary, #94a3b8); text-align: center;">Carregando histórico...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conteúdo: GA (Grupo Autônomo) -->
+        <div id="tab-ga" class="tab-content" style="display: none;">
+            <div class="card">
+                <h2>👥 GA - Grupo Autônomo</h2>
+                <p style="font-size: 0.8rem; color: var(--text-tertiary, #94a3b8); margin-bottom: 20px;">
+                    Agendamento da próxima reunião do GA. O lembrete aparecerá no Dashboard.
+                </p>
+                
+                <div class="ga-config">
+                    <div class="form-group">
+                        <label>📅 Data da próxima reunião</label>
+                        <input type="date" id="gaData" value="">
+                    </div>
+                    <div class="form-group">
+                        <label>⏰ Horário</label>
+                        <input type="time" id="gaHora" value="14:00">
+                    </div>
+                    <button id="btnSalvarGA" style="background: #2ecc71;">💾 SALVAR</button>
+                </div>
+                
+                <div class="historico-ga">
+                    <h3 style="font-size: 0.9rem; margin-bottom: 12px;">📜 Histórico de Reuniões</h3>
+                    <div id="historicoGA">
+                        <p style="color: var(--text-tertiary, #94a3b8); text-align: center;">Nenhuma reunião registrada</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="footer">
-        <p>PudimFlow - Misael Andrejezieski</p>
+        <p>PudimFlow - Sistema de Gestão de Produção | Turno da Noite</p>
     </div>
 
-    <div id="globalMessage"></div>
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">🌓</div>
 
     <script>
-        // Configuração da API
-        const API_URL = window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000/api' 
-            : 'https://pudimflow.onrender.com/api';
-
-        // Chave para localStorage (enquanto não tem backend de etiquetas)
+        // ============================================
+        // CONFIGURAÇÃO
+        // ============================================
         const STORAGE_KEY = 'pudimflow_etiquetas';
+        const GA_KEY = 'pudimflow_ga';
 
-        // Função para mostrar mensagem
+        // ============================================
+        // FUNÇÕES DE UTILIDADE
+        // ============================================
         function showMessage(message, type = 'success') {
-            const msgDiv = document.getElementById('globalMessage');
+            const msgDiv = document.getElementById('globalMessage') || (() => {
+                const div = document.createElement('div');
+                div.id = 'globalMessage';
+                div.style.position = 'fixed';
+                div.style.top = '80px';
+                div.style.right = '20px';
+                div.style.zIndex = '9999';
+                div.style.padding = '12px 20px';
+                div.style.borderRadius = '12px';
+                div.style.fontSize = '0.85rem';
+                div.style.fontWeight = '500';
+                div.style.display = 'none';
+                div.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+                document.body.appendChild(div);
+                return div;
+            })();
+            
             msgDiv.className = `alert-${type}`;
             msgDiv.innerHTML = message;
             msgDiv.style.display = 'block';
@@ -471,42 +406,55 @@
             }, 3000);
         }
 
-        // Carregar etiquetas do localStorage
+        // ============================================
+        // ETIQUETAS - CRUD
+        // ============================================
         function carregarEtiquetas() {
             const stored = localStorage.getItem(STORAGE_KEY);
             if (stored) {
                 return JSON.parse(stored);
             }
-            // Dados de exemplo
-            return [
-                {
-                    id: 1,
-                    tipo: 'azul',
-                    descricao: 'Organização das ferramentas da esteira 3',
-                    local: 'Esteira 3',
-                    responsavel: 'João Silva',
-                    dataAbertura: new Date().toLocaleDateString('pt-BR'),
-                    status: 'aberta'
-                },
-                {
-                    id: 2,
-                    tipo: 'vermelha',
-                    descricao: 'Forno 7 com aquecimento irregular',
-                    local: 'Forno 7',
-                    responsavel: 'Misa',
-                    prioridade: 'alta',
-                    dataAbertura: new Date().toLocaleDateString('pt-BR'),
-                    status: 'aberta'
-                }
-            ];
+            return [];
         }
 
-        // Salvar etiquetas no localStorage
         function salvarEtiquetas(etiquetas) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(etiquetas));
         }
 
-        // Renderizar lista de etiquetas abertas
+        function lancarEtiqueta(tipo, dados) {
+            const etiquetas = carregarEtiquetas();
+            const novaEtiqueta = {
+                id: Date.now(),
+                tipo: tipo,
+                descricao: dados.descricao,
+                local: dados.local || '',
+                responsavel: dados.responsavel || 'Não informado',
+                prioridade: dados.prioridade || null,
+                dataAbertura: new Date().toLocaleDateString('pt-BR'),
+                status: 'aberta'
+            };
+            
+            etiquetas.unshift(novaEtiqueta);
+            salvarEtiquetas(etiquetas);
+            renderizarAbertas();
+            renderizarFechadas();
+            showMessage(`${tipo === 'azul' ? '🔵 Etiqueta azul' : '🔴 Etiqueta vermelha'} lançada!`, 'success');
+        }
+
+        function fecharEtiqueta(id) {
+            let etiquetas = carregarEtiquetas();
+            const index = etiquetas.findIndex(e => e.id === id);
+            if (index !== -1) {
+                etiquetas[index].status = 'fechada';
+                etiquetas[index].dataFechamento = new Date().toLocaleDateString('pt-BR');
+                etiquetas[index].fechadoPor = 'Misa';
+                salvarEtiquetas(etiquetas);
+                renderizarAbertas();
+                renderizarFechadas();
+                showMessage('✅ Etiqueta marcada como resolvida!', 'success');
+            }
+        }
+
         function renderizarAbertas() {
             let etiquetas = carregarEtiquetas();
             const filtroTipo = document.getElementById('filtroTipo').value;
@@ -517,7 +465,6 @@
             if (filtroTipo !== 'todas') {
                 abertas = abertas.filter(e => e.tipo === filtroTipo);
             }
-            
             if (filtroBusca) {
                 abertas = abertas.filter(e => e.descricao.toLowerCase().includes(filtroBusca));
             }
@@ -525,7 +472,7 @@
             const container = document.getElementById('listaAbertas');
             
             if (abertas.length === 0) {
-                container.innerHTML = '<p style="color: #64748b; text-align: center;">Nenhuma etiqueta aberta</p>';
+                container.innerHTML = '<p style="color: var(--text-tertiary, #94a3b8); text-align: center;">Nenhuma etiqueta aberta</p>';
                 return;
             }
             
@@ -539,14 +486,13 @@
                     <div class="etiqueta-descricao">${etiqueta.descricao}</div>
                     <div class="etiqueta-local">📍 ${etiqueta.local || 'Não informado'}</div>
                     <div class="etiqueta-footer">
-                        <span class="badge">👤 ${etiqueta.responsavel || 'Não informado'}</span>
-                        <button class="btn-verde" onclick="fecharEtiqueta(${etiqueta.id})">✅ Marcar como resolvida</button>
+                        <span class="badge">👤 ${etiqueta.responsavel}</span>
+                        <button class="btn-success" style="padding: 6px 12px; font-size: 0.75rem;" onclick="fecharEtiqueta(${etiqueta.id})">✅ Marcar resolvida</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Renderizar lista de etiquetas fechadas
         function renderizarFechadas() {
             let etiquetas = carregarEtiquetas();
             const filtroTipo = document.getElementById('filtroTipoFechadas').value;
@@ -557,7 +503,6 @@
             if (filtroTipo !== 'todas') {
                 fechadas = fechadas.filter(e => e.tipo === filtroTipo);
             }
-            
             if (filtroBusca) {
                 fechadas = fechadas.filter(e => e.descricao.toLowerCase().includes(filtroBusca));
             }
@@ -565,7 +510,7 @@
             const container = document.getElementById('listaFechadas');
             
             if (fechadas.length === 0) {
-                container.innerHTML = '<p style="color: #64748b; text-align: center;">Nenhuma etiqueta fechada</p>';
+                container.innerHTML = '<p style="color: var(--text-tertiary, #94a3b8); text-align: center;">Nenhuma etiqueta fechada</p>';
                 return;
             }
             
@@ -579,30 +524,90 @@
                     <div class="etiqueta-descricao">${etiqueta.descricao}</div>
                     <div class="etiqueta-local">📍 ${etiqueta.local || 'Não informado'}</div>
                     <div class="etiqueta-footer">
-                        <span class="badge">👤 Aberta por: ${etiqueta.responsavel || 'Não informado'}</span>
+                        <span class="badge">👤 Aberta por: ${etiqueta.responsavel}</span>
                         ${etiqueta.fechadoPor ? `<span class="badge">✅ Fechada por: ${etiqueta.fechadoPor}</span>` : ''}
                     </div>
                 </div>
             `).join('');
         }
 
-        // Fechar etiqueta
-        window.fecharEtiqueta = function(id) {
-            let etiquetas = carregarEtiquetas();
-            const index = etiquetas.findIndex(e => e.id === id);
-            if (index !== -1) {
-                etiquetas[index].status = 'fechada';
-                etiquetas[index].dataFechamento = new Date().toLocaleDateString('pt-BR');
-                etiquetas[index].fechadoPor = 'Misa'; // Pega do usuário logado depois
-                salvarEtiquetas(etiquetas);
-                renderizarAbertas();
-                renderizarFechadas();
-                showMessage('✅ Etiqueta marcada como resolvida!', 'success');
-            }
-        };
+        // Expor funções globalmente
+        window.fecharEtiqueta = fecharEtiqueta;
 
-        // Lançar etiqueta azul
-        document.getElementById('btnLançarAzul').addEventListener('click', () => {
+        // ============================================
+        // GA (GRUPO AUTÔNOMO)
+        // ============================================
+        function salvarGA() {
+            const data = document.getElementById('gaData').value;
+            const hora = document.getElementById('gaHora').value;
+            
+            if (!data) {
+                showMessage('❌ Selecione a data da próxima reunião', 'danger');
+                return;
+            }
+            
+            const historico = JSON.parse(localStorage.getItem(GA_KEY + '_historico') || '[]');
+            if (data && hora) {
+                historico.push({
+                    data: data,
+                    hora: hora,
+                    criado_em: new Date().toLocaleDateString('pt-BR')
+                });
+                localStorage.setItem(GA_KEY + '_historico', JSON.stringify(historico));
+            }
+            
+            const gaData = {
+                data: data,
+                hora: hora,
+                atualizado_em: new Date().toISOString()
+            };
+            localStorage.setItem(GA_KEY, JSON.stringify(gaData));
+            
+            renderizarGA();
+            renderizarHistoricoGA();
+            showMessage('✅ Próxima reunião GA salva! Lembrete aparecerá no Dashboard.', 'success');
+        }
+
+        function carregarGA() {
+            const gaData = localStorage.getItem(GA_KEY);
+            if (gaData) {
+                const ga = JSON.parse(gaData);
+                document.getElementById('gaData').value = ga.data || '';
+                document.getElementById('gaHora').value = ga.hora || '14:00';
+            } else {
+                const hoje = new Date();
+                const proximaSemana = new Date(hoje);
+                proximaSemana.setDate(hoje.getDate() + 7);
+                document.getElementById('gaData').value = proximaSemana.toISOString().split('T')[0];
+                document.getElementById('gaHora').value = '14:00';
+            }
+        }
+
+        function renderizarGA() {
+            // Apenas para manter sincronia com o Dashboard
+        }
+
+        function renderizarHistoricoGA() {
+            const historico = JSON.parse(localStorage.getItem(GA_KEY + '_historico') || '[]');
+            const container = document.getElementById('historicoGA');
+            
+            if (historico.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-tertiary, #94a3b8); text-align: center;">Nenhuma reunião registrada</p>';
+                return;
+            }
+            
+            container.innerHTML = historico.slice(-10).reverse().map(item => `
+                <div class="historico-item">
+                    <span>📅 ${new Date(item.data).toLocaleDateString('pt-BR')} às ${item.hora}</span>
+                    <span class="badge">Registrado em: ${item.criado_em}</span>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // EVENTOS
+        // ============================================
+        document.getElementById('btnLancarAzul').addEventListener('click', () => {
             const descricao = document.getElementById('azulDescricao').value.trim();
             const local = document.getElementById('azulLocal').value.trim();
             const responsavel = document.getElementById('azulResponsavel').value.trim();
@@ -612,34 +617,18 @@
                 return;
             }
             
-            const etiquetas = carregarEtiquetas();
-            const novaEtiqueta = {
-                id: Date.now(),
-                tipo: 'azul',
+            lancarEtiqueta('azul', {
                 descricao: descricao,
                 local: local,
-                responsavel: responsavel || 'Não informado',
-                dataAbertura: new Date().toLocaleDateString('pt-BR'),
-                status: 'aberta'
-            };
+                responsavel: responsavel || 'Não informado'
+            });
             
-            etiquetas.push(novaEtiqueta);
-            salvarEtiquetas(etiquetas);
-            
-            // Limpar formulário
             document.getElementById('azulDescricao').value = '';
             document.getElementById('azulLocal').value = '';
             document.getElementById('azulResponsavel').value = '';
-            
-            renderizarAbertas();
-            showMessage('🔵 Etiqueta azul lançada com sucesso!', 'success');
-            
-            // Mudar para aba de abertas
-            document.querySelector('.tab[data-tab="abertas"]').click();
         });
 
-        // Lançar etiqueta vermelha
-        document.getElementById('btnLançarVermelha').addEventListener('click', () => {
+        document.getElementById('btnLancarVermelha').addEventListener('click', () => {
             const descricao = document.getElementById('vermelhaDescricao').value.trim();
             const local = document.getElementById('vermelhaLocal').value.trim();
             const prioridade = document.getElementById('vermelhaPrioridade').value;
@@ -650,68 +639,60 @@
                 return;
             }
             
-            const etiquetas = carregarEtiquetas();
-            const novaEtiqueta = {
-                id: Date.now(),
-                tipo: 'vermelha',
+            lancarEtiqueta('vermelha', {
                 descricao: descricao,
                 local: local,
                 prioridade: prioridade,
-                responsavel: responsavel || 'Não informado',
-                dataAbertura: new Date().toLocaleDateString('pt-BR'),
-                status: 'aberta'
-            };
+                responsavel: responsavel || 'Não informado'
+            });
             
-            etiquetas.push(novaEtiqueta);
-            salvarEtiquetas(etiquetas);
-            
-            // Limpar formulário
             document.getElementById('vermelhaDescricao').value = '';
             document.getElementById('vermelhaLocal').value = '';
             document.getElementById('vermelhaPrioridade').value = 'baixa';
             document.getElementById('vermelhaResponsavel').value = '';
-            
-            renderizarAbertas();
-            showMessage('🔴 Etiqueta vermelha lançada com sucesso!', 'success');
-            
-            // Mudar para aba de abertas
-            document.querySelector('.tab[data-tab="abertas"]').click();
         });
 
-        // Sistema de abas
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.dataset.tab;
-                
-                // Atualizar abas
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                // Mostrar conteúdo correto
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.style.display = 'none';
-                });
-                
-                if (tabName === 'abertas') {
-                    document.getElementById('tab-abertas').style.display = 'block';
-                    renderizarAbertas();
-                } else if (tabName === 'fechadas') {
-                    document.getElementById('tab-fechadas').style.display = 'block';
-                    renderizarFechadas();
-                } else if (tabName === 'nova') {
-                    document.getElementById('tab-nova').style.display = 'block';
-                }
-            });
-        });
-
-        // Filtros
+        document.getElementById('btnSalvarGA').addEventListener('click', salvarGA);
+        
         document.getElementById('filtroTipo').addEventListener('change', renderizarAbertas);
         document.getElementById('filtroBusca').addEventListener('input', renderizarAbertas);
         document.getElementById('filtroTipoFechadas').addEventListener('change', renderizarFechadas);
         document.getElementById('filtroBuscaFechadas').addEventListener('input', renderizarFechadas);
 
-        // Inicializar
+        // Sistema de abas
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabName = btn.dataset.tab;
+                
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+                
+                if (tabName === 'etiquetas') {
+                    document.getElementById('tab-etiquetas').style.display = 'block';
+                    renderizarAbertas();
+                    renderizarFechadas();
+                } else if (tabName === 'ga') {
+                    document.getElementById('tab-ga').style.display = 'block';
+                    renderizarHistoricoGA();
+                }
+            });
+        });
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
         renderizarAbertas();
+        renderizarFechadas();
+        carregarGA();
+        renderizarHistoricoGA();
     </script>
 </body>
 </html>
