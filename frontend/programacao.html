@@ -164,7 +164,6 @@
     </nav>
 
     <div class="container planilha-container">
-        <!-- SELETOR DE DATA DA SEMANA -->
         <div class="data-semana">
             <label>📅 Semana de (segunda-feira):</label>
             <input type="date" id="semanaData" value="">
@@ -172,7 +171,6 @@
             <button id="btnNovaSemana" style="background: #f59e0b;">🆕 CRIAR NOVA SEMANA</button>
         </div>
 
-        <!-- TABELA TREPKO -->
         <div class="card">
             <h2>📊 Programação Semanal - Linha TREPKO (Brascop)</h2>
             <table class="planilha-programacao" id="tabelaTrepko">
@@ -198,7 +196,6 @@
             </table>
         </div>
 
-        <!-- TABELA SERAC -->
         <div class="card" style="margin-top: 1.5rem;">
             <h2>📊 Programação Semanal - Linha SERAC</h2>
             <table class="planilha-programacao" id="tabelaSerac">
@@ -230,12 +227,11 @@
                         <td id="totalGeralDia_5">-</td>
                         <td id="totalGeralDia_6">-</td>
                         <td id="totalGeralSemana">0</td>
-                    </tr>
+                     </tr>
                 </tfoot>
             </table>
         </div>
 
-        <!-- BOTÕES DE AÇÃO -->
         <div class="card" style="margin-top: 1.5rem;">
             <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
                 <button id="btnSalvar" style="background: #2ecc71;">💾 SALVAR PROGRAMAÇÃO (BACKEND)</button>
@@ -252,18 +248,12 @@
     <div class="dark-mode-toggle" onclick="toggleDarkMode()">🌓</div>
 
     <script>
-        // ============================================
-        // CONFIGURAÇÃO DA API
-        // ============================================
         const API_URL = window.location.hostname === 'localhost'
             ? 'http://localhost:3000/api'
             : 'https://pudimflow.onrender.com/api';
 
         const diasSemana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
         
-        // ============================================
-        // PRODUTOS TREPKO (Brascop)
-        // ============================================
         const produtosTrepko = [
             { codigo: "610100542", nome: "SOB BRIGADEIRA CHOCO BATAVO 180g", unidade: "kg" },
             { codigo: "610102542", nome: "SOB MANJAR COCO BATAVO CX10 180G CB", unidade: "kg" },
@@ -277,17 +267,11 @@
             { codigo: "610100550", nome: "SOB PUDIM LEITE CHANDELLE 200G", unidade: "kg" }
         ];
 
-        // ============================================
-        // PRODUTOS SERAC
-        // ============================================
         const produtosSerac = [
             { codigo: "610100544", nome: "SOB PUDIM LEITE BATAVO 200G", unidade: "L" },
             { codigo: "610102496", nome: "PUDIM LEITE COND ITAMBE 100G", unidade: "kg" }
         ];
 
-        // ============================================
-        // VALORES REAIS DA PROGRAMAÇÃO (BASEADO NA IMAGEM)
-        // ============================================
         const valoresReaisTrepko = {
             "610100542": ["6000", "", "", "", "", "", ""],
             "610102542": ["3333", "", "", "4000", "", "", ""],
@@ -306,17 +290,11 @@
             "610102496": ["500", "500", "500", "500", "500", "500", ""]
         };
 
-        // ============================================
-        // VARIÁVEIS GLOBAIS
-        // ============================================
         let dadosAtuaisTrepko = {};
         let dadosAtuaisSerac = {};
         let semanaAtual = '';
         let datasDias = [];
 
-        // ============================================
-        // FUNÇÕES DE DATA
-        // ============================================
         function getMonday(date) {
             const d = new Date(date);
             const day = d.getDay();
@@ -335,9 +313,6 @@
             return datas;
         }
 
-        // ============================================
-        // ATUALIZAR CABEÇALHO COM DATAS
-        // ============================================
         function atualizarCabecalho() {
             if (datasDias.length === 0) return;
             
@@ -356,9 +331,6 @@
             cabecalhoSerac.innerHTML = htmlTh;
         }
 
-        // ============================================
-        // DADOS VAZIOS
-        // ============================================
         function getDadosVaziosTrepko() {
             const dados = {};
             produtosTrepko.forEach(p => { dados[p.codigo] = ["", "", "", "", "", "", ""]; });
@@ -371,16 +343,13 @@
             return dados;
         }
 
-        // ============================================
-        // SALVAR PROGRAMAÇÃO NO BACKEND
-        // ============================================
         async function salvarProgramacaoBackend() {
             if (!semanaAtual) {
                 mostrarMensagem('❌ Selecione uma semana primeiro!', 'danger');
                 return;
             }
 
-            mostrarMensagem('💾 Salvando programação no servidor...', 'info');
+            mostrarMensagem('💾 Salvando programação...', 'info');
             
             const itensParaSalvar = [];
             
@@ -424,14 +393,9 @@
                 const response = await fetch(`${API_URL}/programacao/semana`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        semana_inicio: semanaAtual,
-                        itens: itensParaSalvar
-                    })
+                    body: JSON.stringify({ semana_inicio: semanaAtual, itens: itensParaSalvar })
                 });
-                
                 const result = await response.json();
-                
                 if (result.success) {
                     mostrarMensagem(`✅ Programação da semana ${semanaAtual} salva!`, 'success');
                     salvarProgramacaoLocal();
@@ -439,38 +403,24 @@
                     throw new Error(result.error);
                 }
             } catch (error) {
-                console.error('Erro ao salvar:', error);
+                console.error('Erro:', error);
                 mostrarMensagem(`❌ Erro: ${error.message}. Salvando local...`, 'warning');
                 salvarProgramacaoLocal();
             }
         }
 
-        // ============================================
-        // SALVAR LOCALMENTE (FALLBACK)
-        // ============================================
         function salvarProgramacaoLocal() {
-            const programacaoData = {
-                semana: semanaAtual,
-                datas: datasDias,
-                trepko: dadosAtuaisTrepko,
-                serac: dadosAtuaisSerac,
-                dataCriacao: new Date().toISOString()
-            };
-            
+            const programacaoData = { semana: semanaAtual, datas: datasDias, trepko: dadosAtuaisTrepko, serac: dadosAtuaisSerac, dataCriacao: new Date().toISOString() };
             const todas = JSON.parse(localStorage.getItem('pudimflow_programacoes') || '{}');
             todas[semanaAtual] = programacaoData;
             localStorage.setItem('pudimflow_programacoes', JSON.stringify(todas));
         }
 
-        // ============================================
-        // CARREGAR PROGRAMAÇÃO DO BACKEND
-        // ============================================
         async function carregarProgramacaoBackend(data) {
             semanaAtual = data;
             datasDias = gerarDatasSemana(semanaAtual);
             atualizarCabecalho();
-            
-            mostrarMensagem(`📂 Carregando programação da semana ${semanaAtual}...`, 'info');
+            mostrarMensagem(`📂 Carregando semana ${semanaAtual}...`, 'info');
             
             try {
                 const response = await fetch(`${API_URL}/programacao/semana/${semanaAtual}`);
@@ -479,37 +429,28 @@
                 if (result.success && result.data && result.data.length > 0) {
                     dadosAtuaisTrepko = getDadosVaziosTrepko();
                     dadosAtuaisSerac = getDadosVaziosSerac();
-                    
                     for (const item of result.data) {
                         const diaIndex = diasSemana.findIndex(d => d.toLowerCase() === item.dia_semana);
                         if (diaIndex !== -1) {
                             if (item.linha === 'TREPKO') {
-                                if (!dadosAtuaisTrepko[item.produto_codigo]) {
-                                    dadosAtuaisTrepko[item.produto_codigo] = ["", "", "", "", "", "", ""];
-                                }
+                                if (!dadosAtuaisTrepko[item.produto_codigo]) dadosAtuaisTrepko[item.produto_codigo] = ["", "", "", "", "", "", ""];
                                 dadosAtuaisTrepko[item.produto_codigo][diaIndex] = item.meta_kg.toString();
                             } else if (item.linha === 'SERAC') {
-                                if (!dadosAtuaisSerac[item.produto_codigo]) {
-                                    dadosAtuaisSerac[item.produto_codigo] = ["", "", "", "", "", "", ""];
-                                }
+                                if (!dadosAtuaisSerac[item.produto_codigo]) dadosAtuaisSerac[item.produto_codigo] = ["", "", "", "", "", "", ""];
                                 dadosAtuaisSerac[item.produto_codigo][diaIndex] = item.meta_kg.toString();
                             }
                         }
                     }
                     renderizarTabelas();
-                    mostrarMensagem(`✅ Programação da semana ${semanaAtual} carregada!`, 'success');
+                    mostrarMensagem(`✅ Programação carregada!`, 'success');
                 } else {
                     carregarProgramacaoLocal(semanaAtual);
                 }
             } catch (error) {
-                console.error('Erro ao carregar:', error);
                 carregarProgramacaoLocal(semanaAtual);
             }
         }
 
-        // ============================================
-        // CARREGAR LOCALMENTE
-        // ============================================
         function carregarProgramacaoLocal(data) {
             const todas = JSON.parse(localStorage.getItem('pudimflow_programacoes') || '{}');
             const programacao = todas[data];
@@ -520,18 +461,15 @@
                 datasDias = programacao.datas || gerarDatasSemana(data);
                 atualizarCabecalho();
                 renderizarTabelas();
-                mostrarMensagem(`📂 Programação da semana ${data} carregada (local)!`, 'info');
+                mostrarMensagem(`📂 Programação local carregada!`, 'info');
             } else {
                 dadosAtuaisTrepko = JSON.parse(JSON.stringify(valoresReaisTrepko));
                 dadosAtuaisSerac = JSON.parse(JSON.stringify(valoresReaisSerac));
                 renderizarTabelas();
-                mostrarMensagem(`📋 Semana ${data} - Programação padrão carregada. Edite e salve!`, 'warning');
+                mostrarMensagem(`📋 Programação padrão carregada.`, 'warning');
             }
         }
 
-        // ============================================
-        // RENDERIZAR TABELAS
-        // ============================================
         function renderizarTabelas() {
             renderizarTabelaTrepko();
             renderizarTabelaSerac();
@@ -543,7 +481,7 @@
             produtosTrepko.forEach(produto => {
                 const valores = dadosAtuaisTrepko[produto.codigo] || ["", "", "", "", "", "", ""];
                 const row = tbody.insertRow();
-                row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small><br><small style="color:#94a3b8;">(${produto.unidade})</small></div>`;
+                row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small><br><small>(${produto.unidade})</small></div>`;
                 for (let i = 0; i < diasSemana.length; i++) {
                     const cell = row.insertCell(i + 1);
                     cell.innerHTML = `<input type="text" data-linha="trepko" data-produto="${produto.codigo}" data-dia="${i}" value="${valores[i] || ''}" placeholder="0">`;
@@ -562,7 +500,7 @@
             produtosSerac.forEach(produto => {
                 const valores = dadosAtuaisSerac[produto.codigo] || ["", "", "", "", "", "", ""];
                 const row = tbody.insertRow();
-                row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small><br><small style="color:#94a3b8;">(${produto.unidade})</small></div>`;
+                row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small><br><small>(${produto.unidade})</small></div>`;
                 for (let i = 0; i < diasSemana.length; i++) {
                     const cell = row.insertCell(i + 1);
                     cell.innerHTML = `<input type="text" data-linha="serac" data-produto="${produto.codigo}" data-dia="${i}" value="${valores[i] || ''}" placeholder="0">`;
@@ -575,9 +513,6 @@
             atualizarTodosTotais();
         }
 
-        // ============================================
-        // EVENTOS E CÁLCULOS
-        // ============================================
         function adicionarEventos() {
             document.querySelectorAll('#corpoTrepko input, #corpoSerac input').forEach(input => {
                 input.removeEventListener('input', handleInput);
@@ -594,19 +529,15 @@
             if (linha === 'trepko') {
                 if (!dadosAtuaisTrepko[produto]) dadosAtuaisTrepko[produto] = ["", "", "", "", "", "", ""];
                 dadosAtuaisTrepko[produto][dia] = valor;
-                if (valor && valor !== '') {
-                    e.target.classList.add('input-preenchido');
-                } else {
-                    e.target.classList.remove('input-preenchido');
-                }
             } else {
                 if (!dadosAtuaisSerac[produto]) dadosAtuaisSerac[produto] = ["", "", "", "", "", "", ""];
                 dadosAtuaisSerac[produto][dia] = valor;
-                if (valor && valor !== '') {
-                    e.target.classList.add('input-preenchido');
-                } else {
-                    e.target.classList.remove('input-preenchido');
-                }
+            }
+            
+            if (valor && valor !== '') {
+                e.target.classList.add('input-preenchido');
+            } else {
+                e.target.classList.remove('input-preenchido');
             }
             atualizarTodosTotais();
         }
@@ -619,9 +550,7 @@
         function calcularTotalDia(tabelaId, diaIndex) {
             let total = 0;
             const inputs = document.querySelectorAll(`#${tabelaId} input[data-dia="${diaIndex}"]`);
-            inputs.forEach(input => {
-                total += extrairMeta(input.value);
-            });
+            inputs.forEach(input => { total += extrairMeta(input.value); });
             return total;
         }
 
@@ -653,7 +582,7 @@
         }
 
         function limparTudo() {
-            if (confirm('⚠️ Tem certeza? Todos os dados da programação atual serão perdidos.')) {
+            if (confirm('⚠️ Tem certeza?')) {
                 dadosAtuaisTrepko = JSON.parse(JSON.stringify(valoresReaisTrepko));
                 dadosAtuaisSerac = JSON.parse(JSON.stringify(valoresReaisSerac));
                 renderizarTabelas();
@@ -665,18 +594,12 @@
             document.body.classList.toggle('dark-mode');
         }
 
-        // ============================================
-        // EVENTOS DOS BOTÕES
-        // ============================================
         document.getElementById('btnSalvar').addEventListener('click', salvarProgramacaoBackend);
         document.getElementById('btnLimpar').addEventListener('click', limparTudo);
         document.getElementById('btnCarregarSemana').addEventListener('click', () => {
             const data = document.getElementById('semanaData').value;
-            if (data) {
-                carregarProgramacaoBackend(data);
-            } else {
-                mostrarMensagem('❌ Selecione uma data para carregar', 'danger');
-            }
+            if (data) carregarProgramacaoBackend(data);
+            else mostrarMensagem('❌ Selecione uma data', 'danger');
         });
         document.getElementById('btnNovaSemana').addEventListener('click', () => {
             const data = document.getElementById('semanaData').value;
@@ -687,20 +610,16 @@
                 dadosAtuaisTrepko = getDadosVaziosTrepko();
                 dadosAtuaisSerac = getDadosVaziosSerac();
                 renderizarTabelas();
-                mostrarMensagem(`🆕 Nova programação para semana ${semanaAtual} criada!`, 'info');
+                mostrarMensagem(`🆕 Nova semana ${semanaAtual} criada!`, 'info');
             } else {
-                mostrarMensagem('❌ Selecione uma data para criar nova semana', 'danger');
+                mostrarMensagem('❌ Selecione uma data', 'danger');
             }
         });
 
-        // ============================================
-        // INICIALIZAÇÃO
-        // ============================================
         const hoje = new Date();
         const segunda = getMonday(hoje);
         semanaAtual = segunda.toISOString().split('T')[0];
         document.getElementById('semanaData').value = semanaAtual;
-        
         carregarProgramacaoBackend(semanaAtual);
     </script>
 </body>
