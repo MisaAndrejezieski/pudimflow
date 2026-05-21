@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>PudimFlow - Preparação do Produto</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ============================================
+           ESTILOS ESPECÍFICOS DA PREPARAÇÃO
+           ============================================ */
+        
+        .status-tanque {
+            background: var(--bg-secondary, #1e293b);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+        }
+        
+        .status-cheio {
+            border-left-color: #2ecc71;
+        }
+        
+        .status-vazio {
+            border-left-color: #e74c3c;
+        }
+        
+        .status-cip {
+            border-left-color: #f39c12;
+        }
+        
+        .progresso-cip {
+            background: var(--bg-tertiary, #334155);
+            border-radius: 8px;
+            height: 8px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+        
+        .progresso-cip-bar {
+            background: #f39c12;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .etapa-cip {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border, #334155);
+        }
+        
+        .etapa-cip .status {
+            width: 30px;
+            font-size: 1.2rem;
+        }
+        
+        .etapa-cip .nome {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+        
+        .etapa-cip .tempo {
+            font-size: 0.75rem;
+            color: var(--text-tertiary, #94a3b8);
+        }
+        
+        .contador-bateladas {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border, #334155);
+        }
+        
+        .bateladas-numero {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+        
+        .alerta-cip {
+            background: #f39c12;
+            color: #1e293b;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .grid-2-colunas {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        @media (max-width: 640px) {
+            .grid-2-colunas {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+        
+        .formula-info {
+            background: var(--bg-tertiary, #334155);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .badge-sucesso {
+            background: #2ecc71;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+        
+        .badge-pendente {
+            background: #f39c12;
+            color: #1e293b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+        
+        .badge-critico {
+            background: #e74c3c;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+        
+        /* Tabs internas da preparação */
+        .sub-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .sub-tab-btn {
+            background: transparent;
+            color: var(--text-secondary, #94a3b8);
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+        
+        .sub-tab-btn.active {
+            background: var(--primary, #1e6f9f);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🍮 PudimFlow - Preparação do Produto</h1>
+        <div class="turno">Turno da Noite - Misa Andrejezieski</div>
+    </div>
+
+    <nav class="nav">
+        <a href="index.html">📊 Dashboard</a>
+        <a href="sim.html">💡 SIM</a>
+        <a href="troca-turno.html">🔄 Troca de Turno</a>
+        <a href="programacao.html">📅 Programação</a>
+        <a href="preparacao.html" class="active">🍯 Preparação</a>
+    </nav>
+
+    <div class="container">
+        <!-- Status dos Tanques e Máquina -->
+        <div class="status-tanque status-cheio" id="statusTanque">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <strong>🛢️ Tanque TQ01</strong>
+                    <span id="statusTanqueTexto" style="margin-left: 8px;">🟢 CHEIO</span>
+                </div>
+                <div id="cipPendenteInfo" style="display: none;">
+                    <span class="badge-critico">⚠️ CIP obrigatório antes da próxima preparação</span>
+                </div>
+            </div>
+            <div class="contador-bateladas">
+                <div>
+                    <span style="font-size: 0.7rem; color: var(--text-tertiary, #94a3b8);">Bateladas atuais</span>
+                    <div class="bateladas-numero" id="bateladasAtuais">0</div>
+                </div>
+                <div>
+                    <span style="font-size: 0.7rem; color: var(--text-tertiary, #94a3b8);">Limite para CIP</span>
+                    <div class="bateladas-numero" style="font-size: 1.5rem;">4</div>
+                </div>
+                <div style="flex: 1;">
+                    <div class="progresso-cip">
+                        <div class="progresso-cip-bar" id="progressoCIP" style="width: 0%;"></div>
+                    </div>
+                    <span id="alertaCIP" style="font-size: 0.75rem;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sub-abas: Preparação / CIP -->
+        <div class="sub-tabs">
+            <button class="sub-tab-btn active" data-subtab="preparacao">🥛 Preparação da Massa</button>
+            <button class="sub-tab-btn" data-subtab="cip">🧼 CIP - Limpeza</button>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SUB-ABA: PREPARAÇÃO DA MASSA -->
+        <!-- ============================================ -->
+        <div id="subtab-preparacao" class="subtab-content">
+            <div class="card">
+                <h2>🥛 Preparação da Massa</h2>
+                
+                <div class="grid-2-colunas">
+                    <div class="form-group">
+                        <label>Produto *</label>
+                        <select id="produtoSelecionado">
+                            <option value="">Selecione o produto</option>
+                            <option value="Pudim Leite Batavo">🥛 Pudim Leite Batavo (Branco)</option>
+                            <option value="Pudim Leite Itambé">🥛 Pudim Leite Itambé (Branco)</option>
+                            <option value="Pudim Leite Chandelle">🥛 Pudim Leite Chandelle (Branco)</option>
+                            <option value="Brigadeiro Batavo">🍫 Brigadeiro Batavo</option>
+                            <option value="Brigadeiro Itambé">🍫 Brigadeiro Itambé</option>
+                            <option value="Brigadeiro Chandelle">🍫 Brigadeiro Chandelle</option>
+                            <option value="Beijinho Chandelle">🥥 Beijinho Chandelle</option>
+                            <option value="Manjar Coco Batavo">🥥 Manjar Coco Batavo</option>
+                            <option value="Romeu e Julieta Itambé">🧀 Romeu e Julieta Itambé</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>📦 Lote de Produção *</label>
+                        <input type="text" id="loteProducao" placeholder="Ex: 25062024-001">
+                    </div>
+                </div>
+
+                <!-- Informações da Formulação (carregadas dinamicamente) -->
+                <div id="formulaInfo" class="formula-info" style="display: none;">
+                    <strong>📋 Formulação para 3.000L:</strong>
+                    <div id="formulaDetalhes"></div>
+                </div>
+
+                <div class="grid-2-colunas">
+                    <div class="form-group">
+                        <label>🥛 Leite (litros) *</label>
+                        <input type="number" id="leiteQt" step="1" placeholder="2150">
+                    </div>
+                    <div class="form-group">
+                        <label>📦 Lote do Leite *</label>
+                        <input type="text" id="leiteLote" placeholder="Número do lote">
+                    </div>
+                </div>
+
+                <div class="grid-2-colunas">
+                    <div class="form-group">
+                        <label>🧈 Nata / Gordura (kg) *</label>
+                        <input type="number" id="nataQt" step="1" placeholder="850">
+                    </div>
+                    <div class="form-group">
+                        <label>📦 Lote da Nata *</label>
+                        <input type="text" id="nataLote" placeholder="Número do lote">
+                    </div>
+                </div>
+
+                <div class="grid-2-colunas">
+                    <div class="form-group">
+                        <label>🥫 Leite Condensado (kg) *</label>
+                        <input type="number" id="leiteCondQt" step="1" placeholder="850">
+                    </div>
+                    <div class="form-group">
+                        <label>📦 Lote do Leite Condensado *</label>
+                        <input type="text" id="leiteCondLote" placeholder="Número do lote">
+                    </div>
+                </div>
+
+                <div class="grid-2-colunas">
+                    <div class="form-group">
+                        <label>🥚 Ovos (kg) *</label>
+                        <input type="number" id="ovosQt" step="1" placeholder="70">
+                    </div>
+                    <div class="form-group">
+                        <label>📦 Lote dos Ovos *</label>
+                        <input type="text" id="ovosLote" placeholder="Número do lote">
+                    </div>
+                </div>
+
+                <!-- Ingredientes específicos (aparecem conforme produto) -->
+                <div id="ingredientesEspecificos"></div>
+
+                <div class="grid-2-colunas">
+                    <div class="form-group">
+                        <label>🌡️ Aquecimento (90°C)</label>
+                        <select id="aquecimentoStatus">
+                            <option value="pendente">⏳ Pendente</option>
+                            <option value="concluido">✅ Concluído</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>❄️ Resfriamento (10°C)</label>
+                        <select id="resfriamentoStatus">
+                            <option value="pendente">⏳ Pendente</option>
+                            <option value="concluido">✅ Concluído</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>⏱️ Horários (opcional)</label>
+                    <div class="grid-2-colunas">
+                        <input type="time" id="horaInicio" placeholder="Início">
+                        <input type="time" id="horaFim" placeholder="Fim">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>📝 Observações</label>
+                    <textarea id="preparacaoObs" rows="2" placeholder="Problemas, ajustes, etc."></textarea>
+                </div>
+
+                <button id="btnFinalizarPreparacao" style="background: #2ecc71;">✅ FINALIZAR PREPARAÇÃO</button>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SUB-ABA: CIP - LIMPEZA -->
+        <!-- ============================================ -->
+        <div id="subtab-cip" class="subtab-content" style="display: none;">
+            <div class="card">
+                <h2>🧼 CIP - Limpeza do Tanque</h2>
+                <p style="font-size: 0.8rem; color: var(--text-tertiary, #94a3b8); margin-bottom: 16px;">
+                    O tanque é CIPado automaticamente após esvaziar. Confirme cada etapa para registrar a limpeza.
+                </p>
+
+                <div id="etapasCIP">
+                    <div class="etapa-cip" data-etapa="1">
+                        <div class="status" id="etapa1_status">⏳</div>
+                        <div class="nome">1º Enxague (Água)</div>
+                        <div class="tempo">Duração: 20 min</div>
+                        <button class="btn-confirmar" data-etapa="1" style="padding: 4px 12px; font-size: 0.7rem;">Confirmar</button>
+                    </div>
+                    <div class="etapa-cip" data-etapa="2">
+                        <div class="status" id="etapa2_status">⏳</div>
+                        <div class="nome">Circulação (Produto Químico)</div>
+                        <div class="tempo">Duração: 40 min</div>
+                        <button class="btn-confirmar" data-etapa="2" style="padding: 4px 12px; font-size: 0.7rem;">Confirmar</button>
+                    </div>
+                    <div class="etapa-cip" data-etapa="3">
+                        <div class="status" id="etapa3_status">⏳</div>
+                        <div class="nome">Enxague de Soda</div>
+                        <div class="tempo">Duração: 20 min</div>
+                        <button class="btn-confirmar" data-etapa="3" style="padding: 4px 12px; font-size: 0.7rem;">Confirmar</button>
+                    </div>
+                    <div class="etapa-cip" data-etapa="4">
+                        <div class="status" id="etapa4_status">⏳</div>
+                        <div class="nome">Circulação de Ácido</div>
+                        <div class="tempo">Duração: 30 min</div>
+                        <button class="btn-confirmar" data-etapa="4" style="padding: 4px 12px; font-size: 0.7rem;">Confirmar</button>
+                    </div>
+                    <div class="etapa-cip" data-etapa="5">
+                        <div class="status" id="etapa5_status">⏳</div>
+                        <div class="nome">Último Enxague (Água)</div>
+                        <div class="tempo">Duração: 20 min</div>
+                        <button class="btn-confirmar" data-etapa="5" style="padding: 4px 12px; font-size: 0.7rem;">Confirmar</button>
+                    </div>
+                </div>
+
+                <div id="cipStatus" style="margin-top: 16px; padding: 12px; border-radius: 12px; text-align: center; background: var(--bg-tertiary, #334155);">
+                    ⏳ CIP pendente
+                </div>
+
+                <button id="btnFinalizarCIP" style="margin-top: 16px; background: #1e6f9f;" disabled>🔘 FINALIZAR CIP</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>PudimFlow - Sistema de Gestão de Produção | Turno da Noite</p>
+    </div>
+
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">🌓</div>
+
+    <script>
+        // ============================================
+        // CHAVES DE ARMAZENAMENTO
+        // ============================================
+        const PREPARACAO_KEY = 'pudimflow_preparacao';
+        const CIP_KEY = 'pudimflow_cip';
+        const BATELADAS_KEY = 'pudimflow_bateladas';
+
+        // ============================================
+        // FORMULAÇÕES APROXIMADAS PARA 3000L
+        // ============================================
+        const formulacoes = {
+            'Pudim Leite Batavo': {
+                tipo: 'branco',
+                leite: 2150, nata: 850, leiteCond: 850, ovos: 70,
+                especificos: []
+            },
+            'Pudim Leite Itambé': {
+                tipo: 'branco',
+                leite: 2150, nata: 850, leiteCond: 850, ovos: 70,
+                especificos: []
+            },
+            'Pudim Leite Chandelle': {
+                tipo: 'branco',
+                leite: 2150, nata: 850, leiteCond: 850, ovos: 70,
+                especificos: []
+            },
+            'Brigadeiro Batavo': {
+                tipo: 'especial',
+                leite: 2000, nata: 700, leiteCond: 900, ovos: 75,
+                especificos: [
+                    { nome: 'Chocolate em Pó', quantidade: 200, unidade: 'kg', loteObrigatorio: true },
+                    { nome: 'Açúcar', quantidade: 100, unidade: 'kg', loteObrigatorio: false }
+                ]
+            },
+            'Brigadeiro Itambé': {
+                tipo: 'especial',
+                leite: 2000, nata: 700, leiteCond: 900, ovos: 75,
+                especificos: [
+                    { nome: 'Chocolate em Pó', quantidade: 200, unidade: 'kg', loteObrigatorio: true },
+                    { nome: 'Açúcar', quantidade: 100, unidade: 'kg', loteObrigatorio: false }
+                ]
+            },
+            'Brigadeiro Chandelle': {
+                tipo: 'especial',
+                leite: 2000, nata: 700, leiteCond: 900, ovos: 75,
+                especificos: [
+                    { nome: 'Chocolate em Pó', quantidade: 200, unidade: 'kg', loteObrigatorio: true },
+                    { nome: 'Açúcar', quantidade: 100, unidade: 'kg', loteObrigatorio: false }
+                ]
+            },
+            'Beijinho Chandelle': {
+                tipo: 'especial',
+                leite: 1800, nata: 600, leiteCond: 900, ovos: 65,
+                especificos: [
+                    { nome: 'Leite em Pó', quantidade: 150, unidade: 'kg', loteObrigatorio: true },
+                    { nome: 'Açúcar', quantidade: 60, unidade: 'kg', loteObrigatorio: false },
+                    { nome: 'Coco Ralado', quantidade: 50, unidade: 'kg', loteObrigatorio: false }
+                ]
+            },
+            'Manjar Coco Batavo': {
+                tipo: 'especial',
+                leite: 1500, nata: 300, leiteCond: 800, ovos: 60,
+                especificos: [
+                    { nome: 'Leite de Coco', quantidade: 1200, unidade: 'L', loteObrigatorio: true }
+                ]
+            },
+            'Romeu e Julieta Itambé': {
+                tipo: 'especial',
+                leite: 2100, nata: 800, leiteCond: 850, ovos: 70,
+                especificos: [
+                    { nome: 'Goiabada', quantidade: 300, unidade: 'kg', loteObrigatorio: true },
+                    { nome: 'Queijo', quantidade: 200, unidade: 'kg', loteObrigatorio: true }
+                ]
+            }
+        };
+
+        // ============================================
+        // FUNÇÕES DE UTILIDADE
+        // ============================================
+        function showMessage(message, type = 'success') {
+            const msgDiv = document.getElementById('globalMessage') || (() => {
+                const div = document.createElement('div');
+                div.id = 'globalMessage';
+                div.style.position = 'fixed';
+                div.style.top = '80px';
+                div.style.right = '20px';
+                div.style.zIndex = '9999';
+                div.style.padding = '12px 20px';
+                div.style.borderRadius = '12px';
+                div.style.fontSize = '0.85rem';
+                div.style.fontWeight = '500';
+                div.style.display = 'none';
+                div.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+                document.body.appendChild(div);
+                return div;
+            })();
+            msgDiv.className = `alert-${type}`;
+            msgDiv.innerHTML = message;
+            msgDiv.style.display = 'block';
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // ============================================
+        // CONTROLE DE BATELADAS E CIP DA MÁQUINA
+        // ============================================
+        function carregarBateladas() {
+            const data = localStorage.getItem(BATELADAS_KEY);
+            if (data) {
+                return JSON.parse(data);
+            }
+            return { bateladas: 0, ultimoCIP: null };
+        }
+
+        function salvarBateladas(bateladas) {
+            localStorage.setItem(BATELADAS_KEY, JSON.stringify(bateladas));
+        }
+
+        function incrementarBatelada() {
+            const bateladas = carregarBateladas();
+            bateladas.bateladas++;
+            if (bateladas.bateladas >= 4) {
+                bateladas.precisaCIP = true;
+                document.getElementById('alertaCIP').innerHTML = '<span class="badge-critico">⚠️ MÁQUINA PRECISA DE CIP! Atingiu 4 bateladas.</span>';
+            } else {
+                bateladas.precisaCIP = false;
+                document.getElementById('alertaCIP').innerHTML = '';
+            }
+            salvarBateladas(bateladas);
+            atualizarDisplayBateladas();
+        }
+
+        function resetarCIPMaquina() {
+            const bateladas = carregarBateladas();
+            bateladas.bateladas = 0;
+            bateladas.precisaCIP = false;
+            bateladas.ultimoCIP = new Date().toISOString();
+            salvarBateladas(bateladas);
+            atualizarDisplayBateladas();
+            showMessage('✅ CIP da máquina realizado! Bateladas zeradas.', 'success');
+        }
+
+        function atualizarDisplayBateladas() {
+            const bateladas = carregarBateladas();
+            const porcentagem = (bateladas.bateladas / 4) * 100;
+            document.getElementById('bateladasAtuais').textContent = bateladas.bateladas;
+            document.getElementById('progressoCIP').style.width = `${porcentagem}%`;
+            
+            if (bateladas.bateladas >= 4) {
+                document.getElementById('alertaCIP').innerHTML = '<span class="badge-critico">⚠️ MÁQUINA PRECISA DE CIP! Atingiu 4 bateladas.</span>';
+            } else {
+                document.getElementById('alertaCIP').innerHTML = `<span style="color: #94a3b8;">Faltam ${4 - bateladas.bateladas} bateladas para CIP da máquina</span>`;
+            }
+        }
+
+        // ============================================
+        // FORMULÁRIO DE PREPARAÇÃO
+        // ============================================
+        function carregarPreparacao() {
+            const data = localStorage.getItem(PREPARACAO_KEY);
+            if (data) {
+                const prep = JSON.parse(data);
+                document.getElementById('produtoSelecionado').value = prep.produto || '';
+                document.getElementById('loteProducao').value = prep.loteProducao || '';
+                document.getElementById('leiteQt').value = prep.leiteQt || '';
+                document.getElementById('leiteLote').value = prep.leiteLote || '';
+                document.getElementById('nataQt').value = prep.nataQt || '';
+                document.getElementById('nataLote').value = prep.nataLote || '';
+                document.getElementById('leiteCondQt').value = prep.leiteCondQt || '';
+                document.getElementById('leiteCondLote').value = prep.leiteCondLote || '';
+                document.getElementById('ovosQt').value = prep.ovosQt || '';
+                document.getElementById('ovosLote').value = prep.ovosLote || '';
+                document.getElementById('aquecimentoStatus').value = prep.aquecimentoStatus || 'pendente';
+                document.getElementById('resfriamentoStatus').value = prep.resfriamentoStatus || 'pendente';
+                document.getElementById('horaInicio').value = prep.horaInicio || '';
+                document.getElementById('horaFim').value = prep.horaFim || '';
+                document.getElementById('preparacaoObs').value = prep.obs || '';
+                
+                if (prep.produto) {
+                    carregarFormulação(prep.produto);
+                    carregarIngredientesEspecificos(prep.produto, prep.especificos || {});
+                }
+            }
+        }
+
+        function carregarFormulação(produto) {
+            const formula = formulacoes[produto];
+            if (formula) {
+                document.getElementById('leiteQt').value = formula.leite;
+                document.getElementById('nataQt').value = formula.nata;
+                document.getElementById('leiteCondQt').value = formula.leiteCond;
+                document.getElementById('ovosQt').value = formula.ovos;
+                
+                const formulaDiv = document.getElementById('formulaInfo');
+                const detalhesDiv = document.getElementById('formulaDetalhes');
+                formulaDiv.style.display = 'block';
+                detalhesDiv.innerHTML = `
+                    Leite: ${formula.leite}L | Nata: ${formula.nata}kg | Leite Cond: ${formula.leiteCond}kg | Ovos: ${formula.ovos}kg
+                    ${formula.especificos.length > 0 ? `<br><strong>+ Específicos:</strong> ${formula.especificos.map(e => `${e.nome}: ${e.quantidade}${e.unidade}`).join(' | ')}` : ''}
+                `;
+            }
+        }
+
+        function carregarIngredientesEspecificos(produto, valoresSalvos = {}) {
+            const formula = formulacoes[produto];
+            const container = document.getElementById('ingredientesEspecificos');
+            if (!formula || formula.especificos.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            container.innerHTML = '<h3 style="font-size: 0.9rem; margin: 12px 0;">🍯 Ingredientes Específicos</h3>';
+            formula.especificos.forEach(esp => {
+                const div = document.createElement('div');
+                div.className = 'grid-2-colunas';
+                div.innerHTML = `
+                    <div class="form-group">
+                        <label>${esp.nome} (${esp.unidade}) *</label>
+                        <input type="number" id="esp_${esp.nome.replace(/ /g, '_')}_qt" placeholder="${esp.quantidade}" value="${valoresSalvos[esp.nome]?.qt || esp.quantidade}">
+                    </div>
+                    ${esp.loteObrigatorio ? `
+                    <div class="form-group">
+                        <label>📦 Lote do ${esp.nome} *</label>
+                        <input type="text" id="esp_${esp.nome.replace(/ /g, '_')}_lote" placeholder="Número do lote" value="${valoresSalvos[esp.nome]?.lote || ''}">
+                    </div>
+                    ` : ''}
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function salvarPreparacao() {
+            const produto = document.getElementById('produtoSelecionado').value;
+            if (!produto) {
+                showMessage('❌ Selecione um produto', 'danger');
+                return;
+            }
+            
+            const especificos = {};
+            const formula = formulacoes[produto];
+            if (formula && formula.especificos.length > 0) {
+                formula.especificos.forEach(esp => {
+                    const qt = document.getElementById(`esp_${esp.nome.replace(/ /g, '_')}_qt`)?.value;
+                    const lote = document.getElementById(`esp_${esp.nome.replace(/ /g, '_')}_lote`)?.value;
+                    especificos[esp.nome] = { qt: qt || esp.quantidade, lote: lote || '' };
+                });
+            }
+            
+            const preparacao = {
+                produto: produto,
+                loteProducao: document.getElementById('loteProducao').value,
+                leiteQt: document.getElementById('leiteQt').value,
+                leiteLote: document.getElementById('leiteLote').value,
+                nataQt: document.getElementById('nataQt').value,
+                nataLote: document.getElementById('nataLote').value,
+                leiteCondQt: document.getElementById('leiteCondQt').value,
+                leiteCondLote: document.getElementById('leiteCondLote').value,
+                ovosQt: document.getElementById('ovosQt').value,
+                ovosLote: document.getElementById('ovosLote').value,
+                especificos: especificos,
+                aquecimentoStatus: document.getElementById('aquecimentoStatus').value,
+                resfriamentoStatus: document.getElementById('resfriamentoStatus').value,
+                horaInicio: document.getElementById('horaInicio').value,
+                horaFim: document.getElementById('horaFim').value,
+                obs: document.getElementById('preparacaoObs').value,
+                data: new Date().toISOString()
+            };
+            
+            localStorage.setItem(PREPARACAO_KEY, JSON.stringify(preparacao));
+            incrementarBatelada();
+            showMessage('✅ Preparação salva! Batelada contabilizada.', 'success');
+        }
+
+        // ============================================
+        // CIP DO TANQUE
+        // ============================================
+        let etapasCIP = [false, false, false, false, false];
+        
+        function carregarCIP() {
+            const data = localStorage.getItem(CIP_KEY);
+            if (data) {
+                const cip = JSON.parse(data);
+                etapasCIP = cip.etapas || [false, false, false, false, false];
+                for (let i = 0; i < etapasCIP.length; i++) {
+                    if (etapasCIP[i]) {
+                        document.getElementById(`etapa${i+1}_status`).innerHTML = '✅';
+                        document.querySelector(`.btn-confirmar[data-etapa="${i+1}"]`).disabled = true;
+                    }
+                }
+                atualizarStatusCIP();
+            }
+        }
+        
+        function confirmarEtapa(etapa) {
+            if (etapasCIP[etapa-1]) return;
+            etapasCIP[etapa-1] = true;
+            document.getElementById(`etapa${etapa}_status`).innerHTML = '✅';
+            document.querySelector(`.btn-confirmar[data-etapa="${etapa}"]`).disabled = true;
+            atualizarStatusCIP();
+            salvarCIP();
+        }
+        
+        function atualizarStatusCIP() {
+            const todasConfirmadas = etapasCIP.every(e => e === true);
+            const btn = document.getElementById('btnFinalizarCIP');
+            const statusDiv = document.getElementById('cipStatus');
+            
+            if (todasConfirmadas) {
+                btn.disabled = false;
+                statusDiv.innerHTML = '✅ CIP concluído! Clique em "FINALIZAR CIP" para registrar.';
+                statusDiv.style.background = '#2ecc71';
+                statusDiv.style.color = 'white';
+            } else {
+                btn.disabled = true;
+                const concluidas = etapasCIP.filter(e => e === true).length;
+                statusDiv.innerHTML = `⏳ CIP em andamento: ${concluidas}/5 etapas concluídas`;
+                statusDiv.style.background = 'var(--bg-tertiary, #334155)';
+                statusDiv.style.color = 'var(--text-primary, #e2e8f0)';
+            }
+        }
+        
+        function finalizarCIP() {
+            const todasConfirmadas = etapasCIP.every(e => e === true);
+            if (!todasConfirmadas) {
+                showMessage('❌ Confirme todas as etapas do CIP primeiro', 'danger');
+                return;
+            }
+            
+            const cipRegistro = {
+                etapas: etapasCIP,
+                data: new Date().toISOString(),
+                operador: 'Misa'
+            };
+            localStorage.setItem(CIP_KEY, JSON.stringify(cipRegistro));
+            
+            // Resetar etapas para próxima
+            etapasCIP = [false, false, false, false, false];
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`etapa${i}_status`).innerHTML = '⏳';
+                document.querySelector(`.btn-confirmar[data-etapa="${i}"]`).disabled = false;
+            }
+            
+            atualizarStatusCIP();
+            showMessage('✅ CIP do tanque finalizado! Tanque limpo e pronto para nova preparação.', 'success');
+        }
+        
+        function salvarCIP() {
+            const cipRegistro = {
+                etapas: etapasCIP,
+                data: new Date().toISOString()
+            };
+            localStorage.setItem(CIP_KEY, JSON.stringify(cipRegistro));
+        }
+
+        // ============================================
+        // EVENTOS
+        // ============================================
+        document.getElementById('produtoSelecionado').addEventListener('change', (e) => {
+            if (e.target.value) {
+                carregarFormulação(e.target.value);
+                carregarIngredientesEspecificos(e.target.value);
+            }
+        });
+        
+        document.getElementById('btnFinalizarPreparacao').addEventListener('click', salvarPreparacao);
+        document.getElementById('btnFinalizarCIP').addEventListener('click', finalizarCIP);
+        
+        document.querySelectorAll('.btn-confirmar').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const etapa = parseInt(e.target.dataset.etapa);
+                confirmarEtapa(etapa);
+            });
+        });
+
+        // Sub-abas
+        document.querySelectorAll('.sub-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const subtab = btn.dataset.subtab;
+                document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.subtab-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+                document.getElementById(`subtab-${subtab}`).style.display = 'block';
+            });
+        });
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
+        carregarPreparacao();
+        carregarCIP();
+        atualizarDisplayBateladas();
+    </script>
+</body>
+</html>
