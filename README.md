@@ -163,3 +163,43 @@ Produtos	Brancos (sem açúcar), Brigadeirão, Manjar, Morango, Beijinho
 GA (Grupo Autônomo)	Próxima reunião com lembrete no Dashboard
 Armazenamento histórico	4 semanas em JSON
 
+🔜 Melhorias Futuras (Roadmap)
+Autenticação de usuários (JWT)
+
+Múltiplos turnos (manhã/tarde/noite)
+
+Dashboard do gestor (visão consolidada)
+
+Envio automático de relatórios por e-mail
+
+Gráficos e estatísticas avançadas
+
+Aplicativo mobile (PWA)
+
+Integração com leitores de código de barras
+
+Exportação de relatórios em PDF
+
+👤 Autor
+Misa Andrejezieski
+
+GitHub: @MisaAndrejezieski
+
+Projeto: pudimflow
+
+📄 Licença
+Este projeto é de uso pessoal e corporativo para a gestão da produção de pudins.
+
+📞 Suporte
+Em caso de dúvidas ou problemas:
+
+Verificar conectividade com o banco de dados
+
+Verificar logs no Render
+
+Entrar em contato com o desenvolvedor
+
+🍮
+PudimFlow - Transformando café em código, e código em produtividade.
+
+"Good Thinking, Good Products"
