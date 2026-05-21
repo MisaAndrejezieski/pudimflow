@@ -17,22 +17,20 @@
             font-weight: bold !important;
         }
         
+        /* Container com rolagem horizontal suave */
         .planilha-container {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            margin: 0 -8px;
+            padding: 0 8px;
         }
         
+        /* Tabela responsiva */
         .planilha-programacao {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.7rem;
-            min-width: 800px;
-        }
-        
-        @media (min-width: 1024px) {
-            .planilha-programacao {
-                min-width: 100%;
-            }
+            min-width: 650px;
         }
         
         .planilha-programacao th,
@@ -51,7 +49,7 @@
         }
         
         .planilha-programacao input {
-            width: 85px;
+            width: 65px;
             padding: 6px 4px;
             text-align: center;
             background: var(--bg-primary, #0f172a);
@@ -62,15 +60,37 @@
             font-family: 'Inter', sans-serif;
         }
         
+        /* Celular */
         @media (max-width: 640px) {
+            .planilha-programacao {
+                min-width: 550px;
+                font-size: 0.6rem;
+            }
             .planilha-programacao input {
-                width: 65px;
+                width: 50px;
                 padding: 4px 2px;
-                font-size: 0.65rem;
+                font-size: 0.6rem;
             }
             .planilha-programacao th,
             .planilha-programacao td {
                 padding: 6px 2px;
+            }
+            .produto-cell {
+                min-width: 120px;
+                font-size: 0.6rem;
+            }
+            .planilha-programacao th {
+                font-size: 0.6rem;
+            }
+        }
+        
+        /* Tablet */
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .planilha-programacao {
+                min-width: 600px;
+            }
+            .planilha-programacao input {
+                width: 55px;
             }
         }
         
@@ -79,7 +99,7 @@
             font-weight: bold;
             background: var(--bg-secondary, #1e293b);
             font-size: 0.65rem;
-            min-width: 150px;
+            min-width: 140px;
         }
         
         .total-row {
@@ -104,6 +124,7 @@
             color: white;
         }
         
+        /* Seletor de data responsivo */
         .data-semana {
             background: var(--bg-secondary, #1e293b);
             padding: 16px;
@@ -137,6 +158,21 @@
             }
         }
         
+        /* Botões responsivos */
+        .botoes-acao {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        @media (max-width: 640px) {
+            .botoes-acao button {
+                flex: 1;
+                min-width: 120px;
+            }
+        }
+        
         .alert-success { background: #22c55e; color: white; padding: 12px; border-radius: 8px; }
         .alert-info { background: #3b82f6; color: white; padding: 12px; border-radius: 8px; }
         .alert-warning { background: #f59e0b; color: white; padding: 12px; border-radius: 8px; }
@@ -163,82 +199,86 @@
         <a href="preparacao.html">🍯 Preparação</a>
     </nav>
 
-    <div class="container planilha-container">
+    <div class="container">
         <!-- SELETOR DE DATA DA SEMANA -->
         <div class="data-semana">
             <label>📅 Semana de (segunda-feira):</label>
             <input type="date" id="semanaData" value="">
-            <button id="btnCarregarSemana" style="background: #3b82f6;">📂 CARREGAR PROGRAMAÇÃO</button>
-            <button id="btnNovaSemana" style="background: #f59e0b;">🆕 CRIAR NOVA SEMANA</button>
+            <button id="btnCarregarSemana" style="background: #3b82f6;">📂 CARREGAR</button>
+            <button id="btnNovaSemana" style="background: #f59e0b;">🆕 NOVA SEMANA</button>
         </div>
 
         <!-- TABELA TREPKO -->
         <div class="card">
             <h2>📊 Programação Semanal - Linha TREPKO (Brascop)</h2>
-            <table class="planilha-programacao" id="tabelaTrepko">
-                <thead>
-                    <tr id="cabecalhoTrepko">
-                        <th>Produto / Código</th>
-                    </tr>
-                </thead>
-                <tbody id="corpoTrepko"></tbody>
-                <tfoot>
-                    <tr class="total-row">
-                        <td><strong>TOTAL LINHA TREPKO</strong></td>
-                        <td id="totalDiaTrepko_0">-</td>
-                        <td id="totalDiaTrepko_1">-</td>
-                        <td id="totalDiaTrepko_2">-</td>
-                        <td id="totalDiaTrepko_3">-</td>
-                        <td id="totalDiaTrepko_4">-</td>
-                        <td id="totalDiaTrepko_5">-</td>
-                        <td id="totalDiaTrepko_6">-</td>
-                        <td id="totalSemanaTrepko">0</td>
-                    </tr>
-                </tfoot>
-            </table>
+            <div class="planilha-container">
+                <table class="planilha-programacao" id="tabelaTrepko">
+                    <thead>
+                        <tr id="cabecalhoTrepko">
+                            <th>Produto / Código</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTrepko"></tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td><strong>TOTAL LINHA TREPKO</strong></td>
+                            <td id="totalDiaTrepko_0">-</td>
+                            <td id="totalDiaTrepko_1">-</td>
+                            <td id="totalDiaTrepko_2">-</td>
+                            <td id="totalDiaTrepko_3">-</td>
+                            <td id="totalDiaTrepko_4">-</td>
+                            <td id="totalDiaTrepko_5">-</td>
+                            <td id="totalDiaTrepko_6">-</td>
+                            <td id="totalSemanaTrepko">0</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
 
         <!-- TABELA SERAC -->
         <div class="card" style="margin-top: 1.5rem;">
             <h2>📊 Programação Semanal - Linha SERAC</h2>
-            <table class="planilha-programacao" id="tabelaSerac">
-                <thead>
-                    <tr id="cabecalhoSerac">
-                        <th>Produto / Código</th>
-                    </tr>
-                </thead>
-                <tbody id="corpoSerac"></tbody>
-                <tfoot>
-                    <tr class="total-row">
-                        <td><strong>TOTAL LINHA SERAC</strong></td>
-                        <td id="totalDiaSerac_0">-</td>
-                        <td id="totalDiaSerac_1">-</td>
-                        <td id="totalDiaSerac_2">-</td>
-                        <td id="totalDiaSerac_3">-</td>
-                        <td id="totalDiaSerac_4">-</td>
-                        <td id="totalDiaSerac_5">-</td>
-                        <td id="totalDiaSerac_6">-</td>
-                        <td id="totalSemanaSerac">0</td>
-                    </tr>
-                    <tr class="total-geral-row">
-                        <td><strong>TOTAL GERAL (TREPKO + SERAC)</strong></td>
-                        <td id="totalGeralDia_0">-</td>
-                        <td id="totalGeralDia_1">-</td>
-                        <td id="totalGeralDia_2">-</td>
-                        <td id="totalGeralDia_3">-</td>
-                        <td id="totalGeralDia_4">-</td>
-                        <td id="totalGeralDia_5">-</td>
-                        <td id="totalGeralDia_6">-</td>
-                        <td id="totalGeralSemana">0</td>
-                    </tr>
-                </tfoot>
-            </table>
+            <div class="planilha-container">
+                <table class="planilha-programacao" id="tabelaSerac">
+                    <thead>
+                        <tr id="cabecalhoSerac">
+                            <th>Produto / Código</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoSerac"></tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td><strong>TOTAL LINHA SERAC</strong></td>
+                            <td id="totalDiaSerac_0">-</td>
+                            <td id="totalDiaSerac_1">-</td>
+                            <td id="totalDiaSerac_2">-</td>
+                            <td id="totalDiaSerac_3">-</td>
+                            <td id="totalDiaSerac_4">-</td>
+                            <td id="totalDiaSerac_5">-</td>
+                            <td id="totalDiaSerac_6">-</td>
+                            <td id="totalSemanaSerac">0</td>
+                        </tr>
+                        <tr class="total-geral-row">
+                            <td><strong>TOTAL GERAL (TREPKO + SERAC)</strong></td>
+                            <td id="totalGeralDia_0">-</td>
+                            <td id="totalGeralDia_1">-</td>
+                            <td id="totalGeralDia_2">-</td>
+                            <td id="totalGeralDia_3">-</td>
+                            <td id="totalGeralDia_4">-</td>
+                            <td id="totalGeralDia_5">-</td>
+                            <td id="totalGeralDia_6">-</td>
+                            <td id="totalGeralSemana">0</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
 
         <!-- BOTÕES DE AÇÃO -->
         <div class="card" style="margin-top: 1.5rem;">
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-                <button id="btnSalvar" style="background: #2ecc71;">💾 SALVAR PROGRAMAÇÃO (BACKEND)</button>
+            <div class="botoes-acao">
+                <button id="btnSalvar" style="background: #2ecc71;">💾 SALVAR PROGRAMAÇÃO</button>
                 <button id="btnLimpar" style="background: #e74c3c;">🗑️ LIMPAR TUDO</button>
             </div>
             <div id="mensagem" style="margin-top: 1rem; display: none; text-align: center; padding: 12px; border-radius: 12px;"></div>
@@ -286,7 +326,7 @@
         ];
 
         // ============================================
-        // VALORES REAIS DA PROGRAMAÇÃO (BASEADO NA IMAGEM)
+        // VALORES REAIS DA PROGRAMAÇÃO
         // ============================================
         const valoresReaisTrepko = {
             "610100542": ["6000", "", "", "", "", "", ""],
@@ -335,6 +375,12 @@
             return datas;
         }
 
+        function formatarDataParaCabecalho(dataStr) {
+            if (!dataStr) return '';
+            const [ano, mes, dia] = dataStr.split('-');
+            return `${dia}/${mes}`;
+        }
+
         // ============================================
         // ATUALIZAR CABEÇALHO COM DATAS
         // ============================================
@@ -347,10 +393,10 @@
             let htmlTh = '<th>Produto / Código</th>';
             for (let i = 0; i < diasSemana.length; i++) {
                 const data = datasDias[i];
-                const dataFormatada = data ? new Date(data).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) : '';
-                htmlTh += `<th>${diasSemana[i]}<br><span style="font-size:0.6rem;">(${dataFormatada})</span><br><span style="font-size:0.6rem;">(kg/L)</span></th>`;
+                const dataFormatada = formatarDataParaCabecalho(data);
+                htmlTh += `<th>${diasSemana[i]}<br><span class="unidade-indicador">(${dataFormatada})<br>(kg/L)</span></th>`;
             }
-            htmlTh += '<th>Total Semana</th>';
+            htmlTh += '<th>Total<br>Semana</th>';
             
             cabecalhoTrepko.innerHTML = htmlTh;
             cabecalhoSerac.innerHTML = htmlTh;
@@ -372,7 +418,7 @@
         }
 
         // ============================================
-        // SALVAR PROGRAMAÇÃO NO BACKEND
+        // SALVAR PROGRAMAÇÃO
         // ============================================
         async function salvarProgramacaoBackend() {
             if (!semanaAtual) {
@@ -445,9 +491,6 @@
             }
         }
 
-        // ============================================
-        // SALVAR LOCALMENTE (FALLBACK)
-        // ============================================
         function salvarProgramacaoLocal() {
             const programacaoData = {
                 semana: semanaAtual,
@@ -463,7 +506,7 @@
         }
 
         // ============================================
-        // CARREGAR PROGRAMAÇÃO DO BACKEND
+        // CARREGAR PROGRAMAÇÃO
         // ============================================
         async function carregarProgramacaoBackend(data) {
             semanaAtual = data;
@@ -507,9 +550,6 @@
             }
         }
 
-        // ============================================
-        // CARREGAR LOCALMENTE
-        // ============================================
         function carregarProgramacaoLocal(data) {
             const todas = JSON.parse(localStorage.getItem('pudimflow_programacoes') || '{}');
             const programacao = todas[data];
@@ -525,7 +565,7 @@
                 dadosAtuaisTrepko = JSON.parse(JSON.stringify(valoresReaisTrepko));
                 dadosAtuaisSerac = JSON.parse(JSON.stringify(valoresReaisSerac));
                 renderizarTabelas();
-                mostrarMensagem(`📋 Semana ${data} - Programação padrão carregada. Edite e salve!`, 'warning');
+                mostrarMensagem(`📋 Semana ${data} - Programação padrão carregada.`, 'warning');
             }
         }
 
