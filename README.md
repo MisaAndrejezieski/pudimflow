@@ -95,3 +95,71 @@ bash
 node server.js
 # ou com nodemon para desenvolvimento
 npx nodemon server.js
+
+5. Abra o frontend
+Localmente: abra os arquivos HTML no navegador
+
+Ou use um servidor local: npx serve frontend
+
+☁️ Deploy em Produção
+Backend (Render)
+Acesse render.com
+
+Conecte com GitHub
+
+"New Web Service" → selecione o repositório
+
+Configure:
+
+Build Command: npm install
+
+Start Command: node server.js
+
+Adicione variável de ambiente DATABASE_URL (do Neon)
+
+Frontend (Vercel)
+Acesse vercel.com
+
+Conecte com GitHub
+
+Importe o repositório
+
+Configure:
+
+Build Command: (nenhum, é HTML puro)
+
+Output Directory: frontend
+
+Deploy automático a cada push
+
+📊 API Endpoints
+Método	Endpoint	Descrição
+POST	/api/producao	Salvar produção do turno
+GET	/api/producao/hoje	Buscar produção do dia
+GET	/api/producao/:data	Buscar produção por data
+GET	/api/historico	Listar últimos 30 dias
+POST	/api/programacao/semana	Salvar programação da semana
+GET	/api/programacao/semana/:data	Buscar programação da semana
+GET	/api/programacao/dia/:data	Buscar programação de um dia
+GET	/health	Verificar saúde do servidor
+🎨 Design
+Tema: Light/Dark Mode automático e manual
+
+Fontes: Inter (Google Fonts)
+
+Responsivo: Mobile-first, adaptado para celular, tablet e desktop
+
+Animações: Hover effects, loading spinner, transições suaves
+
+Arquitetura CSS: Híbrida (estilos globais + específicos por página)
+
+📝 Regras de Negócio
+Regra	Detalhe
+CIP do Tanque	A cada batelada (tanque vazio)
+CIP da Máquina Brascop	A cada 4 bateladas
+Produção diária	~9.000 litros (3 tanques de 3.000L)
+Calda	Contêineres de 1.000L (prontos)
+Produtos	Brancos (sem açúcar), Brigadeirão, Manjar, Morango, Beijinho
+GA (Grupo Autônomo)	Próxima reunião com lembrete no Dashboard
+Armazenamento histórico	4 semanas em JSON
+
