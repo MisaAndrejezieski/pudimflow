@@ -6,6 +6,11 @@
     <title>PudimFlow - Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
+        /* ============================================
+           ESTILOS ESPECÍFICOS DO DASHBOARD
+           ============================================ */
+        
+        /* Reset e base */
         * {
             margin: 0;
             padding: 0;
@@ -19,6 +24,7 @@
             line-height: 1.5;
         }
 
+        /* Header */
         .header {
             background: linear-gradient(135deg, #0f2b3d 0%, #1e6f9f 100%);
             color: white;
@@ -41,6 +47,7 @@
             margin-top: 6px;
         }
 
+        /* Navegação */
         .nav {
             background: #1e293b;
             padding: 12px 20px;
@@ -70,12 +77,14 @@
             color: white;
         }
 
+        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 24px;
         }
 
+        /* Seletor de data */
         .data-selector {
             background: #1e293b;
             border-radius: 20px;
@@ -95,6 +104,14 @@
             padding: 8px 16px;
             border-radius: 40px;
             font-size: 0.8rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .data-selector button:hover {
+            background: #1e6f9f;
+            transform: translateY(-1px);
         }
 
         .data-selector button.hoje {
@@ -112,6 +129,7 @@
             border-radius: 12px;
         }
 
+        /* Cards */
         .card {
             background: #1e293b;
             border-radius: 20px;
@@ -136,6 +154,7 @@
             padding-left: 12px;
         }
 
+        /* Cards do dashboard */
         .dashboard-cards {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -171,6 +190,7 @@
             font-weight: 500;
         }
 
+        /* Checklist */
         .checklist-item {
             display: flex;
             align-items: center;
@@ -186,6 +206,13 @@
             accent-color: #2ecc71;
         }
 
+        .checklist-item label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Formulários */
         .form-group {
             margin-bottom: 16px;
         }
@@ -207,13 +234,29 @@
             font-family: 'Inter', sans-serif;
             background: #0f172a;
             color: #e2e8f0;
+            transition: all 0.2s ease;
         }
 
-        input:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #1e6f9f;
+            box-shadow: 0 0 0 2px rgba(30,111,159,0.2);
         }
 
+        /* Inputs sem setas para number */
+        input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+
+        /* Botões */
         button {
             background: #1e6f9f;
             color: white;
@@ -228,18 +271,33 @@
 
         button:hover {
             background: #0f2b3d;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
         }
 
         .btn-success {
             background: #2ecc71;
         }
+        .btn-success:hover {
+            background: #27ae60;
+        }
         .btn-danger {
             background: #e74c3c;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
         }
         .btn-warning {
             background: #f39c12;
         }
+        .btn-warning:hover {
+            background: #e67e22;
+        }
 
+        /* Alerta meia-noite */
         .alerta-meianoite {
             background: linear-gradient(135deg, #7f1a1a, #991b1b);
             color: white;
@@ -247,6 +305,7 @@
             border: none;
         }
 
+        /* Resultado de etiquetas */
         .etiqueta-resultado {
             background: #0f172a;
             color: #38bdf8;
@@ -258,6 +317,7 @@
             border: 1px solid #334155;
         }
 
+        /* Footer */
         .footer {
             text-align: center;
             padding: 20px;
@@ -267,6 +327,7 @@
             margin-top: 20px;
         }
 
+        /* Loading spinner */
         .loading {
             display: inline-block;
             width: 20px;
@@ -281,6 +342,7 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Mensagens globais */
         #globalMessage {
             position: fixed;
             top: 80px;
@@ -293,11 +355,13 @@
             display: none;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
+
         .alert-success { background: #2ecc71; color: white; }
         .alert-danger { background: #e74c3c; color: white; }
         .alert-warning { background: #f39c12; color: white; }
         .alert-info { background: #3498db; color: white; }
 
+        /* Responsividade */
         @media (max-width: 640px) {
             .container {
                 padding: 16px;
@@ -318,12 +382,36 @@
                 left: 10px;
             }
         }
+
+        /* Grid para produção */
+        .grid-2-colunas {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        /* Destaque para lembrete GA */
+        .lembrete-ga {
+            background: #f39c12;
+            color: #1e293b;
+            border: none;
+        }
+
+        .lembrete-ga h2 {
+            color: #1e293b;
+            border-left-color: #1e293b;
+        }
+
+        .lembrete-ga .atencao {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>PudimFlow</h1>
-        <div class="turno">3° turno</div>
+        <div class="turno">3° turno - Líder: Misa Andrejezieski</div>
     </div>
 
     <nav class="nav">
@@ -331,22 +419,32 @@
         <a href="sim.html">💡 SIM</a>
         <a href="troca-turno.html">🔄 Troca de Turno</a>
         <a href="programacao.html">📅 Programação</a>
+        <a href="preparacao.html">🍯 Preparação</a>
     </nav>
 
     <div class="container">
+        <!-- Seletor de data -->
         <div class="data-selector">
             <button id="btnDiaAnterior">◀ Dia anterior</button>
             <input type="date" id="seletorData" value="">
             <button id="btnProximoDia">Próximo dia ▶</button>
             <button id="btnHoje" class="hoje">Hoje</button>
-            <button id="btnSalvarProducao" class="btn-success" style="margin-left: auto;">💾 SALVAR PRODUÇÃO</button>
+            <button id="btnSalvarProducao" class="btn-success">💾 SALVAR PRODUÇÃO</button>
         </div>
 
+        <!-- Lembrete GA (Grupo Autônomo) -->
+        <div class="card lembrete-ga" id="cardLembreteGA" style="display: none;">
+            <h2>📢 GRUPO AUTÔNOMO (GA)</h2>
+            <p id="textoLembreteGA" class="atencao">⚠️ Carregando informações...</p>
+        </div>
+
+        <!-- Alerta meia-noite -->
         <div class="card alerta-meianoite">
             <h2 id="tempoRestante">⏰ Calculando...</h2>
             <p>⚠️ Planeje as etiquetas antes da meia-noite</p>
         </div>
 
+        <!-- Programação do dia -->
         <div class="card">
             <h2>📅 Programação do Dia</h2>
             <div id="programacaoDia">
@@ -362,49 +460,54 @@
             </div>
         </div>
 
+        <!-- Checklist pessoal -->
         <div class="card">
             <h2>📋 Meu Checklist</h2>
             <div id="checklistPersonalizado"></div>
             <div style="display: flex; gap: 12px; margin-top: 16px;">
                 <input type="text" id="novaTarefa" placeholder="Nova tarefa..." style="flex: 1;">
-                <button id="btnAddTarefa" class="btn-success" style="width: auto;">➕</button>
+                <button id="btnAddTarefa" class="btn-success" style="width: auto;">➕ Adicionar</button>
             </div>
         </div>
 
+        <!-- Produção Brascop -->
         <div class="card">
             <h2>🏭 Brascop - Envase</h2>
             <p><small>1 estante = 896 copos = 89,6 kg</small></p>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-                <div><label>3º turno ontem</label> <input type="number" id="brascop3_ontem" placeholder="0"></div>
-                <div><label>1º turno antes</label> <input type="number" id="brascop1_antes" placeholder="0"></div>
-                <div><label>2º turno você</label> <input type="number" id="brascop2_voce" placeholder="0"></div>
-                <div><label>3º turno final</label> <input type="number" id="brascop3_final" placeholder="0"></div>
+            <div class="grid-2-colunas">
+                <div><label>3º turno ontem</label> <input type="number" id="brascop3_ontem" placeholder="0" value="0"></div>
+                <div><label>1º turno antes</label> <input type="number" id="brascop1_antes" placeholder="0" value="0"></div>
+                <div><label>2º turno você</label> <input type="number" id="brascop2_voce" placeholder="0" value="0"></div>
+                <div><label>3º turno final</label> <input type="number" id="brascop3_final" placeholder="0" value="0"></div>
             </div>
             <p style="margin-top: 12px;"><strong>Total produzido:</strong> <span id="brascopTotal">0</span> estantes</p>
             <p><strong>Meta:</strong> <span id="brascopMeta">0</span> estantes | <strong>⚠️ Falta:</strong> <span id="brascopFalta">0</span> estantes</p>
         </div>
 
+        <!-- Produção Serac -->
         <div class="card">
             <h2>🏭 Serac - Envase</h2>
             <p><small>1 estante = 2040 copos = 204 kg</small></p>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-                <div><label>3º turno ontem</label> <input type="number" id="serac3_ontem" placeholder="0"></div>
-                <div><label>1º turno antes</label> <input type="number" id="serac1_antes" placeholder="0"></div>
-                <div><label>2º turno você</label> <input type="number" id="serac2_voce" placeholder="0"></div>
-                <div><label>3º turno final</label> <input type="number" id="serac3_final" placeholder="0"></div>
+            <div class="grid-2-colunas">
+                <div><label>3º turno ontem</label> <input type="number" id="serac3_ontem" placeholder="0" value="0"></div>
+                <div><label>1º turno antes</label> <input type="number" id="serac1_antes" placeholder="0" value="0"></div>
+                <div><label>2º turno você</label> <input type="number" id="serac2_voce" placeholder="0" value="0"></div>
+                <div><label>3º turno final</label> <input type="number" id="serac3_final" placeholder="0" value="0"></div>
             </div>
             <p style="margin-top: 12px;"><strong>Total produzido:</strong> <span id="seracTotal">0</span> estantes</p>
             <p><strong>Meta:</strong> <span id="seracMeta">0</span> estantes | <strong>⚠️ Falta:</strong> <span id="seracFalta">0</span> estantes</p>
         </div>
 
+        <!-- Resselagem Brascop -->
         <div class="card">
             <h2>🔁 Resselagem Brascop</h2>
             <label>Estantes faltando</label>
-            <input type="number" id="brascopRess" placeholder="0">
+            <input type="number" id="brascopRess" placeholder="0" value="0">
             <button id="calcBrascop" style="margin-top: 12px;">Calcular etiquetas</button>
             <div id="brascopEtiquetas" class="etiqueta-resultado">Calcule</div>
         </div>
 
+        <!-- Resselagem Serac -->
         <div class="card">
             <h2>🔁 Resselagem Serac</h2>
             <label>Tipo</label>
@@ -413,14 +516,15 @@
                 <option value="itambe">Itambé (352 caixas x 15 copos)</option>
             </select>
             <label>Estantes faltando</label>
-            <input type="number" id="seracRess" placeholder="0">
+            <input type="number" id="seracRess" placeholder="0" value="0">
             <button id="calcSerac" style="margin-top: 12px;">Calcular etiquetas</button>
             <div id="seracEtiquetas" class="etiqueta-resultado">Calcule</div>
         </div>
     </div>
 
     <div class="footer">
-        <p>PudimFlow - Misael Andrejezieski</p>
+        <p>PudimFlow - Sistema de Gestão de Produção | Turno da Noite</p>
+        <p>Desenvolvido para Misa Andrejezieski</p>
     </div>
 
     <div id="globalMessage"></div>
@@ -480,7 +584,7 @@
         }
 
         // ============================================
-        // BUSCAR PROGRAMAÇÃO DO DIA NO BACKEND
+        // BUSCAR PROGRAMAÇÃO DO DIA
         // ============================================
         async function buscarProgramacaoDia(data) {
             try {
@@ -488,7 +592,6 @@
                 const result = await response.json();
                 
                 if (result.success && result.data && result.data.length > 0) {
-                    // Buscar itens da TREPKO (Brascop)
                     const trepkoItens = result.data.filter(item => item.linha === 'TREPKO');
                     if (trepkoItens.length > 0) {
                         const primeiroItem = trepkoItens[0];
@@ -499,7 +602,6 @@
                         metaBrascopKg = 0;
                     }
                     
-                    // Buscar itens da SERAC
                     const seracItens = result.data.filter(item => item.linha === 'SERAC');
                     if (seracItens.length > 0) {
                         const primeiroItem = seracItens[0];
@@ -512,7 +614,6 @@
                     
                     atualizarDisplayProgramacao();
                 } else {
-                    // Sem programação para esta data
                     produtoBrascopAtual = 'Sem programação';
                     produtoSeracAtual = 'Sem programação';
                     metaBrascopKg = 0;
@@ -549,7 +650,7 @@
         }
 
         // ============================================
-        // CARREGAR PRODUÇÃO SALVA DO BACKEND
+        // CARREGAR PRODUÇÃO SALVA
         // ============================================
         async function carregarProducaoSalva() {
             try {
@@ -560,13 +661,7 @@
                     const dados = result.data;
                     
                     document.getElementById('brascop3_ontem').value = dados.brascopEstantes || 0;
-                    document.getElementById('brascop1_antes').value = 0;
-                    document.getElementById('brascop2_voce').value = 0;
-                    document.getElementById('brascop3_final').value = 0;
                     document.getElementById('serac3_ontem').value = dados.seracEstantes || 0;
-                    document.getElementById('serac1_antes').value = 0;
-                    document.getElementById('serac2_voce').value = 0;
-                    document.getElementById('serac3_final').value = 0;
                     
                     atualizarFaltante();
                     showMessage('✅ Produção carregada do servidor', 'success');
@@ -577,7 +672,7 @@
         }
 
         // ============================================
-        // SALVAR PRODUÇÃO NO BACKEND
+        // SALVAR PRODUÇÃO
         // ============================================
         async function salvarProducao() {
             const brascopTotal = (+document.getElementById('brascop3_ontem').value || 0) +
@@ -691,13 +786,16 @@
         }
 
         // ============================================
-        // CHECKLIST
+        // CHECKLIST PESSOAL
         // ============================================
         let tarefas = JSON.parse(localStorage.getItem('tarefas') || '[]');
         
         function renderTarefas() {
             const div = document.getElementById('checklistPersonalizado');
-            if (!tarefas.length) { div.innerHTML = '<p style="color: #64748b;">Nenhuma tarefa</p>'; return; }
+            if (!tarefas.length) { 
+                div.innerHTML = '<p style="color: #64748b; text-align: center;">Nenhuma tarefa pendente</p>'; 
+                return; 
+            }
             div.innerHTML = tarefas.map((t, i) => `
                 <div class="checklist-item">
                     <input type="checkbox" ${t.feita ? 'checked' : ''} data-index="${i}">
@@ -705,10 +803,12 @@
                     <button style="margin-left:auto; background:#e74c3c; padding:4px 12px;" onclick="removerTarefa(${i})">🗑️</button>
                 </div>
             `).join('');
+            
             document.querySelectorAll('#checklistPersonalizado input[type=checkbox]').forEach(chk => {
                 chk.addEventListener('change', e => {
                     tarefas[e.target.dataset.index].feita = e.target.checked;
                     localStorage.setItem('tarefas', JSON.stringify(tarefas));
+                    renderTarefas();
                 });
             });
         }
@@ -726,8 +826,43 @@
                 localStorage.setItem('tarefas', JSON.stringify(tarefas));
                 renderTarefas();
                 input.value = '';
+                showMessage('✅ Tarefa adicionada ao checklist', 'success');
             }
         };
+
+        // ============================================
+        // LEMBRETE GA (GRUPO AUTÔNOMO)
+        // ============================================
+        function carregarLembreteGA() {
+            const gaData = localStorage.getItem('pudimflow_ga');
+            if (gaData) {
+                const ga = JSON.parse(gaData);
+                const hoje = new Date();
+                const dataReuniao = new Date(ga.data);
+                
+                if (dataReuniao >= hoje) {
+                    const diffDias = Math.ceil((dataReuniao - hoje) / (1000 * 60 * 60 * 24));
+                    const card = document.getElementById('cardLembreteGA');
+                    const texto = document.getElementById('textoLembreteGA');
+                    
+                    card.style.display = 'block';
+                    
+                    if (diffDias === 0) {
+                        texto.innerHTML = `⚠️ ATENÇÃO! Reunião do GA HOJE às ${ga.hora}. Não esquecer!`;
+                        texto.style.fontWeight = 'bold';
+                        texto.style.color = '#1e293b';
+                    } else if (diffDias === 1) {
+                        texto.innerHTML = `📅 Próxima reunião do GA: AMANHÃ (${ga.data}) às ${ga.hora}`;
+                    } else {
+                        texto.innerHTML = `📅 Próxima reunião do GA: ${ga.data} às ${ga.hora} (em ${diffDias} dias)`;
+                    }
+                } else {
+                    document.getElementById('cardLembreteGA').style.display = 'none';
+                }
+            } else {
+                document.getElementById('cardLembreteGA').style.display = 'none';
+            }
+        }
 
         // ============================================
         // CONTROLE DE DATA
@@ -744,8 +879,12 @@
             await buscarProgramacaoDia(dataAtual);
             await carregarProducaoSalva();
             atualizarFaltante();
+            carregarLembreteGA();
         }
 
+        // ============================================
+        // EVENTOS
+        // ============================================
         document.getElementById('btnDiaAnterior').onclick = () => mudarData(-1);
         document.getElementById('btnProximoDia').onclick = () => mudarData(1);
         document.getElementById('btnHoje').onclick = () => {
@@ -758,10 +897,7 @@
             carregarDadosData();
         };
         document.getElementById('btnSalvarProducao').onclick = salvarProducao;
-
-        // ============================================
-        // EVENTOS DOS INPUTS
-        // ============================================
+        
         document.getElementById('brascop3_ontem').oninput = atualizarFaltante;
         document.getElementById('brascop1_antes').oninput = atualizarFaltante;
         document.getElementById('brascop2_voce').oninput = atualizarFaltante;
@@ -774,6 +910,26 @@
         document.getElementById('calcSerac').onclick = calcEtiquetasSerac;
 
         // ============================================
+        // NAVEGAÇÃO POR TECLADO (ENTER, TAB)
+        // ============================================
+        document.querySelectorAll('input, button, select').forEach(el => {
+            el.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (el.type === 'button' || el.tagName === 'BUTTON') {
+                        el.click();
+                    } else {
+                        const form = el.closest('.card');
+                        if (form) {
+                            const btn = form.querySelector('button');
+                            if (btn) btn.click();
+                        }
+                    }
+                }
+            });
+        });
+
+        // ============================================
         // INICIALIZAÇÃO
         // ============================================
         document.getElementById('seletorData').value = dataAtual;
@@ -781,6 +937,7 @@
         carregarDadosData();
         atualizarMeiaNoite();
         renderTarefas();
+        carregarLembreteGA();
         setInterval(atualizarMeiaNoite, 60000);
     </script>
 </body>
