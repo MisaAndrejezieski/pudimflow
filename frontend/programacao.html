@@ -491,7 +491,7 @@
             const valor = e.target.value;
             
             if (linha === 'trepko') {
-                if (!dadosAtuaisTrepko[produto]) dadosAtuaisTrepko[produto] = ["", "", "", "", "", "", ""];
+                if (!dadosAtuaisTrepko[produto]) dadosAtuaisTrepko[produto] = ["9000", "9000", "9000", "9000", "9000", "9000", ""];
                 dadosAtuaisTrepko[produto][dia] = valor;
                 if (valor && valor !== '') {
                     e.target.classList.add('input-preenchido');
@@ -499,7 +499,7 @@
                     e.target.classList.remove('input-preenchido');
                 }
             } else {
-                if (!dadosAtuaisSerac[produto]) dadosAtuaisSerac[produto] = ["", "", "", "", "", "", ""];
+                if (!dadosAtuaisSerac[produto]) dadosAtuaisSerac[produto] = ["2000", "2000", "2000", "2000", "2000", "2000", ""];
                 dadosAtuaisSerac[produto][dia] = valor;
                 if (valor && valor !== '') {
                     e.target.classList.add('input-preenchido');
