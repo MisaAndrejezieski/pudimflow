@@ -140,6 +140,8 @@
         /* Paradas */
         .paradas-list {
             margin: 12px 0;
+            max-height: 150px;
+            overflow-y: auto;
         }
         
         .parada-item {
@@ -160,6 +162,18 @@
             padding: 6px 12px;
             font-size: 0.7rem;
             margin-top: 8px;
+        }
+        
+        .btn-remover {
+            background: #e74c3c;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .btn-remover:hover {
+            background: #c0392b;
         }
         
         /* Tanques */
@@ -191,7 +205,7 @@
         /* Desvios */
         .desvios-list {
             margin: 12px 0;
-            max-height: 200px;
+            max-height: 150px;
             overflow-y: auto;
         }
         
@@ -348,18 +362,9 @@
                     </div>
                 </div>
 
-                <!-- Paradas TREPKO -->
+                <!-- Paradas TREPKO (lista vazia - sem exemplos) -->
                 <label style="font-size: 0.75rem;">⛔ Paradas</label>
-                <div class="paradas-list" id="trepkoParadasList">
-                    <div class="parada-item">
-                        <span>00:20 - ajuste para inicio</span>
-                        <button class="btn-remover-parada" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
-                    </div>
-                    <div class="parada-item">
-                        <span>00:40 - aguardando resselagem</span>
-                        <button class="btn-remover-parada" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
-                    </div>
-                </div>
+                <div class="paradas-list" id="trepkoParadasList"></div>
                 <div class="producao-row">
                     <input type="text" id="trepkoNovaParada" placeholder="Nova parada (ex: 01:00 - queda energia)" style="flex: 1;">
                     <button id="trepkoAddParada" class="btn-add">➕ Adicionar</button>
@@ -370,11 +375,11 @@
                 <div class="tanques-grid">
                     <div class="tanque-item">
                         <label>TQ 01</label>
-                        <input type="number" id="trepkoTQ01" placeholder="0" value="3000">
+                        <input type="number" id="trepkoTQ01" placeholder="0" value="0">
                     </div>
                     <div class="tanque-item">
                         <label>TQ 02</label>
-                        <input type="number" id="trepkoTQ02" placeholder="0" value="700">
+                        <input type="number" id="trepkoTQ02" placeholder="0" value="0">
                     </div>
                 </div>
             </div>
@@ -383,7 +388,7 @@
             <div class="maquina-card maquina-serac">
                 <div class="maquina-header">
                     <span class="maquina-titulo">🟢 SERAC</span>
-                    <span id="seracStatusBadge" class="badge-parado">🔴 Parado</span>
+                    <span id="seracStatusBadge" class="badge-produtivo">🟢 Produzindo</span>
                 </div>
 
                 <!-- Produção -->
@@ -422,11 +427,11 @@
                 <div class="producao-row">
                     <div class="producao-item">
                         <label>⏱️ Tempo produzindo (min)</label>
-                        <input type="number" id="seracTempoProd" placeholder="0" value="0">
+                        <input type="number" id="seracTempoProd" placeholder="440" value="440">
                     </div>
                     <div class="producao-item">
                         <label>⏱️ Tempo parado (min)</label>
-                        <input type="number" id="seracTempoParado" placeholder="440" value="440">
+                        <input type="number" id="seracTempoParado" placeholder="0" value="0">
                     </div>
                 </div>
 
@@ -435,19 +440,14 @@
                     <div class="grafico-bar">
                         <span class="grafico-label">Produtividade</span>
                         <div class="grafico-barra">
-                            <div class="grafico-preenchido parado" id="seracGrafico" style="width: 0%;">0%</div>
+                            <div class="grafico-preenchido" id="seracGrafico" style="width: 100%;">100%</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Paradas SERAC -->
+                <!-- Paradas SERAC (lista vazia - sem exemplos) -->
                 <label style="font-size: 0.75rem;">⛔ Paradas</label>
-                <div class="paradas-list" id="seracParadasList">
-                    <div class="parada-item">
-                        <span>Falta de Programação</span>
-                        <button class="btn-remover-parada" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
-                    </div>
-                </div>
+                <div class="paradas-list" id="seracParadasList"></div>
                 <div class="producao-row">
                     <input type="text" id="seracNovaParada" placeholder="Nova parada" style="flex: 1;">
                     <button id="seracAddParada" class="btn-add">➕ Adicionar</button>
@@ -458,7 +458,7 @@
                 <div class="tanques-grid">
                     <div class="tanque-item">
                         <label>TQ 03</label>
-                        <input type="number" id="seracTQ03" placeholder="0" value="26">
+                        <input type="number" id="seracTQ03" placeholder="0" value="0">
                     </div>
                     <div class="tanque-item">
                         <label>TQ 04</label>
@@ -471,16 +471,7 @@
         <!-- DESVIOS (Eventos fora da rotina) -->
         <div class="card">
             <h2>⚠️ Desvios (Eventos fora da rotina)</h2>
-            <div class="desvios-list" id="desviosList">
-                <div class="desvio-item">
-                    <span>23:40 - Queda de estante na resselagem</span>
-                    <button class="btn-remover-desvio" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
-                </div>
-                <div class="desvio-item">
-                    <span>01:15 - Erro de data no lote 123456 (produto Batavo)</span>
-                    <button class="btn-remover-desvio" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
-                </div>
-            </div>
+            <div class="desvios-list" id="desviosList"></div>
             <div style="display: flex; gap: 12px; margin-top: 12px;">
                 <input type="text" id="novoDesvio" placeholder="Novo desvio (ex: 03:00 - Falta de energia)" style="flex: 1;">
                 <button id="addDesvio" class="btn-add">➕ Adicionar desvio</button>
@@ -534,22 +525,22 @@
         // FUNÇÕES DE UTILIDADE
         // ============================================
         function showMessage(message, type = 'success') {
-            const msgDiv = document.getElementById('globalMessage') || (() => {
-                const div = document.createElement('div');
-                div.id = 'globalMessage';
-                div.style.position = 'fixed';
-                div.style.top = '80px';
-                div.style.right = '20px';
-                div.style.zIndex = '9999';
-                div.style.padding = '12px 20px';
-                div.style.borderRadius = '12px';
-                div.style.fontSize = '0.85rem';
-                div.style.fontWeight = '500';
-                div.style.display = 'none';
-                div.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
-                document.body.appendChild(div);
-                return div;
-            })();
+            let msgDiv = document.getElementById('globalMessage');
+            if (!msgDiv) {
+                msgDiv = document.createElement('div');
+                msgDiv.id = 'globalMessage';
+                msgDiv.style.position = 'fixed';
+                msgDiv.style.top = '80px';
+                msgDiv.style.right = '20px';
+                msgDiv.style.zIndex = '9999';
+                msgDiv.style.padding = '12px 20px';
+                msgDiv.style.borderRadius = '12px';
+                msgDiv.style.fontSize = '0.85rem';
+                msgDiv.style.fontWeight = '500';
+                msgDiv.style.display = 'none';
+                msgDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+                document.body.appendChild(msgDiv);
+            }
             msgDiv.className = `alert-${type}`;
             msgDiv.innerHTML = message;
             msgDiv.style.display = 'block';
@@ -615,11 +606,11 @@
             div.className = 'parada-item';
             div.innerHTML = `
                 <span>${texto}</span>
-                <button class="btn-remover-parada" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
+                <button class="btn-remover" onclick="this.parentElement.remove()">🗑️</button>
             `;
-            div.querySelector('.btn-remover-parada').addEventListener('click', () => div.remove());
             container.appendChild(div);
             input.value = '';
+            input.focus();
         }
 
         // ============================================
@@ -635,11 +626,11 @@
             div.className = 'desvio-item';
             div.innerHTML = `
                 <span>${texto}</span>
-                <button class="btn-remover-desvio" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
+                <button class="btn-remover" onclick="this.parentElement.remove()">🗑️</button>
             `;
-            div.querySelector('.btn-remover-desvio').addEventListener('click', () => div.remove());
             container.appendChild(div);
             input.value = '';
+            input.focus();
         }
 
         // ============================================
@@ -721,7 +712,28 @@
         // ============================================
         function limparTurno() {
             if (confirm('⚠️ Tem certeza? Todos os dados da troca de turno serão perdidos.')) {
-                location.reload();
+                // Limpar inputs numéricos
+                document.querySelectorAll('input[type="number"], input[type="text"]:not([readonly])').forEach(input => {
+                    if (input.id !== 'turnoLider') {
+                        input.value = '';
+                    }
+                });
+                document.getElementById('turnoLider').value = 'Misa Andrejezieski';
+                
+                // Limpar listas
+                document.getElementById('trepkoParadasList').innerHTML = '';
+                document.getElementById('seracParadasList').innerHTML = '';
+                document.getElementById('desviosList').innerHTML = '';
+                
+                // Resetar valores padrão
+                document.getElementById('turnoDuracao').value = '440';
+                document.getElementById('trepkoTempoProd').value = '440';
+                document.getElementById('trepkoTempoParado').value = '0';
+                document.getElementById('seracTempoProd').value = '440';
+                document.getElementById('seracTempoParado').value = '0';
+                
+                atualizarGraficos();
+                showMessage('🗑️ Formulário limpo!', 'warning');
             }
         }
 
@@ -735,7 +747,61 @@
                 if (d.data) document.getElementById('turnoData').value = d.data;
                 if (d.lider) document.getElementById('turnoLider').value = d.lider;
                 if (d.duracao) document.getElementById('turnoDuracao').value = d.duracao;
-                // Restaurar dados das máquinas...
+                if (d.trepko) {
+                    document.getElementById('trepkoEnvasadoEst').value = d.trepko.envasadoEst || 0;
+                    document.getElementById('trepkoEnvasadoKg').value = d.trepko.envasadoKg || 0;
+                    document.getElementById('trepkoResselagemEst').value = d.trepko.resselagemEst || 0;
+                    document.getElementById('trepkoResselagemKg').value = d.trepko.resselagemKg || 0;
+                    document.getElementById('trepkoPerdasEnv').value = d.trepko.perdasEnv || 0;
+                    document.getElementById('trepkoPerdasRess').value = d.trepko.perdasRess || 0;
+                    document.getElementById('trepkoTempoProd').value = d.trepko.tempoProd || 440;
+                    document.getElementById('trepkoTempoParado').value = d.trepko.tempoParado || 0;
+                    document.getElementById('trepkoTQ01').value = d.trepko.tq01 || 0;
+                    document.getElementById('trepkoTQ02').value = d.trepko.tq02 || 0;
+                    
+                    // Restaurar paradas
+                    if (d.trepko.paradas) {
+                        d.trepko.paradas.forEach(parada => {
+                            const container = document.getElementById('trepkoParadasList');
+                            const div = document.createElement('div');
+                            div.className = 'parada-item';
+                            div.innerHTML = `<span>${parada}</span><button class="btn-remover" onclick="this.parentElement.remove()">🗑️</button>`;
+                            container.appendChild(div);
+                        });
+                    }
+                }
+                if (d.serac) {
+                    document.getElementById('seracEnvasadoEst').value = d.serac.envasadoEst || 0;
+                    document.getElementById('seracEnvasadoKg').value = d.serac.envasadoKg || 0;
+                    document.getElementById('seracResselagemEst').value = d.serac.resselagemEst || 0;
+                    document.getElementById('seracResselagemKg').value = d.serac.resselagemKg || 0;
+                    document.getElementById('seracPerdasEnv').value = d.serac.perdasEnv || 0;
+                    document.getElementById('seracPerdasRess').value = d.serac.perdasRess || 0;
+                    document.getElementById('seracTempoProd').value = d.serac.tempoProd || 440;
+                    document.getElementById('seracTempoParado').value = d.serac.tempoParado || 0;
+                    document.getElementById('seracTQ03').value = d.serac.tq03 || 0;
+                    document.getElementById('seracTQ04').value = d.serac.tq04 || 0;
+                    
+                    if (d.serac.paradas) {
+                        d.serac.paradas.forEach(parada => {
+                            const container = document.getElementById('seracParadasList');
+                            const div = document.createElement('div');
+                            div.className = 'parada-item';
+                            div.innerHTML = `<span>${parada}</span><button class="btn-remover" onclick="this.parentElement.remove()">🗑️</button>`;
+                            container.appendChild(div);
+                        });
+                    }
+                }
+                if (d.desvios) {
+                    d.desvios.forEach(desvio => {
+                        const container = document.getElementById('desviosList');
+                        const div = document.createElement('div');
+                        div.className = 'desvio-item';
+                        div.innerHTML = `<span>${desvio}</span><button class="btn-remover" onclick="this.parentElement.remove()">🗑️</button>`;
+                        container.appendChild(div);
+                    });
+                }
+                atualizarGraficos();
             } else {
                 document.getElementById('turnoData').value = new Date().toISOString().split('T')[0];
             }
@@ -757,7 +823,19 @@
                         'trepkoEnvasadoKg', 'trepkoResselagemKg', 'seracEnvasadoKg', 'seracResselagemKg',
                         'trepkoPerdasEnv', 'trepkoPerdasRess', 'seracPerdasEnv', 'seracPerdasRess'];
         inputs.forEach(id => {
-            document.getElementById(id)?.addEventListener('input', atualizarGraficos);
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', atualizarGraficos);
+        });
+
+        // Enter para adicionar parada/desvio
+        document.getElementById('trepkoNovaParada').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addParada('trepko');
+        });
+        document.getElementById('seracNovaParada').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addParada('serac');
+        });
+        document.getElementById('novoDesvio').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addDesvio();
         });
 
         function toggleDarkMode() {
