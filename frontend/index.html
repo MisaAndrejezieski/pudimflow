@@ -236,6 +236,9 @@
         .btn-danger {
             background: #e74c3c;
         }
+        .btn-warning {
+            background: #f39c12;
+        }
 
         .alerta-meianoite {
             background: linear-gradient(135deg, #7f1a1a, #991b1b);
@@ -264,7 +267,20 @@
             margin-top: 20px;
         }
 
-        /* Mensagem de erro/sucesso global */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         #globalMessage {
             position: fixed;
             top: 80px;
@@ -277,22 +293,10 @@
             display: none;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
-        .alert-success {
-            background: #2ecc71;
-            color: white;
-        }
-        .alert-danger {
-            background: #e74c3c;
-            color: white;
-        }
-        .alert-warning {
-            background: #f39c12;
-            color: white;
-        }
-        .alert-info {
-            background: #3498db;
-            color: white;
-        }
+        .alert-success { background: #2ecc71; color: white; }
+        .alert-danger { background: #e74c3c; color: white; }
+        .alert-warning { background: #f39c12; color: white; }
+        .alert-info { background: #3498db; color: white; }
 
         @media (max-width: 640px) {
             .container {
@@ -323,10 +327,10 @@
     </div>
 
     <nav class="nav">
-    <a href="index.html">📊 Dashboard</a>
-    <a href="sim.html">💡 SIM</a>
-    <a href="troca-turno.html">🔄 Troca de Turno</a>
-    <a href="programacao.html" class="active">📅 Programação</a>
+        <a href="index.html" class="active">📊 Dashboard</a>
+        <a href="sim.html">💡 SIM</a>
+        <a href="troca-turno.html">🔄 Troca de Turno</a>
+        <a href="programacao.html">📅 Programação</a>
     </nav>
 
     <div class="container">
@@ -335,6 +339,7 @@
             <input type="date" id="seletorData" value="">
             <button id="btnProximoDia">Próximo dia ▶</button>
             <button id="btnHoje" class="hoje">Hoje</button>
+            <button id="btnSalvarProducao" class="btn-success" style="margin-left: auto;">💾 SALVAR PRODUÇÃO</button>
         </div>
 
         <div class="card alerta-meianoite">
@@ -343,17 +348,18 @@
         </div>
 
         <div class="card">
-            <h2>📅 Programação</h2>
-            <p><strong>Data:</strong> <span id="dataSelecionada">-</span></p>
-            <p><strong>Produto Brascop:</strong> <span id="produtoBrascop">-</span></p>
-            <p><strong>Produto Serac:</strong> <span id="produtoSerac">-</span></p>
-            <p><strong>Meta Brascop kg:</strong> <span id="metaKgBrascop">0</span></p>
-            <p><strong>Meta Serac kg:</strong> <span id="metaKgSerac">0</span></p>
-            <p><strong>Meta Brascop estantes:</strong> <span id="metaEstantesBrascop">0</span></p>
-            <p><strong>Meta Serac estantes:</strong> <span id="metaEstantesSerac">0</span></p>
-            <p><strong>Data de fabricação:</strong> <span id="dataFabricacao">-</span></p>
-            <p><strong>Data de validade:</strong> <span id="dataValidade">-</span></p>
-            <p><strong>Peso massa:</strong> <span id="pesoMassa">-</span> g | <strong>Peso calda:</strong> <span id="pesoCalda">-</span> g</p>
+            <h2>📅 Programação do Dia</h2>
+            <div id="programacaoDia">
+                <p><strong>Produto Brascop:</strong> <span id="produtoBrascop">Carregando...</span></p>
+                <p><strong>Produto Serac:</strong> <span id="produtoSerac">Carregando...</span></p>
+                <p><strong>Meta Brascop kg:</strong> <span id="metaKgBrascop">-</span></p>
+                <p><strong>Meta Serac kg:</strong> <span id="metaKgSerac">-</span></p>
+                <p><strong>Meta Brascop estantes:</strong> <span id="metaEstantesBrascop">-</span></p>
+                <p><strong>Meta Serac estantes:</strong> <span id="metaEstantesSerac">-</span></p>
+                <p><strong>Data de fabricação:</strong> <span id="dataFabricacao">-</span></p>
+                <p><strong>Data de validade:</strong> <span id="dataValidade">-</span></p>
+                <p><strong>Peso massa:</strong> <span id="pesoMassa">-</span> g | <strong>Peso calda:</strong> <span id="pesoCalda">-</span> g</p>
+            </div>
         </div>
 
         <div class="card">
@@ -420,22 +426,23 @@
     <div id="globalMessage"></div>
 
     <script>
-        // Configuração da API
+        // ============================================
+        // CONFIGURAÇÃO DA API
+        // ============================================
         const API_URL = window.location.hostname === 'localhost' 
             ? 'http://localhost:3000/api' 
             : 'https://pudimflow.onrender.com/api';
 
-        // Função para mostrar mensagem
-        function showMessage(message, type = 'success') {
-            const msgDiv = document.getElementById('globalMessage');
-            msgDiv.className = `alert-${type}`;
-            msgDiv.innerHTML = message;
-            msgDiv.style.display = 'block';
-            setTimeout(() => {
-                msgDiv.style.display = 'none';
-            }, 3000);
-        }
+        // ============================================
+        // VARIÁVEIS GLOBAIS
+        // ============================================
+        let dataAtual = new Date().toISOString().split('T')[0];
+        let metaBrascopKg = 0;
+        let metaSeracKg = 0;
+        let produtoBrascopAtual = '';
+        let produtoSeracAtual = '';
 
+        // Configurações de produtos
         const produtosConfig = {
             'Pudim Leite Batavo': { massaG: 85, caldaG: 15, totalG: 100, validadeDias: 43 },
             'Pudim Leite Itambé': { massaG: 90, caldaG: 10, totalG: 100, validadeDias: 43 },
@@ -448,11 +455,18 @@
             'Romeu e Julieta Itambé': { massaG: 90, caldaG: 10, totalG: 100, validadeDias: 43 }
         };
 
-        let dataAtual = new Date().toISOString().split('T')[0];
-        let produtoAtual = 'Pudim Leite Batavo';
-        let metaGlobal = 10000;
-
-        document.getElementById('seletorData').value = dataAtual;
+        // ============================================
+        // FUNÇÕES DE UTILIDADE
+        // ============================================
+        function showMessage(message, type = 'success') {
+            const msgDiv = document.getElementById('globalMessage');
+            msgDiv.className = `alert-${type}`;
+            msgDiv.innerHTML = message;
+            msgDiv.style.display = 'block';
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 3000);
+        }
 
         function formatarDataBrasil(dataStr) {
             const [ano, mes, dia] = dataStr.split('-');
@@ -465,47 +479,168 @@
             return data.toLocaleDateString('pt-BR');
         }
 
-        async function carregarDashboard() {
+        // ============================================
+        // BUSCAR PROGRAMAÇÃO DO DIA NO BACKEND
+        // ============================================
+        async function buscarProgramacaoDia(data) {
+            try {
+                const response = await fetch(`${API_URL}/programacao/dia/${data}`);
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    // Buscar itens da TREPKO (Brascop)
+                    const trepkoItens = result.data.filter(item => item.linha === 'TREPKO');
+                    if (trepkoItens.length > 0) {
+                        const primeiroItem = trepkoItens[0];
+                        produtoBrascopAtual = primeiroItem.produto_nome;
+                        metaBrascopKg = primeiroItem.meta_kg || 0;
+                    } else {
+                        produtoBrascopAtual = 'Não definido';
+                        metaBrascopKg = 0;
+                    }
+                    
+                    // Buscar itens da SERAC
+                    const seracItens = result.data.filter(item => item.linha === 'SERAC');
+                    if (seracItens.length > 0) {
+                        const primeiroItem = seracItens[0];
+                        produtoSeracAtual = primeiroItem.produto_nome;
+                        metaSeracKg = primeiroItem.meta_kg || 0;
+                    } else {
+                        produtoSeracAtual = 'Não definido';
+                        metaSeracKg = 0;
+                    }
+                    
+                    atualizarDisplayProgramacao();
+                } else {
+                    // Sem programação para esta data
+                    produtoBrascopAtual = 'Sem programação';
+                    produtoSeracAtual = 'Sem programação';
+                    metaBrascopKg = 0;
+                    metaSeracKg = 0;
+                    atualizarDisplayProgramacao();
+                }
+            } catch (error) {
+                console.error('Erro ao buscar programação:', error);
+                produtoBrascopAtual = 'Erro ao carregar';
+                produtoSeracAtual = 'Erro ao carregar';
+                metaBrascopKg = 0;
+                metaSeracKg = 0;
+                atualizarDisplayProgramacao();
+            }
+        }
+
+        function atualizarDisplayProgramacao() {
+            document.getElementById('produtoBrascop').textContent = produtoBrascopAtual;
+            document.getElementById('produtoSerac').textContent = produtoSeracAtual;
+            document.getElementById('metaKgBrascop').textContent = metaBrascopKg.toLocaleString();
+            document.getElementById('metaKgSerac').textContent = metaSeracKg.toLocaleString();
+            
+            const metaEstantesBrascop = Math.ceil(metaBrascopKg / 89.6);
+            const metaEstantesSerac = Math.ceil(metaSeracKg / 204);
+            
+            document.getElementById('metaEstantesBrascop').textContent = metaEstantesBrascop;
+            document.getElementById('metaEstantesSerac').textContent = metaEstantesSerac;
+            document.getElementById('dataFabricacao').textContent = formatarDataBrasil(dataAtual);
+            
+            const config = produtosConfig[produtoBrascopAtual] || produtosConfig['Pudim Leite Batavo'];
+            document.getElementById('pesoMassa').textContent = config.massaG;
+            document.getElementById('pesoCalda').textContent = config.caldaG;
+            document.getElementById('dataValidade').textContent = calcularDataValidade(config.validadeDias, dataAtual);
+        }
+
+        // ============================================
+        // CARREGAR PRODUÇÃO SALVA DO BACKEND
+        // ============================================
+        async function carregarProducaoSalva() {
             try {
                 const response = await fetch(`${API_URL}/producao/${dataAtual}`);
                 const result = await response.json();
                 
-                document.getElementById('dataSelecionada').textContent = formatarDataBrasil(dataAtual);
-                
                 if (result.success && result.data) {
-                    if (result.data.programacao) produtoAtual = result.data.programacao;
-                    if (result.data.meta) metaGlobal = result.data.meta;
+                    const dados = result.data;
                     
-                    const config = produtosConfig[produtoAtual] || produtosConfig['Pudim Leite Batavo'];
-                    document.getElementById('produtoBrascop').textContent = produtoAtual;
-                    document.getElementById('produtoSerac').textContent = produtoAtual;
-                    document.getElementById('metaKgBrascop').textContent = metaGlobal;
-                    document.getElementById('metaKgSerac').textContent = Math.round(metaGlobal * 0.1);
-                    document.getElementById('pesoMassa').textContent = config.massaG;
-                    document.getElementById('pesoCalda').textContent = config.caldaG;
-                    document.getElementById('dataValidade').textContent = calcularDataValidade(config.validadeDias, dataAtual);
-                    document.getElementById('dataFabricacao').textContent = formatarDataBrasil(dataAtual);
-                } else {
-                    document.getElementById('produtoBrascop').textContent = 'Não definido';
-                    document.getElementById('produtoSerac').textContent = 'Não definido';
-                    document.getElementById('metaKgBrascop').textContent = '0';
-                    document.getElementById('metaKgSerac').textContent = '0';
-                    document.getElementById('dataValidade').textContent = '-';
-                    document.getElementById('dataFabricacao').textContent = formatarDataBrasil(dataAtual);
+                    document.getElementById('brascop3_ontem').value = dados.brascopEstantes || 0;
+                    document.getElementById('brascop1_antes').value = 0;
+                    document.getElementById('brascop2_voce').value = 0;
+                    document.getElementById('brascop3_final').value = 0;
+                    document.getElementById('serac3_ontem').value = dados.seracEstantes || 0;
+                    document.getElementById('serac1_antes').value = 0;
+                    document.getElementById('serac2_voce').value = 0;
+                    document.getElementById('serac3_final').value = 0;
+                    
+                    atualizarFaltante();
+                    showMessage('✅ Produção carregada do servidor', 'success');
                 }
             } catch (error) {
-                console.error('Erro ao carregar dashboard:', error);
-                showMessage('Erro ao carregar dados do servidor', 'danger');
+                console.error('Erro ao carregar produção:', error);
             }
         }
 
+        // ============================================
+        // SALVAR PRODUÇÃO NO BACKEND
+        // ============================================
+        async function salvarProducao() {
+            const brascopTotal = (+document.getElementById('brascop3_ontem').value || 0) +
+                                 (+document.getElementById('brascop1_antes').value || 0) +
+                                 (+document.getElementById('brascop2_voce').value || 0) +
+                                 (+document.getElementById('brascop3_final').value || 0);
+            
+            const seracTotal = (+document.getElementById('serac3_ontem').value || 0) +
+                               (+document.getElementById('serac1_antes').value || 0) +
+                               (+document.getElementById('serac2_voce').value || 0) +
+                               (+document.getElementById('serac3_final').value || 0);
+            
+            const dados = {
+                brascopEstantes: brascopTotal,
+                brascopKg: brascopTotal * 89.6,
+                brascopParadas: '',
+                brascopPerdas: 0,
+                seracEstantes: seracTotal,
+                seracKg: seracTotal * 204,
+                seracParadas: '',
+                seracPerdas: 0,
+                programacao: produtoBrascopAtual,
+                meta: metaBrascopKg
+            };
+            
+            const btn = document.getElementById('btnSalvarProducao');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="loading"></span> Salvando...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_URL}/producao`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('✅ Produção salva com sucesso!', 'success');
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('Erro ao salvar:', error);
+                showMessage('❌ Erro ao salvar produção', 'danger');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // ============================================
+        // CÁLCULOS DO DASHBOARD
+        // ============================================
         function atualizarFaltante() {
             const brascopTotal = 
                 (+document.getElementById('brascop3_ontem').value || 0) +
                 (+document.getElementById('brascop1_antes').value || 0) +
                 (+document.getElementById('brascop2_voce').value || 0) +
                 (+document.getElementById('brascop3_final').value || 0);
-            const brascopMeta = Math.ceil(metaGlobal / 89.6);
+            
+            const brascopMeta = Math.ceil(metaBrascopKg / 89.6);
             document.getElementById('brascopMeta').textContent = brascopMeta;
             document.getElementById('brascopTotal').textContent = brascopTotal;
             document.getElementById('brascopFalta').textContent = Math.max(0, brascopMeta - brascopTotal);
@@ -515,7 +650,8 @@
                 (+document.getElementById('serac1_antes').value || 0) +
                 (+document.getElementById('serac2_voce').value || 0) +
                 (+document.getElementById('serac3_final').value || 0);
-            const seracMeta = Math.ceil((metaGlobal * 0.1) / 204);
+            
+            const seracMeta = Math.ceil(metaSeracKg / 204);
             document.getElementById('seracMeta').textContent = seracMeta;
             document.getElementById('seracTotal').textContent = seracTotal;
             document.getElementById('seracFalta').textContent = Math.max(0, seracMeta - seracTotal);
@@ -554,27 +690,11 @@
             document.getElementById('tempoRestante').innerHTML = `⏰ ${horas}h ${minutos}min para meia-noite`;
         }
 
-        function mudarData(delta) {
-            const data = new Date(dataAtual);
-            data.setDate(data.getDate() + delta);
-            dataAtual = data.toISOString().split('T')[0];
-            document.getElementById('seletorData').value = dataAtual;
-            carregarDashboard();
-        }
-
-        document.getElementById('btnDiaAnterior').onclick = () => mudarData(-1);
-        document.getElementById('btnProximoDia').onclick = () => mudarData(1);
-        document.getElementById('btnHoje').onclick = () => {
-            dataAtual = new Date().toISOString().split('T')[0];
-            document.getElementById('seletorData').value = dataAtual;
-            carregarDashboard();
-        };
-        document.getElementById('seletorData').onchange = (e) => {
-            dataAtual = e.target.value;
-            carregarDashboard();
-        };
-
+        // ============================================
+        // CHECKLIST
+        // ============================================
         let tarefas = JSON.parse(localStorage.getItem('tarefas') || '[]');
+        
         function renderTarefas() {
             const div = document.getElementById('checklistPersonalizado');
             if (!tarefas.length) { div.innerHTML = '<p style="color: #64748b;">Nenhuma tarefa</p>'; return; }
@@ -592,7 +712,13 @@
                 });
             });
         }
-        window.removerTarefa = (i) => { tarefas.splice(i,1); localStorage.setItem('tarefas', JSON.stringify(tarefas)); renderTarefas(); };
+        
+        window.removerTarefa = (i) => { 
+            tarefas.splice(i, 1); 
+            localStorage.setItem('tarefas', JSON.stringify(tarefas)); 
+            renderTarefas(); 
+        };
+        
         document.getElementById('btnAddTarefa').onclick = () => {
             const input = document.getElementById('novaTarefa');
             if (input.value.trim()) {
@@ -603,6 +729,39 @@
             }
         };
 
+        // ============================================
+        // CONTROLE DE DATA
+        // ============================================
+        function mudarData(delta) {
+            const data = new Date(dataAtual);
+            data.setDate(data.getDate() + delta);
+            dataAtual = data.toISOString().split('T')[0];
+            document.getElementById('seletorData').value = dataAtual;
+            carregarDadosData();
+        }
+
+        async function carregarDadosData() {
+            await buscarProgramacaoDia(dataAtual);
+            await carregarProducaoSalva();
+            atualizarFaltante();
+        }
+
+        document.getElementById('btnDiaAnterior').onclick = () => mudarData(-1);
+        document.getElementById('btnProximoDia').onclick = () => mudarData(1);
+        document.getElementById('btnHoje').onclick = () => {
+            dataAtual = new Date().toISOString().split('T')[0];
+            document.getElementById('seletorData').value = dataAtual;
+            carregarDadosData();
+        };
+        document.getElementById('seletorData').onchange = (e) => {
+            dataAtual = e.target.value;
+            carregarDadosData();
+        };
+        document.getElementById('btnSalvarProducao').onclick = salvarProducao;
+
+        // ============================================
+        // EVENTOS DOS INPUTS
+        // ============================================
         document.getElementById('brascop3_ontem').oninput = atualizarFaltante;
         document.getElementById('brascop1_antes').oninput = atualizarFaltante;
         document.getElementById('brascop2_voce').oninput = atualizarFaltante;
@@ -614,8 +773,12 @@
         document.getElementById('calcBrascop').onclick = calcEtiquetasBrascop;
         document.getElementById('calcSerac').onclick = calcEtiquetasSerac;
 
-        carregarDashboard();
-        atualizarFaltante();
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
+        document.getElementById('seletorData').value = dataAtual;
+        
+        carregarDadosData();
         atualizarMeiaNoite();
         renderTarefas();
         setInterval(atualizarMeiaNoite, 60000);
