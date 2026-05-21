@@ -1,12 +1,18 @@
-// frontend/script.js
-// PudimFlow - Funções compartilhadas
+// ============================================
+// PUDIMFLOW - SCRIPT COMPARTILHADO
+// Versão: 3.0 - Funções globais do sistema
+// ============================================
 
-// Configuração da API
+// --------------------------------------------
+// CONFIGURAÇÃO DA API
+// --------------------------------------------
 const API_URL = window.location.hostname === 'localhost' 
     ? 'http://localhost:3000/api' 
-    : 'https://pudimflow-api.onrender.com/api';
+    : 'https://pudimflow.onrender.com/api';
 
-// Função para mostrar loading
+// --------------------------------------------
+// FUNÇÕES DE LOADING
+// --------------------------------------------
 function showLoading(elementId) {
     const el = document.getElementById(elementId);
     if (el) {
@@ -17,7 +23,6 @@ function showLoading(elementId) {
     return null;
 }
 
-// Função para esconder loading
 function hideLoading(elementId, originalHtml) {
     const el = document.getElementById(elementId);
     if (el && originalHtml !== null) {
@@ -25,29 +30,40 @@ function hideLoading(elementId, originalHtml) {
     }
 }
 
-// Função para mostrar mensagem temporária
-function showMessage(message, type = 'success', duration = 3000) {
-    const msgDiv = document.getElementById('globalMessage') || (() => {
-        const div = document.createElement('div');
-        div.id = 'globalMessage';
-        div.style.position = 'fixed';
-        div.style.top = '1rem';
-        div.style.right = '1rem';
-        div.style.zIndex = '9999';
-        document.body.appendChild(div);
-        return div;
-    })();
+// --------------------------------------------
+// MENSAGENS GLOBAIS
+// --------------------------------------------
+function showMessage(message, type = 'success') {
+    let msgDiv = document.getElementById('globalMessage');
     
-    msgDiv.className = `alert alert-${type}`;
+    if (!msgDiv) {
+        msgDiv = document.createElement('div');
+        msgDiv.id = 'globalMessage';
+        msgDiv.style.position = 'fixed';
+        msgDiv.style.top = '80px';
+        msgDiv.style.right = '20px';
+        msgDiv.style.zIndex = '9999';
+        msgDiv.style.padding = '12px 20px';
+        msgDiv.style.borderRadius = '12px';
+        msgDiv.style.fontSize = '0.85rem';
+        msgDiv.style.fontWeight = '500';
+        msgDiv.style.display = 'none';
+        msgDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+        document.body.appendChild(msgDiv);
+    }
+    
+    msgDiv.className = `alert-${type}`;
     msgDiv.innerHTML = message;
     msgDiv.style.display = 'block';
     
     setTimeout(() => {
         msgDiv.style.display = 'none';
-    }, duration);
+    }, 3000);
 }
 
-// Função para salvar dados genéricos
+// --------------------------------------------
+// REQUISIÇÕES HTTP
+// --------------------------------------------
 async function salvarDados(endpoint, dados) {
     try {
         const response = await fetch(`${API_URL}${endpoint}`, {
@@ -69,7 +85,6 @@ async function salvarDados(endpoint, dados) {
     }
 }
 
-// Função para buscar dados
 async function buscarDados(endpoint) {
     try {
         const response = await fetch(`${API_URL}${endpoint}`);
@@ -86,7 +101,9 @@ async function buscarDados(endpoint) {
     }
 }
 
-// Função para formatar números
+// --------------------------------------------
+// FORMATAÇÃO
+// --------------------------------------------
 function formatarNumero(valor, decimal = false) {
     if (decimal) {
         return parseFloat(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -94,7 +111,6 @@ function formatarNumero(valor, decimal = false) {
     return parseInt(valor).toLocaleString('pt-BR');
 }
 
-// Função para formatar data
 function formatarData(data, formato = 'brasileiro') {
     const d = new Date(data);
     if (formato === 'brasileiro') {
@@ -106,7 +122,9 @@ function formatarData(data, formato = 'brasileiro') {
     return d.toISOString().split('T')[0];
 }
 
-// Função para validar campos obrigatórios
+// --------------------------------------------
+// VALIDAÇÃO DE CAMPOS
+// --------------------------------------------
 function validarCampos(ids) {
     for (const id of ids) {
         const el = document.getElementById(id);
@@ -119,7 +137,6 @@ function validarCampos(ids) {
     return true;
 }
 
-// Função para limpar formulário
 function limparFormulario(ids) {
     for (const id of ids) {
         const el = document.getElementById(id);
@@ -135,13 +152,14 @@ function limparFormulario(ids) {
     }
 }
 
-// Função para alternar dark mode (global)
+// --------------------------------------------
+// DARK MODE
+// --------------------------------------------
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
 }
 
-// Função para carregar preferência de dark mode
 function loadDarkModePreference() {
     const isDark = localStorage.getItem('darkMode') === 'true';
     if (isDark) {
@@ -149,7 +167,9 @@ function loadDarkModePreference() {
     }
 }
 
-// Função para atualizar data/hora no footer
+// --------------------------------------------
+// DATA/HORA
+// --------------------------------------------
 function updateDateTime() {
     const el = document.getElementById('ultimaAtualizacao');
     if (el) {
@@ -157,7 +177,27 @@ function updateDateTime() {
     }
 }
 
-// Verificar conectividade com o backend
+function getMonday(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(d.setDate(diff));
+}
+
+function gerarDatasSemana(dataInicio) {
+    const start = new Date(dataInicio);
+    const datas = [];
+    for (let i = 0; i < 7; i++) {
+        const data = new Date(start);
+        data.setDate(start.getDate() + i);
+        datas.push(data.toISOString().split('T')[0]);
+    }
+    return datas;
+}
+
+// --------------------------------------------
+// CONECTIVIDADE
+// --------------------------------------------
 async function checkBackendHealth() {
     try {
         const response = await fetch(`${API_URL.replace('/api', '')}/health`, {
@@ -171,7 +211,34 @@ async function checkBackendHealth() {
     }
 }
 
-// Inicializar quando o DOM carregar
+// --------------------------------------------
+// EXPORTAÇÃO DE FORMATAÇÃO DE PRODUTOS
+// --------------------------------------------
+const produtosConfig = {
+    'Pudim Leite Batavo': { massaG: 85, caldaG: 15, totalG: 100, validadeDias: 43 },
+    'Pudim Leite Itambé': { massaG: 90, caldaG: 10, totalG: 100, validadeDias: 43 },
+    'Pudim Leite Chandelle': { massaG: 90, caldaG: 10, totalG: 100, validadeDias: 43 },
+    'Brigadeiro Batavo': { massaG: 90, caldaG: 0, totalG: 90, validadeDias: 48 },
+    'Brigadeiro Itambé': { massaG: 90, caldaG: 0, totalG: 90, validadeDias: 48 },
+    'Brigadeiro Chandelle': { massaG: 90, caldaG: 0, totalG: 90, validadeDias: 48 },
+    'Beijinho Chandelle': { massaG: 90, caldaG: 0, totalG: 90, validadeDias: 48 },
+    'Manjar Coco Batavo': { massaG: 75, caldaG: 15, totalG: 90, validadeDias: 43 },
+    'Romeu e Julieta Itambé': { massaG: 90, caldaG: 10, totalG: 100, validadeDias: 43 }
+};
+
+function calcularDataValidade(dias, dataBaseStr) {
+    const data = new Date(dataBaseStr);
+    data.setDate(data.getDate() + dias);
+    return data.toLocaleDateString('pt-BR');
+}
+
+function getProdutoConfig(nomeProduto) {
+    return produtosConfig[nomeProduto] || produtosConfig['Pudim Leite Batavo'];
+}
+
+// --------------------------------------------
+// INICIALIZAÇÃO GLOBAL
+// --------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     loadDarkModePreference();
     updateDateTime();
@@ -182,12 +249,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Verificar conectividade
     checkBackendHealth().then(isOnline => {
         if (!isOnline) {
-            showMessage('⚠️ Conectividade com o servidor pode estar limitada', 'warning', 5000);
+            showMessage('⚠️ Conectividade com o servidor pode estar limitada', 'warning');
         }
     });
 });
 
-// Exportar funções para uso global (quando necessário)
+// --------------------------------------------
+// EXPORTAÇÃO PARA USO GLOBAL
+// --------------------------------------------
 window.PudimFlow = {
     API_URL,
     showLoading,
@@ -202,5 +271,10 @@ window.PudimFlow = {
     toggleDarkMode,
     loadDarkModePreference,
     updateDateTime,
-    checkBackendHealth
+    checkBackendHealth,
+    getMonday,
+    gerarDatasSemana,
+    getProdutoConfig,
+    calcularDataValidade,
+    produtosConfig
 };
