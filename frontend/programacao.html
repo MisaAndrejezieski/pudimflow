@@ -2,94 +2,151 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>PudimFlow - Programação Semanal</title>
     <link rel="stylesheet" href="style.css">
     <style>
+        /* ============================================
+           ESTILOS ESPECÍFICOS DA PROGRAMAÇÃO
+           ============================================ */
+        
         .planilha-programacao input.input-preenchido {
             background: #48bb78 !important;
             color: white !important;
             border-color: #38a169 !important;
             font-weight: bold !important;
         }
+        
         .planilha-container {
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
+        
         .planilha-programacao {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.7rem;
-            min-width: 1100px;
+            min-width: 800px;
         }
+        
+        @media (min-width: 1024px) {
+            .planilha-programacao {
+                min-width: 100%;
+            }
+        }
+        
         .planilha-programacao th,
         .planilha-programacao td {
-            border: 1px solid var(--border);
-            padding: 6px 4px;
+            border: 1px solid var(--border, #334155);
+            padding: 8px 4px;
             text-align: center;
             vertical-align: middle;
         }
+        
         .planilha-programacao th {
-            background: var(--primary);
+            background: var(--primary, #1e6f9f);
             color: white;
             font-weight: bold;
-        }
-        .planilha-programacao input {
-            width: 85px;
-            padding: 4px;
-            text-align: center;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            color: var(--text-primary);
             font-size: 0.7rem;
         }
+        
+        .planilha-programacao input {
+            width: 85px;
+            padding: 6px 4px;
+            text-align: center;
+            background: var(--bg-primary, #0f172a);
+            border: 1px solid var(--border, #334155);
+            border-radius: 4px;
+            color: var(--text-primary, #e2e8f0);
+            font-size: 0.7rem;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        @media (max-width: 640px) {
+            .planilha-programacao input {
+                width: 65px;
+                padding: 4px 2px;
+                font-size: 0.65rem;
+            }
+            .planilha-programacao th,
+            .planilha-programacao td {
+                padding: 6px 2px;
+            }
+        }
+        
         .produto-cell {
             text-align: left;
             font-weight: bold;
-            background: var(--bg-secondary);
+            background: var(--bg-secondary, #1e293b);
             font-size: 0.65rem;
+            min-width: 150px;
         }
+        
         .total-row {
-            background: var(--secondary);
+            background: var(--secondary, #0f2b3d);
             color: white;
             font-weight: bold;
         }
+        
         .total-row td {
-            background: var(--secondary);
+            background: var(--secondary, #0f2b3d);
             color: white;
         }
+        
         .total-geral-row {
-            background: var(--primary);
+            background: var(--primary, #1e6f9f);
             color: white;
             font-weight: bold;
         }
+        
         .total-geral-row td {
-            background: var(--primary);
+            background: var(--primary, #1e6f9f);
             color: white;
         }
+        
         .data-semana {
-            background: var(--bg-secondary);
+            background: var(--bg-secondary, #1e293b);
             padding: 16px;
             border-radius: 12px;
             margin-bottom: 20px;
             display: flex;
-            gap: 16px;
+            gap: 12px;
             align-items: center;
             flex-wrap: wrap;
-            border: 1px solid var(--border);
+            border: 1px solid var(--border, #334155);
         }
+        
         .data-semana label {
             font-weight: bold;
             margin-bottom: 0;
         }
+        
         .data-semana input {
             width: auto;
             padding: 8px 12px;
         }
+        
+        @media (max-width: 640px) {
+            .data-semana {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .data-semana button,
+            .data-semana input {
+                width: 100%;
+            }
+        }
+        
         .alert-success { background: #22c55e; color: white; padding: 12px; border-radius: 8px; }
         .alert-info { background: #3b82f6; color: white; padding: 12px; border-radius: 8px; }
         .alert-warning { background: #f59e0b; color: white; padding: 12px; border-radius: 8px; }
         .alert-danger { background: #ef4444; color: white; padding: 12px; border-radius: 8px; }
+        
+        .unidade-indicador {
+            font-size: 0.6rem;
+            color: #94a3b8;
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -103,6 +160,7 @@
         <a href="sim.html">💡 SIM</a>
         <a href="troca-turno.html">🔄 Troca de Turno</a>
         <a href="programacao.html" class="active">📅 Programação</a>
+        <a href="preparacao.html">🍯 Preparação</a>
     </nav>
 
     <div class="container planilha-container">
@@ -114,13 +172,13 @@
             <button id="btnNovaSemana" style="background: #f59e0b;">🆕 CRIAR NOVA SEMANA</button>
         </div>
 
+        <!-- TABELA TREPKO -->
         <div class="card">
             <h2>📊 Programação Semanal - Linha TREPKO (Brascop)</h2>
             <table class="planilha-programacao" id="tabelaTrepko">
                 <thead>
                     <tr id="cabecalhoTrepko">
                         <th>Produto / Código</th>
-                        <!-- Dias serão preenchidos via JS -->
                     </tr>
                 </thead>
                 <tbody id="corpoTrepko"></tbody>
@@ -140,13 +198,13 @@
             </table>
         </div>
 
+        <!-- TABELA SERAC -->
         <div class="card" style="margin-top: 1.5rem;">
             <h2>📊 Programação Semanal - Linha SERAC</h2>
             <table class="planilha-programacao" id="tabelaSerac">
                 <thead>
                     <tr id="cabecalhoSerac">
                         <th>Produto / Código</th>
-                        <!-- Dias serão preenchidos via JS -->
                     </tr>
                 </thead>
                 <tbody id="corpoSerac"></tbody>
@@ -177,10 +235,11 @@
             </table>
         </div>
 
+        <!-- BOTÕES DE AÇÃO -->
         <div class="card" style="margin-top: 1.5rem;">
             <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-                <button id="btnSalvar" style="background: var(--success);">💾 SALVAR PROGRAMAÇÃO (BACKEND)</button>
-                <button id="btnLimpar" style="background: var(--danger);">🗑️ LIMPAR TUDO</button>
+                <button id="btnSalvar" style="background: #2ecc71;">💾 SALVAR PROGRAMAÇÃO (BACKEND)</button>
+                <button id="btnLimpar" style="background: #e74c3c;">🗑️ LIMPAR TUDO</button>
             </div>
             <div id="mensagem" style="margin-top: 1rem; display: none; text-align: center; padding: 12px; border-radius: 12px;"></div>
         </div>
@@ -193,14 +252,18 @@
     <div class="dark-mode-toggle" onclick="toggleDarkMode()">🌓</div>
 
     <script>
-        // Configuração da API
+        // ============================================
+        // CONFIGURAÇÃO DA API
+        // ============================================
         const API_URL = window.location.hostname === 'localhost'
             ? 'http://localhost:3000/api'
             : 'https://pudimflow.onrender.com/api';
 
         const diasSemana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
         
-        // Produtos TREPKO (Brascop)
+        // ============================================
+        // PRODUTOS TREPKO (Brascop)
+        // ============================================
         const produtosTrepko = [
             { codigo: "610100542", nome: "SOB BRIGADEIRA CHOCO BATAVO 180g", unidade: "kg" },
             { codigo: "610102542", nome: "SOB MANJAR COCO BATAVO CX10 180G CB", unidade: "kg" },
@@ -214,18 +277,46 @@
             { codigo: "610100550", nome: "SOB PUDIM LEITE CHANDELLE 200G", unidade: "kg" }
         ];
 
-        // Produtos SERAC
+        // ============================================
+        // PRODUTOS SERAC
+        // ============================================
         const produtosSerac = [
             { codigo: "610100544", nome: "SOB PUDIM LEITE BATAVO 200G", unidade: "L" },
             { codigo: "610102496", nome: "PUDIM LEITE COND ITAMBE 100G", unidade: "kg" }
         ];
 
+        // ============================================
+        // VALORES REAIS DA PROGRAMAÇÃO (BASEADO NA IMAGEM)
+        // ============================================
+        const valoresReaisTrepko = {
+            "610100542": ["6000", "", "", "", "", "", ""],
+            "610102542": ["3333", "", "", "4000", "", "", ""],
+            "610103542": ["", "", "", "", "", "", ""],
+            "610101551": ["", "", "", "", "", "", ""],
+            "610102551": ["", "", "", "", "", "", ""],
+            "610100551": ["", "", "", "", "", "", ""],
+            "610101542": ["3000", "", "", "", "", "", ""],
+            "610101544": ["1667", "", "", "6000", "", "", ""],
+            "610104544": ["", "9000", "9000", "6000", "3000", "3000", ""],
+            "610100550": ["", "4500", "4500", "3000", "1500", "1500", ""]
+        };
+
+        const valoresReaisSerac = {
+            "610100544": ["5000", "4500", "4500", "5222", "4500", "4450", ""],
+            "610102496": ["500", "500", "500", "500", "500", "500", ""]
+        };
+
+        // ============================================
+        // VARIÁVEIS GLOBAIS
+        // ============================================
         let dadosAtuaisTrepko = {};
         let dadosAtuaisSerac = {};
         let semanaAtual = '';
         let datasDias = [];
 
-        // Função para obter segunda-feira da semana
+        // ============================================
+        // FUNÇÕES DE DATA
+        // ============================================
         function getMonday(date) {
             const d = new Date(date);
             const day = d.getDay();
@@ -233,7 +324,6 @@
             return new Date(d.setDate(diff));
         }
 
-        // Gerar datas da semana
         function gerarDatasSemana(dataInicio) {
             const start = new Date(dataInicio);
             const datas = [];
@@ -245,7 +335,9 @@
             return datas;
         }
 
-        // Atualizar cabeçalho com as datas
+        // ============================================
+        // ATUALIZAR CABEÇALHO COM DATAS
+        // ============================================
         function atualizarCabecalho() {
             if (datasDias.length === 0) return;
             
@@ -264,7 +356,9 @@
             cabecalhoSerac.innerHTML = htmlTh;
         }
 
-        // Dados vazios
+        // ============================================
+        // DADOS VAZIOS
+        // ============================================
         function getDadosVaziosTrepko() {
             const dados = {};
             produtosTrepko.forEach(p => { dados[p.codigo] = ["", "", "", "", "", "", ""]; });
@@ -277,7 +371,9 @@
             return dados;
         }
 
-        // Salvar programação no BACKEND
+        // ============================================
+        // SALVAR PROGRAMAÇÃO NO BACKEND
+        // ============================================
         async function salvarProgramacaoBackend() {
             if (!semanaAtual) {
                 mostrarMensagem('❌ Selecione uma semana primeiro!', 'danger');
@@ -286,10 +382,8 @@
 
             mostrarMensagem('💾 Salvando programação no servidor...', 'info');
             
-            // Montar array de itens para salvar
             const itensParaSalvar = [];
             
-            // TREPKO
             for (const produto of produtosTrepko) {
                 const valores = dadosAtuaisTrepko[produto.codigo] || ["", "", "", "", "", "", ""];
                 for (let i = 0; i < diasSemana.length; i++) {
@@ -308,7 +402,6 @@
                 }
             }
             
-            // SERAC
             for (const produto of produtosSerac) {
                 const valores = dadosAtuaisSerac[produto.codigo] || ["", "", "", "", "", "", ""];
                 for (let i = 0; i < diasSemana.length; i++) {
@@ -340,18 +433,21 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    mostrarMensagem(`✅ Programação da semana ${semanaAtual} salva no servidor!`, 'success');
+                    mostrarMensagem(`✅ Programação da semana ${semanaAtual} salva!`, 'success');
+                    salvarProgramacaoLocal();
                 } else {
                     throw new Error(result.error);
                 }
             } catch (error) {
                 console.error('Erro ao salvar:', error);
-                mostrarMensagem(`❌ Erro ao salvar: ${error.message}. Salvando localmente...`, 'warning');
+                mostrarMensagem(`❌ Erro: ${error.message}. Salvando local...`, 'warning');
                 salvarProgramacaoLocal();
             }
         }
 
-        // Salvar localmente (fallback)
+        // ============================================
+        // SALVAR LOCALMENTE (FALLBACK)
+        // ============================================
         function salvarProgramacaoLocal() {
             const programacaoData = {
                 semana: semanaAtual,
@@ -366,7 +462,9 @@
             localStorage.setItem('pudimflow_programacoes', JSON.stringify(todas));
         }
 
-        // Carregar programação do BACKEND
+        // ============================================
+        // CARREGAR PROGRAMAÇÃO DO BACKEND
+        // ============================================
         async function carregarProgramacaoBackend(data) {
             semanaAtual = data;
             datasDias = gerarDatasSemana(semanaAtual);
@@ -379,11 +477,9 @@
                 const result = await response.json();
                 
                 if (result.success && result.data && result.data.length > 0) {
-                    // Inicializar dados vazios
                     dadosAtuaisTrepko = getDadosVaziosTrepko();
                     dadosAtuaisSerac = getDadosVaziosSerac();
                     
-                    // Preencher com os dados do backend
                     for (const item of result.data) {
                         const diaIndex = diasSemana.findIndex(d => d.toLowerCase() === item.dia_semana);
                         if (diaIndex !== -1) {
@@ -400,11 +496,9 @@
                             }
                         }
                     }
-                    
                     renderizarTabelas();
                     mostrarMensagem(`✅ Programação da semana ${semanaAtual} carregada!`, 'success');
                 } else {
-                    // Tentar carregar do localStorage
                     carregarProgramacaoLocal(semanaAtual);
                 }
             } catch (error) {
@@ -413,7 +507,9 @@
             }
         }
 
-        // Carregar programação do localStorage (fallback)
+        // ============================================
+        // CARREGAR LOCALMENTE
+        // ============================================
         function carregarProgramacaoLocal(data) {
             const todas = JSON.parse(localStorage.getItem('pudimflow_programacoes') || '{}');
             const programacao = todas[data];
@@ -424,16 +520,18 @@
                 datasDias = programacao.datas || gerarDatasSemana(data);
                 atualizarCabecalho();
                 renderizarTabelas();
-                mostrarMensagem(`📂 Programação da semana ${data} carregada do navegador!`, 'info');
+                mostrarMensagem(`📂 Programação da semana ${data} carregada (local)!`, 'info');
             } else {
-                // Nova semana, dados vazios
-                dadosAtuaisTrepko = getDadosVaziosTrepko();
-                dadosAtuaisSerac = getDadosVaziosSerac();
+                dadosAtuaisTrepko = JSON.parse(JSON.stringify(valoresReaisTrepko));
+                dadosAtuaisSerac = JSON.parse(JSON.stringify(valoresReaisSerac));
                 renderizarTabelas();
-                mostrarMensagem(`🆕 Semana ${data} - Nenhuma programação encontrada. Crie uma nova!`, 'warning');
+                mostrarMensagem(`📋 Semana ${data} - Programação padrão carregada. Edite e salve!`, 'warning');
             }
         }
 
+        // ============================================
+        // RENDERIZAR TABELAS
+        // ============================================
         function renderizarTabelas() {
             renderizarTabelaTrepko();
             renderizarTabelaSerac();
@@ -477,6 +575,9 @@
             atualizarTodosTotais();
         }
 
+        // ============================================
+        // EVENTOS E CÁLCULOS
+        // ============================================
         function adicionarEventos() {
             document.querySelectorAll('#corpoTrepko input, #corpoSerac input').forEach(input => {
                 input.removeEventListener('input', handleInput);
@@ -491,7 +592,7 @@
             const valor = e.target.value;
             
             if (linha === 'trepko') {
-                if (!dadosAtuaisTrepko[produto]) dadosAtuaisTrepko[produto] = ["9000", "9000", "9000", "9000", "9000", "9000", ""];
+                if (!dadosAtuaisTrepko[produto]) dadosAtuaisTrepko[produto] = ["", "", "", "", "", "", ""];
                 dadosAtuaisTrepko[produto][dia] = valor;
                 if (valor && valor !== '') {
                     e.target.classList.add('input-preenchido');
@@ -499,7 +600,7 @@
                     e.target.classList.remove('input-preenchido');
                 }
             } else {
-                if (!dadosAtuaisSerac[produto]) dadosAtuaisSerac[produto] = ["2000", "2000", "2000", "2000", "2000", "2000", ""];
+                if (!dadosAtuaisSerac[produto]) dadosAtuaisSerac[produto] = ["", "", "", "", "", "", ""];
                 dadosAtuaisSerac[produto][dia] = valor;
                 if (valor && valor !== '') {
                     e.target.classList.add('input-preenchido');
@@ -507,7 +608,6 @@
                     e.target.classList.remove('input-preenchido');
                 }
             }
-            
             atualizarTodosTotais();
         }
 
@@ -554,14 +654,20 @@
 
         function limparTudo() {
             if (confirm('⚠️ Tem certeza? Todos os dados da programação atual serão perdidos.')) {
-                dadosAtuaisTrepko = getDadosVaziosTrepko();
-                dadosAtuaisSerac = getDadosVaziosSerac();
+                dadosAtuaisTrepko = JSON.parse(JSON.stringify(valoresReaisTrepko));
+                dadosAtuaisSerac = JSON.parse(JSON.stringify(valoresReaisSerac));
                 renderizarTabelas();
                 mostrarMensagem('🗑️ Programação limpa!', 'warning');
             }
         }
 
-        // Eventos
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // ============================================
+        // EVENTOS DOS BOTÕES
+        // ============================================
         document.getElementById('btnSalvar').addEventListener('click', salvarProgramacaoBackend);
         document.getElementById('btnLimpar').addEventListener('click', limparTudo);
         document.getElementById('btnCarregarSemana').addEventListener('click', () => {
@@ -587,17 +693,14 @@
             }
         });
 
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-        }
-
-        // Inicializar - semana atual
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
         const hoje = new Date();
         const segunda = getMonday(hoje);
         semanaAtual = segunda.toISOString().split('T')[0];
         document.getElementById('semanaData').value = semanaAtual;
         
-        // Carregar programação
         carregarProgramacaoBackend(semanaAtual);
     </script>
 </body>
