@@ -42,3 +42,56 @@ via celular, tablet ou computador.
 ---
 
 ## 📁 Estrutura do Projeto
+pudimflow/
+├── frontend/
+│ ├── index.html # Dashboard principal
+│ ├── programacao.html # Programação semanal
+│ ├── sim.html # SIM (Etiquetas + GA)
+│ ├── preparacao.html # Preparação do produto
+│ ├── troca-turno.html # Troca de turno
+│ ├── style.css # Estilos globais
+│ └── script.js # Funções compartilhadas
+├── backend/
+│ ├── server.js # API Node.js
+│ ├── package.json # Dependências
+│ └── .env # Variáveis de ambiente
+├── historico_producao/ # Histórico em JSON (4 semanas)
+├── .gitattributes
+├── .gitignore
+└── README.md
+
+
+---
+
+## 🔧 Instalação Local
+
+### Pré-requisitos
+
+- Node.js 18+ instalado
+- Conta no [Neon.tech](https://neon.tech) (banco de dados gratuito)
+- Git instalado
+
+### Passo a Passo
+
+#### 1. Clone o repositório
+
+```bash
+git clone https://github.com/MisaAndrejezieski/pudimflow.git
+cd pudimflow
+
+2. Configure o backend
+bash
+cd backend
+npm install
+npm install cors
+
+3. Configure o arquivo .env
+env
+DATABASE_URL="postgresql://usuario:senha@seu-host.neon.tech/neondb?sslmode=require"
+PORT=3000
+
+4. Inicie o servidor
+bash
+node server.js
+# ou com nodemon para desenvolvimento
+npx nodemon server.js
