@@ -2,416 +2,773 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PudimFlow - Programação Semanal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>PudimFlow - Troca de Turno</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* ============================================
+           ESTILOS ESPECÍFICOS DA TROCA DE TURNO
+           ============================================ */
+        
+        /* Layout duas colunas */
+        .grid-2-colunas {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
         }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #e2e8f0;
-            line-height: 1.5;
+        
+        @media (max-width: 768px) {
+            .grid-2-colunas {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
         }
-        .header {
-            background: linear-gradient(135deg, #0f2b3d 0%, #1e6f9f 100%);
-            color: white;
-            padding: 20px 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .header h1 {
-            font-size: 1.6rem;
-            font-weight: 600;
-        }
-        .header h1::before {
-            content: "🍮 ";
-        }
-        .header .turno {
-            font-size: 0.85rem;
-            opacity: 0.85;
-            margin-top: 6px;
-        }
-        .nav {
-            background: #1e293b;
-            padding: 12px 20px;
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            border-bottom: 1px solid #334155;
-        }
-        .nav a {
-            color: #cbd5e1;
-            text-decoration: none;
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            background: #334155;
-            transition: all 0.2s ease;
-        }
-        .nav a:hover, .nav a.active {
-            background: #1e6f9f;
-            color: white;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-        .planilha-container {
-            overflow-x: auto;
-        }
-        .planilha-programacao {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.7rem;
-            min-width: 900px;
-        }
-        .planilha-programacao th,
-        .planilha-programacao td {
-            border: 1px solid #334155;
-            padding: 6px 4px;
-            text-align: center;
-            vertical-align: middle;
-        }
-        .planilha-programacao th {
-            background: #0f2b3d;
-            color: #38bdf8;
-            font-weight: bold;
-        }
-        .planilha-programacao input {
-            width: 85px;
-            padding: 4px;
-            text-align: center;
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 4px;
-            color: #e2e8f0;
-            font-size: 0.7rem;
-        }
-        .produto-cell {
-            text-align: left;
-            font-weight: bold;
-            background: #1e293b;
-            font-size: 0.65rem;
-        }
-        .total-row {
-            background: #0f2b3d;
-            color: #38bdf8;
-            font-weight: bold;
-        }
-        .total-geral-row {
-            background: #1e6f9f;
-            color: white;
-            font-weight: bold;
-        }
-        button {
-            background: #1e6f9f;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #0f2b3d;
-        }
-        .btn-success {
-            background: #2ecc71;
-        }
-        .footer {
-            text-align: center;
+        
+        /* Cards de máquina */
+        .maquina-card {
+            background: var(--bg-secondary, #1e293b);
+            border-radius: 20px;
             padding: 20px;
+            border-top: 4px solid;
+        }
+        
+        .maquina-trepko {
+            border-top-color: #3b82f6;
+        }
+        
+        .maquina-serac {
+            border-top-color: #22c55e;
+        }
+        
+        .maquina-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .maquina-titulo {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .badge-produtivo {
+            background: #2ecc71;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+        
+        .badge-parado {
+            background: #e74c3c;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+        
+        /* Campos de produção */
+        .producao-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .producao-item {
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .producao-item label {
+            font-size: 0.7rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .producao-item input {
+            width: 100%;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        /* Gráfico de produtividade */
+        .grafico-container {
+            margin: 16px 0;
+        }
+        
+        .grafico-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .grafico-label {
+            width: 80px;
+            font-size: 0.7rem;
+        }
+        
+        .grafico-barra {
+            flex: 1;
+            height: 24px;
+            background: var(--bg-tertiary, #334155);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .grafico-preenchido {
+            height: 100%;
+            background: #2ecc71;
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            font-size: 0.7rem;
+            color: white;
+        }
+        
+        .grafico-preenchido.parado {
+            background: #e74c3c;
+        }
+        
+        /* Paradas */
+        .paradas-list {
+            margin: 12px 0;
+        }
+        
+        .parada-item {
+            background: var(--bg-primary, #0f172a);
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 6px;
             font-size: 0.75rem;
-            color: #64748b;
-            border-top: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .btn-add {
+            background: #2ecc71;
+            padding: 6px 12px;
+            font-size: 0.7rem;
+            margin-top: 8px;
+        }
+        
+        /* Tanques */
+        .tanques-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 12px 0;
+        }
+        
+        .tanque-item {
+            background: var(--bg-primary, #0f172a);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .tanque-item label {
+            font-size: 0.65rem;
+            margin-bottom: 4px;
+        }
+        
+        .tanque-item input {
+            text-align: center;
+            padding: 6px;
+            font-size: 0.8rem;
+        }
+        
+        /* Desvios */
+        .desvios-list {
+            margin: 12px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .desvio-item {
+            background: var(--bg-primary, #0f172a);
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 6px;
+            font-size: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Resumo do turno */
+        .resumo-turno {
+            background: linear-gradient(135deg, #1e6f9f, #0f2b3d);
+            border-radius: 16px;
+            padding: 16px;
+            color: white;
             margin-top: 20px;
+        }
+        
+        .resumo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+        
+        .resumo-item {
+            text-align: center;
+        }
+        
+        .resumo-valor {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .resumo-label {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+        
+        /* Botões de ação */
+        .acoes-turno {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 24px;
+            flex-wrap: wrap;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>PudimFlow - Programação Semanal</h1>
-        <div class="turno">Planejamento de Produção</div>
+        <h1>🍮 PudimFlow - Troca de Turno</h1>
+        <div class="turno">Turno da Noite | Líder: Misa Andrejezieski</div>
     </div>
 
     <nav class="nav">
         <a href="index.html">📊 Dashboard</a>
-        <a href="producao.html">🏭 Produção</a>
-        <a href="qualidade.html">✅ Qualidade</a>
-        <a href="seguranca.html">🛡️ Segurança</a>
         <a href="sim.html">💡 SIM</a>
-        <a href="programacao.html" class="active">📅 Programação</a>
-        <a href="relatorios.html">📈 Relatórios</a>
+        <a href="troca-turno.html" class="active">🔄 Troca de Turno</a>
+        <a href="programacao.html">📅 Programação</a>
+        <a href="preparacao.html">🍯 Preparação</a>
     </nav>
 
-    <div class="container planilha-container">
-        <div class="card" style="background: #1e293b; border-radius: 20px; padding: 20px; margin-bottom: 20px;">
-            <h2 style="color: #38bdf8; margin-bottom: 16px;">📊 Programação Semanal - Linha Trepko (Pudins)</h2>
-            <table class="planilha-programacao" id="tabelaTrepko">
-                <thead>
-                    <tr>
-                        <th>Produto / Código</th>
-                        <th>Segunda</th>
-                        <th>Terça</th>
-                        <th>Quarta</th>
-                        <th>Quinta</th>
-                        <th>Sexta</th>
-                        <th>Sábado</th>
-                        <th>Domingo</th>
-                        <th>Total Semana</th>
-                    </tr>
-                </thead>
-                <tbody id="corpoTrepko"></tbody>
-                <tfoot>
-                    <tr class="total-row">
-                        <td><strong>TOTAL LINHA TREPKO</strong></td>
-                        <td id="totalDiaTrepko_0">-</td>
-                        <td id="totalDiaTrepko_1">-</td>
-                        <td id="totalDiaTrepko_2">-</td>
-                        <td id="totalDiaTrepko_3">-</td>
-                        <td id="totalDiaTrepko_4">-</td>
-                        <td id="totalDiaTrepko_5">-</td>
-                        <td id="totalDiaTrepko_6">-</td>
-                        <td id="totalSemanaTrepko">0</td>
-                    </tr>
-                </tfoot>
-            </table>
+    <div class="container">
+        <!-- INFORMAÇÕES DO TURNO -->
+        <div class="card">
+            <h2>📋 Informações do Turno</h2>
+            <div class="grid-2-colunas">
+                <div class="form-group">
+                    <label>📅 Data</label>
+                    <input type="date" id="turnoData" value="">
+                </div>
+                <div class="form-group">
+                    <label>👤 Líder</label>
+                    <input type="text" id="turnoLider" value="Misa Andrejezieski">
+                </div>
+                <div class="form-group">
+                    <label>⏰ Duração do Turno (minutos)</label>
+                    <input type="number" id="turnoDuracao" value="440" placeholder="440 min = 7h20">
+                </div>
+                <div class="form-group">
+                    <label>🏭 Turno</label>
+                    <input type="text" value="Noite (21:40 - 05:00)" readonly>
+                </div>
+            </div>
         </div>
 
-        <div class="card" style="background: #1e293b; border-radius: 20px; padding: 20px; margin-bottom: 20px;">
-            <h2 style="color: #38bdf8; margin-bottom: 16px;">📊 Programação Semanal - Linha Serac (Pudins)</h2>
-            <table class="planilha-programacao" id="tabelaSerac">
-                <thead>
-                    <tr>
-                        <th>Produto / Código</th>
-                        <th>Segunda</th>
-                        <th>Terça</th>
-                        <th>Quarta</th>
-                        <th>Quinta</th>
-                        <th>Sexta</th>
-                        <th>Sábado</th>
-                        <th>Domingo</th>
-                        <th>Total Semana</th>
-                    </tr>
-                </thead>
-                <tbody id="corpoSerac"></tbody>
-                <tfoot>
-                    <tr class="total-row">
-                        <td><strong>TOTAL LINHA SERAC</strong></td>
-                        <td id="totalDiaSerac_0">-</td>
-                        <td id="totalDiaSerac_1">-</td>
-                        <td id="totalDiaSerac_2">-</td>
-                        <td id="totalDiaSerac_3">-</td>
-                        <td id="totalDiaSerac_4">-</td>
-                        <td id="totalDiaSerac_5">-</td>
-                        <td id="totalDiaSerac_6">-</td>
-                        <td id="totalSemanaSerac">0</td>
-                    </tr>
-                    <tr class="total-geral-row">
-                        <td><strong>TOTAL GERAL (TREPKO + SERAC)</strong></td>
-                        <td id="totalGeralDia_0">-</td>
-                        <td id="totalGeralDia_1">-</td>
-                        <td id="totalGeralDia_2">-</td>
-                        <td id="totalGeralDia_3">-</td>
-                        <td id="totalGeralDia_4">-</td>
-                        <td id="totalGeralDia_5">-</td>
-                        <td id="totalGeralDia_6">-</td>
-                        <td id="totalGeralSemana">0</td>
-                    </tr>
-                </tfoot>
-            </table>
+        <!-- MÁQUINAS: TREPKO e SERAC -->
+        <div class="grid-2-colunas">
+            <!-- TREPKO (Brascop) -->
+            <div class="maquina-card maquina-trepko">
+                <div class="maquina-header">
+                    <span class="maquina-titulo">🔵 TREPKO (Brascop)</span>
+                    <span id="trepkoStatusBadge" class="badge-produtivo">🟢 Produzindo</span>
+                </div>
+
+                <!-- Produção -->
+                <div class="producao-row">
+                    <div class="producao-item">
+                        <label>Envasado (estantes)</label>
+                        <input type="number" id="trepkoEnvasadoEst" placeholder="0" value="0">
+                    </div>
+                    <div class="producao-item">
+                        <label>Envasado (kg)</label>
+                        <input type="number" id="trepkoEnvasadoKg" placeholder="0" value="0">
+                    </div>
+                    <div class="producao-item">
+                        <label>Resselagem (estantes)</label>
+                        <input type="number" id="trepkoResselagemEst" placeholder="0" value="0">
+                    </div>
+                    <div class="producao-item">
+                        <label>Resselagem (kg)</label>
+                        <input type="number" id="trepkoResselagemKg" placeholder="0" value="0">
+                    </div>
+                </div>
+
+                <!-- Perdas -->
+                <div class="producao-row">
+                    <div class="producao-item">
+                        <label>Perdas Envasadora (copos)</label>
+                        <input type="number" id="trepkoPerdasEnv" placeholder="0" value="0">
+                    </div>
+                    <div class="producao-item">
+                        <label>Perdas Resselagem (copos)</label>
+                        <input type="number" id="trepkoPerdasRess" placeholder="0" value="0">
+                    </div>
+                </div>
+
+                <!-- Tempo produtivo -->
+                <div class="producao-row">
+                    <div class="producao-item">
+                        <label>⏱️ Tempo produzindo (min)</label>
+                        <input type="number" id="trepkoTempoProd" placeholder="320" value="320">
+                    </div>
+                    <div class="producao-item">
+                        <label>⏱️ Tempo parado (min)</label>
+                        <input type="number" id="trepkoTempoParado" placeholder="120" value="120">
+                    </div>
+                </div>
+
+                <!-- Gráfico de produtividade TREPKO -->
+                <div class="grafico-container">
+                    <div class="grafico-bar">
+                        <span class="grafico-label">Produtividade</span>
+                        <div class="grafico-barra">
+                            <div class="grafico-preenchido" id="trepkoGrafico" style="width: 73%;">73%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paradas TREPKO -->
+                <label style="font-size: 0.75rem;">⛔ Paradas</label>
+                <div class="paradas-list" id="trepkoParadasList">
+                    <div class="parada-item">
+                        <span>00:20 - ajuste para inicio</span>
+                        <button class="btn-remover-parada" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
+                    </div>
+                    <div class="parada-item">
+                        <span>00:40 - aguardando resselagem</span>
+                        <button class="btn-remover-parada" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
+                    </div>
+                </div>
+                <div class="producao-row">
+                    <input type="text" id="trepkoNovaParada" placeholder="Nova parada (ex: 01:00 - queda energia)" style="flex: 1;">
+                    <button id="trepkoAddParada" class="btn-add">➕ Adicionar</button>
+                </div>
+
+                <!-- Tanques TREPKO -->
+                <label style="font-size: 0.75rem; margin-top: 12px;">🛢️ Tanques (Litros)</label>
+                <div class="tanques-grid">
+                    <div class="tanque-item">
+                        <label>TQ 01</label>
+                        <input type="number" id="trepkoTQ01" placeholder="0" value="3000">
+                    </div>
+                    <div class="tanque-item">
+                        <label>TQ 02</label>
+                        <input type="number" id="trepkoTQ02" placeholder="0" value="700">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SERAC -->
+            <div class="maquina-card maquina-serac">
+                <div class="maquina-header">
+                    <span class="maquina-titulo">🟢 SERAC</span>
+                    <span id="seracStatusBadge" class="badge-parado">🔴 Parado</span>
+                </div>
+
+                <!-- Produção -->
+                <div class="producao-row">
+                    <div class="producao-item">
+                        <label>Envasado (estantes)</label>
+                        <input type="number" id="seracEnvasadoEst" placeholder="0" value="0">
+                    </div>
+                    <div class="producao-item">
+                        <label>Envasado (kg)</label>
+                        <input type="number" id="seracEnvasadoKg" placeholder="0" value="0">
+                    </div>
+                    <div class="producao-item">
+                        <label>Resselagem (estantes)</label>
+                        <input type="number" id="seracResselagemEst" placeholder="0" value="0">
+                    </div>
+                    <div class="producao-item">
+                        <label>Resselagem (kg)</label>
+                        <input type="number" id="seracResselagemKg" placeholder="0" value="0">
+                    </div>
+                </div>
+
+                <!-- Perdas -->
+                <div class="producao-row">
+                    <div class="producao-item">
+                        <label>Perdas Envasadora (copos)</label>
+                        <input type="number" id="seracPerdasEnv" placeholder="0" value="0">
+                    </div>
+                    <div class="producao-item">
+                        <label>Perdas Resselagem (copos)</label>
+                        <input type="number" id="seracPerdasRess" placeholder="0" value="0">
+                    </div>
+                </div>
+
+                <!-- Tempo produtivo -->
+                <div class="producao-row">
+                    <div class="producao-item">
+                        <label>⏱️ Tempo produzindo (min)</label>
+                        <input type="number" id="seracTempoProd" placeholder="0" value="0">
+                    </div>
+                    <div class="producao-item">
+                        <label>⏱️ Tempo parado (min)</label>
+                        <input type="number" id="seracTempoParado" placeholder="440" value="440">
+                    </div>
+                </div>
+
+                <!-- Gráfico de produtividade SERAC -->
+                <div class="grafico-container">
+                    <div class="grafico-bar">
+                        <span class="grafico-label">Produtividade</span>
+                        <div class="grafico-barra">
+                            <div class="grafico-preenchido parado" id="seracGrafico" style="width: 0%;">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paradas SERAC -->
+                <label style="font-size: 0.75rem;">⛔ Paradas</label>
+                <div class="paradas-list" id="seracParadasList">
+                    <div class="parada-item">
+                        <span>Falta de Programação</span>
+                        <button class="btn-remover-parada" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
+                    </div>
+                </div>
+                <div class="producao-row">
+                    <input type="text" id="seracNovaParada" placeholder="Nova parada" style="flex: 1;">
+                    <button id="seracAddParada" class="btn-add">➕ Adicionar</button>
+                </div>
+
+                <!-- Tanques SERAC -->
+                <label style="font-size: 0.75rem; margin-top: 12px;">🛢️ Tanques (%)</label>
+                <div class="tanques-grid">
+                    <div class="tanque-item">
+                        <label>TQ 03</label>
+                        <input type="number" id="seracTQ03" placeholder="0" value="26">
+                    </div>
+                    <div class="tanque-item">
+                        <label>TQ 04</label>
+                        <input type="number" id="seracTQ04" placeholder="0" value="0">
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div style="display: flex; gap: 16px; justify-content: center; margin-top: 24px;">
-            <button id="btnSalvar" class="btn-success">💾 SALVAR PROGRAMAÇÃO</button>
-            <button id="btnCarregar">📂 CARREGAR PROGRAMAÇÃO</button>
+        <!-- DESVIOS (Eventos fora da rotina) -->
+        <div class="card">
+            <h2>⚠️ Desvios (Eventos fora da rotina)</h2>
+            <div class="desvios-list" id="desviosList">
+                <div class="desvio-item">
+                    <span>23:40 - Queda de estante na resselagem</span>
+                    <button class="btn-remover-desvio" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
+                </div>
+                <div class="desvio-item">
+                    <span>01:15 - Erro de data no lote 123456 (produto Batavo)</span>
+                    <button class="btn-remover-desvio" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
+                </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 12px;">
+                <input type="text" id="novoDesvio" placeholder="Novo desvio (ex: 03:00 - Falta de energia)" style="flex: 1;">
+                <button id="addDesvio" class="btn-add">➕ Adicionar desvio</button>
+            </div>
         </div>
-        <div id="mensagem" style="margin-top: 16px; display: none; text-align: center; padding: 12px; border-radius: 12px;"></div>
+
+        <!-- RESUMO DO TURNO -->
+        <div class="resumo-turno">
+            <h3 style="color: white; margin-bottom: 12px;">📊 Resumo do Turno</h3>
+            <div class="resumo-grid">
+                <div class="resumo-item">
+                    <div class="resumo-valor" id="resumoTotalEstantes">0</div>
+                    <div class="resumo-label">Total Estantes</div>
+                </div>
+                <div class="resumo-item">
+                    <div class="resumo-valor" id="resumoTotalKg">0</div>
+                    <div class="resumo-label">Total KG</div>
+                </div>
+                <div class="resumo-item">
+                    <div class="resumo-valor" id="resumoTotalPerdas">0</div>
+                    <div class="resumo-label">Perdas (copos)</div>
+                </div>
+                <div class="resumo-item">
+                    <div class="resumo-valor" id="resumoProdutividade">0%</div>
+                    <div class="resumo-label">Produtividade Geral</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AÇÕES -->
+        <div class="acoes-turno">
+            <button id="btnSalvarTurno" style="background: #2ecc71;">💾 SALVAR TROCA DE TURNO</button>
+            <button id="btnCopiarResumo" style="background: #3498db;">📋 COPIAR RESUMO</button>
+            <button id="btnLimparTurno" style="background: #e74c3c;">🗑️ LIMPAR TUDO</button>
+        </div>
     </div>
 
     <div class="footer">
-        <p>PudimFlow - Misael Andrejezieski</p>
+        <p>PudimFlow - Sistema de Gestão de Produção | Turno da Noite</p>
     </div>
 
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">🌓</div>
+
     <script>
-        const API_URL = 'https://pudimflow.onrender.com/api';
-        const dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
+        // ============================================
+        // CHAVE DE ARMAZENAMENTO
+        // ============================================
+        const TROCA_TURNO_KEY = 'pudimflow_troca_turno';
 
-        const dadosReaisTrepko = {
-            "610100542": ["6000", "", "", "", "", "", ""],
-            "610102542": ["", "", "", "4000", "", "", ""],
-            "610103542": ["", "", "", "", "", "", ""],
-            "610101551": ["", "", "", "", "", "", ""],
-            "610102551": ["", "", "", "", "", "", ""],
-            "610100551": ["", "", "", "", "", "", ""],
-            "610101542": ["3000", "", "", "", "", "", ""],
-            "610101544": ["", "", "", "", "6000", "", ""],
-            "610104544": ["", "9000", "9000", "6000", "3000", "3000", ""],
-            "610100550": ["", "", "", "", "", "", "6000"]
-        };
-
-        const dadosReaisSerac = {
-            "610100544": ["1000", "1000", "1000", "1000", "1000", "", ""],
-            "610102496": ["", "", "", "", "", "", ""]
-        };
-
-        const produtosTrepko = [
-            { codigo: "610100542", nome: "SOB BRIGADEIRA CHOCO BATAVO 180g" },
-            { codigo: "610102542", nome: "SOB MANJAR COCO BATAVO CX10 180G CB" },
-            { codigo: "610103542", nome: "SOB ROMEU E JULIETA ITAMBE CX10 180G" },
-            { codigo: "610101551", nome: "SOB BEIJINHO CHANDELLE CX20 90G CBI" },
-            { codigo: "610102551", nome: "SOB BRIG MORANGO CHANDELLE CX20 90G" },
-            { codigo: "610100551", nome: "SOB BRIGADEIRA CHANDELLE 180G" },
-            { codigo: "610101542", nome: "SOB BRIGADEIRA ITAMBE 180G" },
-            { codigo: "610101544", nome: "SOB PUDIM LEITE ITAMBE 200G" },
-            { codigo: "610104544", nome: "SOB PUDIM LEITE BATAVO 200G" },
-            { codigo: "610100550", nome: "SOB PUDIM LEITE CHANDELLE 200G" }
-        ];
-
-        const produtosSerac = [
-            { codigo: "610100544", nome: "SOB PUDIM LEITE BATAVO 200G" },
-            { codigo: "610102496", nome: "PUDIM LEITE COND ITAMBE 100G" }
-        ];
-
-        function extrairMeta(valor) {
-            if (!valor) return 0;
-            return parseFloat(valor) || 0;
+        // ============================================
+        // FUNÇÕES DE UTILIDADE
+        // ============================================
+        function showMessage(message, type = 'success') {
+            const msgDiv = document.getElementById('globalMessage') || (() => {
+                const div = document.createElement('div');
+                div.id = 'globalMessage';
+                div.style.position = 'fixed';
+                div.style.top = '80px';
+                div.style.right = '20px';
+                div.style.zIndex = '9999';
+                div.style.padding = '12px 20px';
+                div.style.borderRadius = '12px';
+                div.style.fontSize = '0.85rem';
+                div.style.fontWeight = '500';
+                div.style.display = 'none';
+                div.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+                document.body.appendChild(div);
+                return div;
+            })();
+            msgDiv.className = `alert-${type}`;
+            msgDiv.innerHTML = message;
+            msgDiv.style.display = 'block';
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 3000);
         }
 
-        function calcularTotaisLinha(row) {
-            let total = 0;
-            for (let i = 0; i < dias.length; i++) {
-                const input = row.querySelector(`input[data-dia="${dias[i]}"]`);
-                if (input && input.value) total += extrairMeta(input.value);
+        function atualizarGraficos() {
+            // TREPKO
+            const trepkoDuracao = parseInt(document.getElementById('turnoDuracao').value) || 440;
+            const trepkoProd = parseInt(document.getElementById('trepkoTempoProd').value) || 0;
+            const trepkoPercentual = Math.min(100, Math.round((trepkoProd / trepkoDuracao) * 100));
+            document.getElementById('trepkoGrafico').style.width = `${trepkoPercentual}%`;
+            document.getElementById('trepkoGrafico').textContent = `${trepkoPercentual}%`;
+            document.getElementById('trepkoStatusBadge').innerHTML = trepkoPercentual > 50 ? '🟢 Produzindo' : '🔴 Parado';
+            document.getElementById('trepkoStatusBadge').className = trepkoPercentual > 50 ? 'badge-produtivo' : 'badge-parado';
+
+            // SERAC
+            const seracProd = parseInt(document.getElementById('seracTempoProd').value) || 0;
+            const seracPercentual = Math.min(100, Math.round((seracProd / trepkoDuracao) * 100));
+            document.getElementById('seracGrafico').style.width = `${seracPercentual}%`;
+            document.getElementById('seracGrafico').textContent = `${seracPercentual}%`;
+            document.getElementById('seracStatusBadge').innerHTML = seracPercentual > 50 ? '🟢 Produzindo' : '🔴 Parado';
+            document.getElementById('seracStatusBadge').className = seracPercentual > 50 ? 'badge-produtivo' : 'badge-parado';
+
+            // Resumo
+            const trepkoEnvEst = parseInt(document.getElementById('trepkoEnvasadoEst').value) || 0;
+            const trepkoRessEst = parseInt(document.getElementById('trepkoResselagemEst').value) || 0;
+            const seracEnvEst = parseInt(document.getElementById('seracEnvasadoEst').value) || 0;
+            const seracRessEst = parseInt(document.getElementById('seracResselagemEst').value) || 0;
+            const totalEstantes = trepkoEnvEst + trepkoRessEst + seracEnvEst + seracRessEst;
+            
+            const trepkoEnvKg = parseInt(document.getElementById('trepkoEnvasadoKg').value) || 0;
+            const trepkoRessKg = parseInt(document.getElementById('trepkoResselagemKg').value) || 0;
+            const seracEnvKg = parseInt(document.getElementById('seracEnvasadoKg').value) || 0;
+            const seracRessKg = parseInt(document.getElementById('seracResselagemKg').value) || 0;
+            const totalKg = trepkoEnvKg + trepkoRessKg + seracEnvKg + seracRessKg;
+            
+            const perdas = (parseInt(document.getElementById('trepkoPerdasEnv').value) || 0) +
+                          (parseInt(document.getElementById('trepkoPerdasRess').value) || 0) +
+                          (parseInt(document.getElementById('seracPerdasEnv').value) || 0) +
+                          (parseInt(document.getElementById('seracPerdasRess').value) || 0);
+            
+            const produtividadeGeral = Math.round((trepkoProd + seracProd) / (trepkoDuracao * 2) * 100);
+            
+            document.getElementById('resumoTotalEstantes').textContent = totalEstantes;
+            document.getElementById('resumoTotalKg').textContent = totalKg;
+            document.getElementById('resumoTotalPerdas').textContent = perdas;
+            document.getElementById('resumoProdutividade').textContent = `${produtividadeGeral}%`;
+        }
+
+        // ============================================
+        // PARADAS
+        // ============================================
+        function addParada(linha) {
+            const input = document.getElementById(`${linha}NovaParada`);
+            const texto = input.value.trim();
+            if (!texto) return;
+            
+            const container = document.getElementById(`${linha}ParadasList`);
+            const div = document.createElement('div');
+            div.className = 'parada-item';
+            div.innerHTML = `
+                <span>${texto}</span>
+                <button class="btn-remover-parada" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
+            `;
+            div.querySelector('.btn-remover-parada').addEventListener('click', () => div.remove());
+            container.appendChild(div);
+            input.value = '';
+        }
+
+        // ============================================
+        // DESVIOS
+        // ============================================
+        function addDesvio() {
+            const input = document.getElementById('novoDesvio');
+            const texto = input.value.trim();
+            if (!texto) return;
+            
+            const container = document.getElementById('desviosList');
+            const div = document.createElement('div');
+            div.className = 'desvio-item';
+            div.innerHTML = `
+                <span>${texto}</span>
+                <button class="btn-remover-desvio" style="background: #e74c3c; padding: 2px 8px;">🗑️</button>
+            `;
+            div.querySelector('.btn-remover-desvio').addEventListener('click', () => div.remove());
+            container.appendChild(div);
+            input.value = '';
+        }
+
+        // ============================================
+        // SALVAR TROCA DE TURNO
+        // ============================================
+        function salvarTrocaTurno() {
+            const paradasTrepko = [];
+            document.querySelectorAll('#trepkoParadasList .parada-item span').forEach(span => {
+                paradasTrepko.push(span.textContent);
+            });
+            
+            const paradasSerac = [];
+            document.querySelectorAll('#seracParadasList .parada-item span').forEach(span => {
+                paradasSerac.push(span.textContent);
+            });
+            
+            const desvios = [];
+            document.querySelectorAll('#desviosList .desvio-item span').forEach(span => {
+                desvios.push(span.textContent);
+            });
+            
+            const dados = {
+                data: document.getElementById('turnoData').value,
+                lider: document.getElementById('turnoLider').value,
+                duracao: document.getElementById('turnoDuracao').value,
+                trepko: {
+                    envasadoEst: document.getElementById('trepkoEnvasadoEst').value,
+                    envasadoKg: document.getElementById('trepkoEnvasadoKg').value,
+                    resselagemEst: document.getElementById('trepkoResselagemEst').value,
+                    resselagemKg: document.getElementById('trepkoResselagemKg').value,
+                    perdasEnv: document.getElementById('trepkoPerdasEnv').value,
+                    perdasRess: document.getElementById('trepkoPerdasRess').value,
+                    tempoProd: document.getElementById('trepkoTempoProd').value,
+                    tempoParado: document.getElementById('trepkoTempoParado').value,
+                    tq01: document.getElementById('trepkoTQ01').value,
+                    tq02: document.getElementById('trepkoTQ02').value,
+                    paradas: paradasTrepko
+                },
+                serac: {
+                    envasadoEst: document.getElementById('seracEnvasadoEst').value,
+                    envasadoKg: document.getElementById('seracEnvasadoKg').value,
+                    resselagemEst: document.getElementById('seracResselagemEst').value,
+                    resselagemKg: document.getElementById('seracResselagemKg').value,
+                    perdasEnv: document.getElementById('seracPerdasEnv').value,
+                    perdasRess: document.getElementById('seracPerdasRess').value,
+                    tempoProd: document.getElementById('seracTempoProd').value,
+                    tempoParado: document.getElementById('seracTempoParado').value,
+                    tq03: document.getElementById('seracTQ03').value,
+                    tq04: document.getElementById('seracTQ04').value,
+                    paradas: paradasSerac
+                },
+                desvios: desvios,
+                salvo_em: new Date().toISOString()
+            };
+            
+            localStorage.setItem(TROCA_TURNO_KEY, JSON.stringify(dados));
+            showMessage('✅ Troca de turno salva com sucesso!', 'success');
+        }
+
+        // ============================================
+        // COPIAR RESUMO
+        // ============================================
+        function copiarResumo() {
+            const data = document.getElementById('turnoData').value;
+            const lider = document.getElementById('turnoLider').value;
+            const totalEstantes = document.getElementById('resumoTotalEstantes').textContent;
+            const totalKg = document.getElementById('resumoTotalKg').textContent;
+            const totalPerdas = document.getElementById('resumoTotalPerdas').textContent;
+            const produtividade = document.getElementById('resumoProdutividade').textContent;
+            
+            const resumo = `🍮 PUDIMFLOW - TROCA DE TURNO\n\n📅 Data: ${data}\n👤 Líder: ${lider}\n🕒 Turno: Noite (21:40 - 05:00)\n\n📊 RESUMO DA PRODUÇÃO\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📦 Total Estantes: ${totalEstantes}\n⚖️ Total KG: ${totalKg}\n📉 Total Perdas: ${totalPerdas} copos\n📈 Produtividade Geral: ${produtividade}\n\n✅ Turno finalizado e registrado no sistema.`;
+            
+            navigator.clipboard.writeText(resumo);
+            showMessage('✅ Resumo copiado para a área de transferência!', 'success');
+        }
+
+        // ============================================
+        // LIMPAR FORMULÁRIO
+        // ============================================
+        function limparTurno() {
+            if (confirm('⚠️ Tem certeza? Todos os dados da troca de turno serão perdidos.')) {
+                location.reload();
             }
-            const totalCell = row.querySelector('.total-semana');
-            if (totalCell) totalCell.textContent = total.toLocaleString();
-            return total;
         }
 
-        function calcularTotalDia(tabelaId, diaIndex) {
-            let total = 0;
-            const rows = document.querySelectorAll(`#${tabelaId} tbody tr`);
-            rows.forEach(row => {
-                const input = row.querySelector(`input[data-dia="${dias[diaIndex]}"]`);
-                if (input && input.value) total += extrairMeta(input.value);
-            });
-            return total;
-        }
-
-        function atualizarTodosTotais() {
-            for (let i = 0; i < dias.length; i++) {
-                const totalTrepko = calcularTotalDia('tabelaTrepko', i);
-                const totalSerac = calcularTotalDia('tabelaSerac', i);
-                document.getElementById(`totalDiaTrepko_${i}`).textContent = totalTrepko.toLocaleString();
-                document.getElementById(`totalDiaSerac_${i}`).textContent = totalSerac.toLocaleString();
-                document.getElementById(`totalGeralDia_${i}`).textContent = (totalTrepko + totalSerac).toLocaleString();
+        // ============================================
+        // CARREGAR DADOS SALVOS
+        // ============================================
+        function carregarTrocaTurno() {
+            const dados = localStorage.getItem(TROCA_TURNO_KEY);
+            if (dados) {
+                const d = JSON.parse(dados);
+                if (d.data) document.getElementById('turnoData').value = d.data;
+                if (d.lider) document.getElementById('turnoLider').value = d.lider;
+                if (d.duracao) document.getElementById('turnoDuracao').value = d.duracao;
+                // Restaurar dados das máquinas...
+            } else {
+                document.getElementById('turnoData').value = new Date().toISOString().split('T')[0];
             }
-            let totalSemanaTrepko = 0, totalSemanaSerac = 0;
-            for (let i = 0; i < dias.length; i++) {
-                totalSemanaTrepko += calcularTotalDia('tabelaTrepko', i);
-                totalSemanaSerac += calcularTotalDia('tabelaSerac', i);
-            }
-            document.getElementById('totalSemanaTrepko').textContent = totalSemanaTrepko.toLocaleString();
-            document.getElementById('totalSemanaSerac').textContent = totalSemanaSerac.toLocaleString();
-            document.getElementById('totalGeralSemana').textContent = (totalSemanaTrepko + totalSemanaSerac).toLocaleString();
         }
 
-        function adicionarEventos() {
-            document.querySelectorAll('.planilha-programacao input[data-dia]').forEach(input => {
-                input.addEventListener('input', () => {
-                    const row = input.closest('tr');
-                    if (row) calcularTotaisLinha(row);
-                    atualizarTodosTotais();
-                });
-            });
+        // ============================================
+        // EVENTOS
+        // ============================================
+        document.getElementById('trepkoAddParada').addEventListener('click', () => addParada('trepko'));
+        document.getElementById('seracAddParada').addEventListener('click', () => addParada('serac'));
+        document.getElementById('addDesvio').addEventListener('click', addDesvio);
+        document.getElementById('btnSalvarTurno').addEventListener('click', salvarTrocaTurno);
+        document.getElementById('btnCopiarResumo').addEventListener('click', copiarResumo);
+        document.getElementById('btnLimparTurno').addEventListener('click', limparTurno);
+        
+        // Atualizar gráficos quando campos mudarem
+        const inputs = ['turnoDuracao', 'trepkoTempoProd', 'trepkoTempoParado', 'seracTempoProd', 'seracTempoParado',
+                        'trepkoEnvasadoEst', 'trepkoResselagemEst', 'seracEnvasadoEst', 'seracResselagemEst',
+                        'trepkoEnvasadoKg', 'trepkoResselagemKg', 'seracEnvasadoKg', 'seracResselagemKg',
+                        'trepkoPerdasEnv', 'trepkoPerdasRess', 'seracPerdasEnv', 'seracPerdasRess'];
+        inputs.forEach(id => {
+            document.getElementById(id)?.addEventListener('input', atualizarGraficos);
+        });
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
         }
 
-        function carregarTabelaTrepko(dados = dadosReaisTrepko) {
-            const tbody = document.getElementById('corpoTrepko');
-            tbody.innerHTML = '';
-            produtosTrepko.forEach(produto => {
-                const valores = dados[produto.codigo] || ["", "", "", "", "", "", ""];
-                const row = tbody.insertRow();
-                row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small></div>`;
-                for (let i = 0; i < dias.length; i++) {
-                    const cell = row.insertCell(i + 1);
-                    cell.innerHTML = `<input type="text" data-dia="${dias[i]}" value="${valores[i] || ''}" placeholder="Meta kg">`;
-                }
-                const totalCell = row.insertCell(dias.length + 1);
-                totalCell.className = 'total-semana';
-                totalCell.textContent = '0';
-            });
-            adicionarEventos();
-            atualizarTodosTotais();
-        }
-
-        function carregarTabelaSerac(dados = dadosReaisSerac) {
-            const tbody = document.getElementById('corpoSerac');
-            tbody.innerHTML = '';
-            produtosSerac.forEach(produto => {
-                const valores = dados[produto.codigo] || ["", "", "", "", "", "", ""];
-                const row = tbody.insertRow();
-                row.insertCell(0).innerHTML = `<div class="produto-cell">${produto.codigo}<br><small>${produto.nome}</small></div>`;
-                for (let i = 0; i < dias.length; i++) {
-                    const cell = row.insertCell(i + 1);
-                    cell.innerHTML = `<input type="text" data-dia="${dias[i]}" value="${valores[i] || ''}" placeholder="Meta kg">`;
-                }
-                const totalCell = row.insertCell(dias.length + 1);
-                totalCell.className = 'total-semana';
-                totalCell.textContent = '0';
-            });
-            adicionarEventos();
-            atualizarTodosTotais();
-        }
-
-        function salvarProgramacao() {
-            const dadosTrepko = {};
-            document.querySelectorAll('#corpoTrepko tr').forEach((row, idx) => {
-                const codigo = produtosTrepko[idx].codigo;
-                dadosTrepko[codigo] = [];
-                for (let i = 0; i < dias.length; i++) {
-                    const input = row.querySelector(`input[data-dia="${dias[i]}"]`);
-                    dadosTrepko[codigo].push(input ? input.value : '');
-                }
-            });
-            const dadosSerac = {};
-            document.querySelectorAll('#corpoSerac tr').forEach((row, idx) => {
-                const codigo = produtosSerac[idx].codigo;
-                dadosSerac[codigo] = [];
-                for (let i = 0; i < dias.length; i++) {
-                    const input = row.querySelector(`input[data-dia="${dias[i]}"]`);
-                    dadosSerac[codigo].push(input ? input.value : '');
-                }
-            });
-            localStorage.setItem('programacao_trepko', JSON.stringify(dadosTrepko));
-            localStorage.setItem('programacao_serac', JSON.stringify(dadosSerac));
-            const msg = document.getElementById('mensagem');
-            msg.style.display = 'block';
-            msg.style.background = '#2ecc71';
-            msg.style.color = 'white';
-            msg.innerHTML = '✅ Programação salva no navegador!';
-            setTimeout(() => msg.style.display = 'none', 3000);
-        }
-
-        function carregarProgramacao() {
-            const savedTrepko = localStorage.getItem('programacao_trepko');
-            const savedSerac = localStorage.getItem('programacao_serac');
-            carregarTabelaTrepko(savedTrepko ? JSON.parse(savedTrepko) : dadosReaisTrepko);
-            carregarTabelaSerac(savedSerac ? JSON.parse(savedSerac) : dadosReaisSerac);
-        }
-
-        document.getElementById('btnSalvar').addEventListener('click', salvarProgramacao);
-        document.getElementById('btnCarregar').addEventListener('click', carregarProgramacao);
-
-        carregarProgramacao();
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
+        carregarTrocaTurno();
+        atualizarGraficos();
     </script>
 </body>
 </html>
