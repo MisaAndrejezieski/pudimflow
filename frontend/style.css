@@ -627,7 +627,7 @@ button:disabled {
 }
 
 /* --------------------------------------------
-   IMPRESSÃO
+                  IMPRESSÃO
    -------------------------------------------- */
 @media print {
   .nav, .dark-mode-toggle, button, .header {
