@@ -153,7 +153,7 @@ function limparFormulario(ids) {
 }
 
 // --------------------------------------------
-// DARK MODE
+//               DARK MODE
 // --------------------------------------------
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
