@@ -196,7 +196,7 @@ function gerarDatasSemana(dataInicio) {
 }
 
 // --------------------------------------------
-// CONECTIVIDADE
+//             CONECTIVIDADE
 // --------------------------------------------
 async function checkBackendHealth() {
     try {
