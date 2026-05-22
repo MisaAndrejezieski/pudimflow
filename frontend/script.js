@@ -212,7 +212,7 @@ async function checkBackendHealth() {
 }
 
 // --------------------------------------------
-// EXPORTAÇÃO DE FORMATAÇÃO DE PRODUTOS
+//    EXPORTAÇÃO DE FORMATAÇÃO DE PRODUTOS
 // --------------------------------------------
 const produtosConfig = {
     'Pudim Leite Batavo': { massaG: 85, caldaG: 15, totalG: 100, validadeDias: 43 },
