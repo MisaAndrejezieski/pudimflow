@@ -381,7 +381,7 @@ button:disabled {
 .btn-info:hover { background: var(--info-dark); }
 
 /* --------------------------------------------
-   CHECKLIST
+                    CHECKLIST
    -------------------------------------------- */
 .checklist-item {
   display: flex;
