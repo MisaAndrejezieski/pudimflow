@@ -110,7 +110,7 @@ h3 { font-size: 1.125rem; }
 }
 
 /* --------------------------------------------
-   HEADER (GLOBAL)
+                HEADER (GLOBAL)
    -------------------------------------------- */
 .header {
   background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
