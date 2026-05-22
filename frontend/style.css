@@ -436,7 +436,7 @@ button:disabled {
 .alert-info { background: var(--info); color: white; }
 
 /* --------------------------------------------
-   TABELAS DE PROGRAMAÇÃO
+             TABELAS DE PROGRAMAÇÃO
    -------------------------------------------- */
 .planilha-container {
   overflow-x: auto;
