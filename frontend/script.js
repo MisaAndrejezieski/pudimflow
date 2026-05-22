@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --------------------------------------------
-// EXPORTAÇÃO PARA USO GLOBAL
+//        EXPORTAÇÃO PARA USO GLOBAL
 // --------------------------------------------
 window.PudimFlow = {
     API_URL,
