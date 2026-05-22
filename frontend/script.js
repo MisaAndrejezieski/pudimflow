@@ -237,7 +237,7 @@ function getProdutoConfig(nomeProduto) {
 }
 
 // --------------------------------------------
-// INICIALIZAÇÃO GLOBAL
+//           INICIALIZAÇÃO GLOBAL
 // --------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     loadDarkModePreference();
