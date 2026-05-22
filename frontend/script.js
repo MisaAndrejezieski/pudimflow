@@ -168,7 +168,7 @@ function loadDarkModePreference() {
 }
 
 // --------------------------------------------
-// DATA/HORA
+//                DATA/HORA
 // --------------------------------------------
 function updateDateTime() {
     const el = document.getElementById('ultimaAtualizacao');
