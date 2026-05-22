@@ -614,7 +614,7 @@ button:disabled {
 }
 
 /* --------------------------------------------
-   RESPONSIVIDADE GLOBAL
+              RESPONSIVIDADE GLOBAL
    -------------------------------------------- */
 @media (max-width: 480px) {
   button {
