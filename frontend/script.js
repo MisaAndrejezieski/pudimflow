@@ -123,7 +123,7 @@ function formatarData(data, formato = 'brasileiro') {
 }
 
 // --------------------------------------------
-// VALIDAÇÃO DE CAMPOS
+//              VALIDAÇÃO DE CAMPOS
 // --------------------------------------------
 function validarCampos(ids) {
     for (const id of ids) {
